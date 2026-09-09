@@ -49,6 +49,17 @@ shopt -u dotglob
 Run: `test -f composer.json && test -f artisan && grep -q laravel/framework composer.json && echo OK`
 Expected: `OK` printed, and `ls` shows both `docs/` and the new Laravel directories (`app/`, `routes/`, etc.) side by side.
 
+- [ ] **Step 3b: Re-add the `.superpowers/` ignore entry**
+
+The Laravel installer's own `.gitignore` overwrote the repo's existing one in Step 2 (same filename), dropping the entry that keeps this plan's SDD workspace out of git. Append it back:
+
+```bash
+echo ".superpowers/" >> .gitignore
+git check-ignore -q .superpowers && echo IGNORED
+```
+
+Expected: `IGNORED` printed.
+
 - [ ] **Step 4: Commit**
 
 ```bash
@@ -317,7 +328,7 @@ docker compose exec app php artisan breeze:install react --typescript
 - [ ] **Step 2: Install Node dependencies and build frontend assets**
 
 ```bash
-docker compose run --rm -v "$(pwd)":/var/www/html -w /var/www/html node:20-alpine sh -c "npm install && npm run build"
+docker run --rm -v "$(pwd)":/var/www/html -w /var/www/html node:20-alpine sh -c "npm install && npm run build"
 ```
 
 - [ ] **Step 3: Run the new Breeze migrations (adds `password_reset_tokens`, etc. if not already present)**
@@ -427,7 +438,7 @@ cp .env.example .env
 docker compose up -d --build
 docker compose exec app php artisan key:generate
 docker compose exec app php artisan migrate
-docker compose run --rm -v "$(pwd)":/var/www/html -w /var/www/html node:20-alpine sh -c "npm install && npm run build"
+docker run --rm -v "$(pwd)":/var/www/html -w /var/www/html node:20-alpine sh -c "npm install && npm run build"
 ```
 
 Aplikasi tersedia di `http://localhost:8080`.
