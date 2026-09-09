@@ -6,7 +6,7 @@
 
 **Architecture:** Laravel app lives at the repository root (alongside `docs/`). Docker Compose runs six services — `app` (PHP-FPM), `web` (Nginx), `postgres`, `redis`, `queue-worker`, `scheduler` — all built from one custom PHP image. Frontend is Inertia.js + React + TypeScript via Laravel Breeze's React starter, styled with Tailwind (bundled by Breeze).
 
-**Tech Stack:** Laravel (latest stable via Composer, no version pin), PHP 8.3, Inertia.js + React + TypeScript (Laravel Breeze react-ts stack), Tailwind CSS, PostgreSQL 16, Redis 7, Docker Compose, `spatie/laravel-permission`, `maatwebsite/excel`.
+**Tech Stack:** Laravel (latest stable via Composer, no version pin), PHP 8.4, Inertia.js + React + TypeScript (Laravel Breeze react-ts stack), Tailwind CSS, PostgreSQL 16, Redis 7, Docker Compose, `spatie/laravel-permission`, `maatwebsite/excel`.
 
 **Spec:** [docs/superpowers/specs/2026-09-09-worktrack-mvp-design.md](../specs/2026-09-09-worktrack-mvp-design.md) §8 (Arsitektur Teknis) — this plan implements only the infrastructure/scaffolding prerequisites for that spec, not the Fase 1 feature modules themselves.
 
@@ -85,7 +85,7 @@ git commit -m "Scaffold Laravel application skeleton"
 
 ```dockerfile
 # docker/php/Dockerfile
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
     git unzip libpq-dev libzip-dev libonig-dev \
