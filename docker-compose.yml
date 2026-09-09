@@ -1,0 +1,84 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: worktrack-app
+    volumes:
+      - .:/var/www/html
+    networks:
+      - worktrack
+    depends_on:
+      - postgres
+      - redis
+
+  web:
+    image: nginx:1.27-alpine
+    container_name: worktrack-web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - worktrack
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: worktrack-postgres
+    environment:
+      POSTGRES_DB: worktrack
+      POSTGRES_USER: worktrack
+      POSTGRES_PASSWORD: worktrack
+    volumes:
+      - worktrack-postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - worktrack
+
+  redis:
+    image: redis:7-alpine
+    container_name: worktrack-redis
+    networks:
+      - worktrack
+
+  queue-worker:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: worktrack-queue-worker
+    command: php artisan queue:work --tries=3
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+      - postgres
+      - redis
+    networks:
+      - worktrack
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: worktrack-scheduler
+    command: >
+      sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+      - postgres
+      - redis
+    networks:
+      - worktrack
+
+networks:
+  worktrack:
+    driver: bridge
+
+volumes:
+  worktrack-postgres-data:
