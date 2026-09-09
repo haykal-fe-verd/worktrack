@@ -4,17 +4,21 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: worktrack-app
+    restart: unless-stopped
     volumes:
       - .:/var/www/html
     networks:
       - worktrack
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   web:
     image: nginx:1.27-alpine
     container_name: worktrack-web
+    restart: unless-stopped
     ports:
       - "8080:80"
     volumes:
@@ -28,6 +32,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: worktrack-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: worktrack
       POSTGRES_USER: worktrack
@@ -36,12 +41,18 @@ services:
       - worktrack-postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U worktrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - worktrack
 
   redis:
     image: redis:7-alpine
     container_name: worktrack-redis
+    restart: unless-stopped
     networks:
       - worktrack
 
@@ -50,13 +61,17 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: worktrack-queue-worker
+    restart: unless-stopped
     command: php artisan queue:work --tries=3
     volumes:
       - .:/var/www/html
     depends_on:
-      - app
-      - postgres
-      - redis
+      app:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - worktrack
 
@@ -65,14 +80,18 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: worktrack-scheduler
+    restart: unless-stopped
     command: >
       sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
     volumes:
       - .:/var/www/html
     depends_on:
-      - app
-      - postgres
-      - redis
+      app:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - worktrack
 
