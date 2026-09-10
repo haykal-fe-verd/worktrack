@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
+import { PageProps, RoleName } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -10,7 +10,7 @@ interface EditableUser {
     id: number;
     name: string;
     email: string;
-    role: string | null;
+    role: RoleName | null;
 }
 
 export default function Edit({ user }: PageProps<{ user: EditableUser }>) {
@@ -48,7 +48,10 @@ export default function Edit({ user }: PageProps<{ user: EditableUser }>) {
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={data.role}
                                     onChange={(e) =>
-                                        setData('role', e.target.value)
+                                        setData(
+                                            'role',
+                                            e.target.value as RoleName,
+                                        )
                                     }
                                 >
                                     <option value="viewer">Viewer</option>

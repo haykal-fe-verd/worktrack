@@ -1,12 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
+import { PageProps, RoleName } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 interface UserRow {
     id: number;
     name: string;
     email: string;
-    role: string | null;
+    role: RoleName | null;
 }
 
 export default function Index({ users }: PageProps<{ users: UserRow[] }>) {

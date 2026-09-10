@@ -17,8 +17,14 @@ docker compose up -d --build
 docker compose exec app composer install
 docker compose exec app php artisan key:generate
 docker compose exec app php artisan migrate
+docker compose exec app php artisan db:seed
+docker compose exec app php artisan worktrack:create-admin
 docker run --rm -v "$(pwd)":/var/www/html -w /var/www/html node:20-alpine sh -c "npm install --legacy-peer-deps && npm run build"
 ```
+
+> `worktrack:create-admin` akan menanyakan nama, email, dan password admin
+> secara interaktif untuk membuat akun admin pertama. `/register` tidak
+> tersedia, jadi ini satu-satunya cara membuat akun admin.
 
 Aplikasi tersedia di `http://localhost:8080`.
 

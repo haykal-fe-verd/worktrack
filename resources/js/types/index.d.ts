@@ -1,3 +1,5 @@
+export type RoleName = 'admin' | 'staff_input' | 'viewer';
+
 export interface User {
     id: number;
     name: string;
