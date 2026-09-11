@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EmployeeImportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,10 @@ Route::middleware('auth')->prefix('employees')->name('employees.')->group(functi
         Route::get('/{employee}/edit', [EmployeeController::class, 'edit'])->name('edit');
         Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
         Route::patch('/{employee}/toggle-status', [EmployeeController::class, 'toggleStatus'])->name('toggle-status');
+
+        Route::get('/import', [EmployeeImportController::class, 'create'])->name('import.create');
+        Route::post('/import', [EmployeeImportController::class, 'store'])->name('import.store');
+        Route::get('/import/errors', [EmployeeImportController::class, 'downloadErrors'])->name('import.errors');
     });
 });
 
