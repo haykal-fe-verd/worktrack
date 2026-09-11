@@ -12,7 +12,8 @@ interface RoleCounts {
 
 export default function Dashboard({
     roleCounts,
-}: PageProps<{ roleCounts: RoleCounts }>) {
+    employeeCount,
+}: PageProps<{ roleCounts: RoleCounts; employeeCount: number }>) {
     return (
         <AuthenticatedLayout
             header={
@@ -50,13 +51,9 @@ export default function Dashboard({
                             </dl>
                         </BentoCard>
 
-                        <BentoCard
-                            title="Karyawan"
-                            accent="white"
-                            badge="Segera Hadir"
-                        >
-                            <div className="text-2xl font-bold text-slate-300">
-                                —
+                        <BentoCard title="Karyawan" accent="white">
+                            <div className="text-2xl font-bold text-pln-navy">
+                                {employeeCount}
                             </div>
                         </BentoCard>
 

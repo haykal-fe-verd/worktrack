@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Role;
+use App\Models\Employee;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,6 +16,7 @@ class DashboardController extends Controller
     public function index(): Response
     {
         return Inertia::render('Dashboard', [
+            'employeeCount' => Employee::count(),
             'roleCounts' => [
                 'admin' => User::role(Role::Admin->value)->count(),
                 'staff_input' => User::role(Role::StaffInput->value)->count(),
