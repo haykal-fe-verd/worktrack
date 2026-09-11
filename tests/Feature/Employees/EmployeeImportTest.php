@@ -174,10 +174,9 @@ class EmployeeImportTest extends TestCase
         ]);
         $this->actingAs($admin)->post('/employees/import', ['file' => $badFile]);
 
-        $this->actingAs($admin)
-            ->get('/employees/import/errors')
-            ->assertOk()
-            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Deliberately do NOT download the error report here — this is the
+        // scenario that exposes the bug: a stale report sitting unclaimed
+        // in the session when a subsequent clean import runs.
 
         $goodFile = $this->makeXlsx([
             ['Siti Aminah', '3512161807980001', 'Jl. B', '1184150367'],
