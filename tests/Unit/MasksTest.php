@@ -21,6 +21,6 @@ class MasksTest extends TestCase
     public function test_it_uses_exactly_six_stars_regardless_of_original_length(): void
     {
         $this->assertSame('1234******9012', Masks::partial('123456789012'));
-        $this->assertSame('1234******6789012', Masks::partial('1234567890123456789012'));
+        $this->assertSame('1234******9012', Masks::partial('1234567890123456789012'));
     }
 }
