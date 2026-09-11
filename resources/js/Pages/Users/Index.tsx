@@ -13,7 +13,7 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-pln-navy">
                     Manajemen User
                 </h2>
             }
@@ -26,7 +26,7 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                         <div className="mb-4 flex justify-end">
                             <Link
                                 href={route('users.create')}
-                                className="rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700"
+                                className="rounded-md border border-transparent bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
                             >
                                 Tambah User
                             </Link>
@@ -65,7 +65,7 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                                                     'users.edit',
                                                     user.id,
                                                 )}
-                                                className="text-indigo-600 hover:text-indigo-900"
+                                                className="text-pln-blue hover:text-pln-blue-dark"
                                             >
                                                 Edit
                                             </Link>

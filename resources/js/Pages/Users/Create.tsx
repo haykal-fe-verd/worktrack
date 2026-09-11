@@ -22,7 +22,7 @@ export default function Create() {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-pln-navy">
                     Tambah User
                 </h2>
             }
@@ -94,7 +94,7 @@ export default function Create() {
                                 <InputLabel htmlFor="role" value="Role" />
                                 <select
                                     id="role"
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
                                     value={data.role}
                                     onChange={(e) =>
                                         setData('role', e.target.value)

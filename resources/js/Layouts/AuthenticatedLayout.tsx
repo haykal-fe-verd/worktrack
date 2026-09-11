@@ -15,14 +15,14 @@ export default function Authenticated({
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+        <div className="min-h-screen bg-slate-50">
+            <nav className="border-b border-slate-200 bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                <Link href={route('dashboard')}>
+                                    <ApplicationLogo className="block h-9 w-auto fill-current text-pln-blue" />
                                 </Link>
                             </div>
 
@@ -51,7 +51,7 @@ export default function Authenticated({
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                className="inline-flex items-center rounded-full border border-transparent bg-pln-yellow/20 px-3 py-2 text-sm font-medium leading-4 text-pln-navy transition duration-150 ease-in-out hover:bg-pln-yellow/30 focus:outline-none"
                                             >
                                                 {user.name}
 
