@@ -68,7 +68,7 @@ class EmployeeCrudTest extends TestCase
         $response->assertOk();
         $response->assertJsonPath('component', 'Employees/Index');
         $response->assertJsonPath('props.employees.data.0.nik', '3513******0001');
-        $response->assertJsonPath('props.employees.data.0.no_rekening', '******');
+        $response->assertJsonPath('props.employees.data.0.no_rekening', '1923******3699');
         $response->assertJsonPath('props.canManage', false);
     }
 
