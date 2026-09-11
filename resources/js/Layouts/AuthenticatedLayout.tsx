@@ -33,6 +33,12 @@ export default function Authenticated({
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    href={route('employees.index')}
+                                    active={route().current('employees.*')}
+                                >
+                                    Karyawan
+                                </NavLink>
                                 {user.roles.includes('admin') && (
                                     <NavLink
                                         href={route('users.index')}
@@ -144,6 +150,12 @@ export default function Authenticated({
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('employees.index')}
+                            active={route().current('employees.*')}
+                        >
+                            Karyawan
                         </ResponsiveNavLink>
                         {user.roles.includes('admin') && (
                             <ResponsiveNavLink
