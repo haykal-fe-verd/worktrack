@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Enums\EmployeeStatus;
 use App\Models\Employee;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -60,7 +61,7 @@ class EmployeesImport implements ToCollection, WithHeadingRow
                 'nik' => $nik,
                 'alamat' => $alamat,
                 'no_rekening' => $noRekening,
-                'status' => 'aktif',
+                'status' => EmployeeStatus::Aktif,
             ]);
 
             $this->created++;

@@ -23,15 +23,13 @@ class EmployeeImportController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:xlsx,xls'],
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
         ]);
 
         $import = new EmployeesImport;
         Excel::import($import, $request->file('file'));
 
-        if ($import->errors !== []) {
-            session(['employee_import_errors' => $import->errors]);
-        }
+        session(['employee_import_errors' => $import->errors]);
 
         return redirect()->route('employees.import.create')->with('employee_import_result', [
             'created' => $import->created,

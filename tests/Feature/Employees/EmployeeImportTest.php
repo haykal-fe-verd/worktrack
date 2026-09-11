@@ -24,6 +24,15 @@ class EmployeeImportTest extends TestCase
         return $user;
     }
 
+    private function staffInput(): User
+    {
+        $this->seed(RoleSeeder::class);
+        $user = User::factory()->create();
+        $user->assignRole('staff_input');
+
+        return $user;
+    }
+
     private function makeXlsx(array $rows): UploadedFile
     {
         $path = tempnam(sys_get_temp_dir(), 'import').'.xlsx';
@@ -48,6 +57,23 @@ class EmployeeImportTest extends TestCase
         $viewer->assignRole('viewer');
 
         $this->actingAs($viewer)->get('/employees/import')->assertForbidden();
+    }
+
+    public function test_viewer_cannot_submit_or_download_import(): void
+    {
+        $this->seed(RoleSeeder::class);
+        $viewer = User::factory()->create();
+        $viewer->assignRole('viewer');
+
+        $this->actingAs($viewer)->post('/employees/import', [])->assertForbidden();
+        $this->actingAs($viewer)->get('/employees/import/errors')->assertForbidden();
+    }
+
+    public function test_staff_input_can_access_import(): void
+    {
+        $staffInput = $this->staffInput();
+
+        $this->actingAs($staffInput)->get('/employees/import')->assertOk();
     }
 
     public function test_valid_rows_are_imported(): void
@@ -135,6 +161,28 @@ class EmployeeImportTest extends TestCase
     public function test_downloading_errors_with_none_pending_returns_not_found(): void
     {
         $admin = $this->admin();
+
+        $this->actingAs($admin)->get('/employees/import/errors')->assertNotFound();
+    }
+
+    public function test_a_clean_import_clears_a_previous_error_report(): void
+    {
+        $admin = $this->admin();
+
+        $badFile = $this->makeXlsx([
+            ['Budi Santoso', '12345', 'Jl. A', '1923973699'],
+        ]);
+        $this->actingAs($admin)->post('/employees/import', ['file' => $badFile]);
+
+        $this->actingAs($admin)
+            ->get('/employees/import/errors')
+            ->assertOk()
+            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        $goodFile = $this->makeXlsx([
+            ['Siti Aminah', '3512161807980001', 'Jl. B', '1184150367'],
+        ]);
+        $this->actingAs($admin)->post('/employees/import', ['file' => $goodFile]);
 
         $this->actingAs($admin)->get('/employees/import/errors')->assertNotFound();
     }

@@ -36,8 +36,7 @@ class EmployeeController extends Controller
             'id' => $employee->id,
             'nama' => $employee->nama,
             'nik' => $canManage ? $employee->nik : Masks::partial($employee->nik),
-            // Bank account numbers are fully masked for non-managers, unlike the
-            // NIK which partially reveals first/last digits for identification.
+            // nik and no_rekening use identical masking per spec §3.2 (decision E3)
             'no_rekening' => $canManage ? $employee->no_rekening : Masks::partial($employee->no_rekening),
             'status' => $employee->status->value,
         ]);

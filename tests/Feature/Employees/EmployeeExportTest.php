@@ -33,4 +33,17 @@ class EmployeeExportTest extends TestCase
             ->assertOk()
             ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     }
+
+    public function test_staff_input_can_export(): void
+    {
+        $this->seed(RoleSeeder::class);
+        $staffInput = User::factory()->create();
+        $staffInput->assignRole('staff_input');
+        Employee::factory()->create(['nik' => '3513126804000001']);
+
+        $this->actingAs($staffInput)
+            ->get('/employees/export')
+            ->assertOk()
+            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
 }

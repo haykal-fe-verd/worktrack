@@ -30,6 +30,15 @@ class EmployeeCrudTest extends TestCase
         return $user;
     }
 
+    private function staffInput(): User
+    {
+        $this->seed(RoleSeeder::class);
+        $user = User::factory()->create();
+        $user->assignRole('staff_input');
+
+        return $user;
+    }
+
     /**
      * Build the headers needed to make a GET request return Inertia's JSON
      * payload instead of the full Blade view. The Blade view resolves the
@@ -85,6 +94,19 @@ class EmployeeCrudTest extends TestCase
         $response->assertJsonPath('props.canManage', true);
     }
 
+    public function test_staff_input_sees_full_nik_and_no_rekening_in_the_list(): void
+    {
+        $staffInput = $this->staffInput();
+        Employee::factory()->create(['nik' => '3513126804000001', 'no_rekening' => '1923973699']);
+
+        $response = $this->actingAs($staffInput)->get('/employees', $this->inertiaHeaders());
+
+        $response->assertOk();
+        $response->assertJsonPath('props.employees.data.0.nik', '3513126804000001');
+        $response->assertJsonPath('props.employees.data.0.no_rekening', '1923973699');
+        $response->assertJsonPath('props.canManage', true);
+    }
+
     public function test_viewer_cannot_create_an_employee(): void
     {
         $viewer = $this->viewer();
@@ -93,11 +115,40 @@ class EmployeeCrudTest extends TestCase
         $this->actingAs($viewer)->post('/employees', [])->assertForbidden();
     }
 
+    public function test_viewer_cannot_update_or_toggle_status(): void
+    {
+        $viewer = $this->viewer();
+        $employee = Employee::factory()->create();
+
+        $this->actingAs($viewer)->put("/employees/{$employee->id}", [])->assertForbidden();
+        $this->actingAs($viewer)->patch("/employees/{$employee->id}/toggle-status")->assertForbidden();
+    }
+
     public function test_admin_can_create_an_employee_with_valid_data(): void
     {
         $admin = $this->admin();
 
         $response = $this->actingAs($admin)->post('/employees', [
+            'nama' => 'Budi Santoso',
+            'nik' => '3513126804000099',
+            'alamat' => 'Jl. Merdeka No. 1',
+            'no_rekening' => '1923973699',
+            'nama_bank' => 'BCA',
+        ]);
+
+        $response->assertRedirect(route('employees.index'));
+        $this->assertDatabaseHas('employees', [
+            'nik' => '3513126804000099',
+            'nama' => 'Budi Santoso',
+            'status' => 'aktif',
+        ]);
+    }
+
+    public function test_staff_input_can_create_an_employee(): void
+    {
+        $staffInput = $this->staffInput();
+
+        $response = $this->actingAs($staffInput)->post('/employees', [
             'nama' => 'Budi Santoso',
             'nik' => '3513126804000099',
             'alamat' => 'Jl. Merdeka No. 1',
@@ -174,6 +225,37 @@ class EmployeeCrudTest extends TestCase
         $this->actingAs($admin)->patch("/employees/{$employee->id}/toggle-status");
 
         $this->assertSame('aktif', $employee->fresh()->status->value);
+    }
+
+    public function test_staff_input_can_toggle_employee_status(): void
+    {
+        $staffInput = $this->staffInput();
+        $employee = Employee::factory()->create();
+
+        $this->actingAs($staffInput)
+            ->patch("/employees/{$employee->id}/toggle-status")
+            ->assertRedirect(route('employees.index'));
+
+        $this->assertSame('non_aktif', $employee->fresh()->status->value);
+
+        $this->actingAs($staffInput)->patch("/employees/{$employee->id}/toggle-status");
+
+        $this->assertSame('aktif', $employee->fresh()->status->value);
+    }
+
+    public function test_updating_an_employee_does_not_change_its_status(): void
+    {
+        $admin = $this->admin();
+        $employee = Employee::factory()->nonAktif()->create();
+
+        $this->actingAs($admin)->put("/employees/{$employee->id}", [
+            'nama' => $employee->nama,
+            'nik' => $employee->nik,
+            'alamat' => $employee->alamat,
+            'no_rekening' => $employee->no_rekening,
+        ]);
+
+        $this->assertSame('non_aktif', $employee->fresh()->status->value);
     }
 
     public function test_search_filters_by_name_or_nik(): void
