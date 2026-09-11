@@ -32,48 +32,50 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                             </Link>
                         </div>
 
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                        Nama
-                                    </th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                        Email
-                                    </th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                        Role
-                                    </th>
-                                    <th className="px-3 py-2" />
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200">
-                                {users.map((user) => (
-                                    <tr key={user.id}>
-                                        <td className="px-3 py-2 text-sm text-gray-900">
-                                            {user.name}
-                                        </td>
-                                        <td className="px-3 py-2 text-sm text-gray-500">
-                                            {user.email}
-                                        </td>
-                                        <td className="px-3 py-2 text-sm text-gray-500">
-                                            {user.role ?? '—'}
-                                        </td>
-                                        <td className="px-3 py-2 text-right text-sm">
-                                            <Link
-                                                href={route(
-                                                    'users.edit',
-                                                    user.id,
-                                                )}
-                                                className="text-pln-blue hover:text-pln-blue-dark"
-                                            >
-                                                Edit
-                                            </Link>
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                            Nama
+                                        </th>
+                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                            Email
+                                        </th>
+                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                            Role
+                                        </th>
+                                        <th className="px-3 py-2" />
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                    {users.map((user) => (
+                                        <tr key={user.id}>
+                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-900">
+                                                {user.name}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                                {user.email}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                                {user.role ?? '—'}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-2 text-right text-sm">
+                                                <Link
+                                                    href={route(
+                                                        'users.edit',
+                                                        user.id,
+                                                    )}
+                                                    className="text-pln-blue hover:text-pln-blue-dark"
+                                                >
+                                                    Edit
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
