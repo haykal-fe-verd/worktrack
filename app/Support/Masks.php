@@ -17,4 +17,12 @@ class Masks
 
         return substr($value, 0, 4).'******'.substr($value, -4);
     }
+
+    /**
+     * Fully mask a sensitive value with no part of the original visible.
+     */
+    public static function full(): string
+    {
+        return '******';
+    }
 }
