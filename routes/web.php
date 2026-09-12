@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExportController;
 use App\Http\Controllers\EmployeeImportController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobImportController;
 use App\Http\Controllers\JobPeriodController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +52,9 @@ Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
     Route::middleware('role:admin|staff_input')->group(function () {
         Route::get('/create', [JobController::class, 'create'])->name('create');
         Route::post('/', [JobController::class, 'store'])->name('store');
+        Route::get('/import', [JobImportController::class, 'create'])->name('import.create');
+        Route::post('/import', [JobImportController::class, 'store'])->name('import.store');
+        Route::get('/import/errors', [JobImportController::class, 'downloadErrors'])->name('import.errors');
     });
 
     Route::get('/{job}', [JobController::class, 'show'])->name('show');

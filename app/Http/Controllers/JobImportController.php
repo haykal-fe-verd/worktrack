@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ImportErrorsExport;
-use App\Imports\EmployeesImport;
+use App\Imports\JobsImport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,12 +11,24 @@ use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class EmployeeImportController extends Controller
+class JobImportController extends Controller
 {
+    private const HEADINGS = [
+        'NO. DO/PR/WO',
+        'URAIAN PEKERJAAN',
+        'JUMLAH TK',
+        'MULAI TANGGAL',
+        'S/D TANGGAL',
+        'PO',
+        'NILAI PO',
+        'KETERANGAN',
+        'Alasan Gagal',
+    ];
+
     public function create(): Response
     {
-        return Inertia::render('Employees/Import', [
-            'result' => session('employee_import_result'),
+        return Inertia::render('Jobs/Import', [
+            'result' => session('job_import_result'),
         ]);
     }
 
@@ -26,29 +38,28 @@ class EmployeeImportController extends Controller
             'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
         ]);
 
-        $import = new EmployeesImport;
+        $import = new JobsImport;
         Excel::import($import, $request->file('file'));
 
-        session(['employee_import_errors' => $import->errors]);
+        session(['job_import_errors' => $import->errors]);
 
-        return redirect()->route('employees.import.create')->with('employee_import_result', [
+        return redirect()->route('jobs.import.create')->with('job_import_result', [
             'created' => $import->created,
-            'skipped' => $import->skipped,
             'errorCount' => count($import->errors),
         ]);
     }
 
     public function downloadErrors(): BinaryFileResponse
     {
-        $errors = session('employee_import_errors', []);
+        $errors = session('job_import_errors', []);
 
         abort_if($errors === [], 404);
 
-        session()->forget('employee_import_errors');
+        session()->forget('job_import_errors');
 
         return Excel::download(
-            new ImportErrorsExport(collect($errors), ['NAMA', 'NIK', 'ALAMAT', 'NO REKENING', 'Alasan Gagal']),
-            'laporan-error-import-karyawan.xlsx',
+            new ImportErrorsExport(collect($errors), self::HEADINGS),
+            'laporan-error-import-job.xlsx',
         );
     }
 }

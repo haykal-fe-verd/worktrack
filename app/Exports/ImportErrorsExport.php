@@ -10,8 +10,12 @@ class ImportErrorsExport implements FromCollection, WithHeadings
 {
     /**
      * @param  Collection<int, array<string, string>>  $errors
+     * @param  array<int, string>  $headings
      */
-    public function __construct(private readonly Collection $errors) {}
+    public function __construct(
+        private readonly Collection $errors,
+        private readonly array $headings,
+    ) {}
 
     public function collection(): Collection
     {
@@ -23,6 +27,6 @@ class ImportErrorsExport implements FromCollection, WithHeadings
      */
     public function headings(): array
     {
-        return ['NAMA', 'NIK', 'ALAMAT', 'NO REKENING', 'Alasan Gagal'];
+        return $this->headings;
     }
 }
