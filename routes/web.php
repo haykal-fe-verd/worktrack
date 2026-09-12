@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExportController;
 use App\Http\Controllers\EmployeeImportController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,21 @@ Route::middleware('auth')->prefix('employees')->name('employees.')->group(functi
         Route::post('/import', [EmployeeImportController::class, 'store'])->name('import.store');
         Route::get('/import/errors', [EmployeeImportController::class, 'downloadErrors'])->name('import.errors');
         Route::get('/export', [EmployeeExportController::class, 'download'])->name('export');
+    });
+});
+
+Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
+    Route::get('/', [JobController::class, 'index'])->name('index');
+
+    Route::middleware('role:admin|staff_input')->group(function () {
+        Route::get('/create', [JobController::class, 'create'])->name('create');
+        Route::post('/', [JobController::class, 'store'])->name('store');
+    });
+
+    Route::get('/{job}', [JobController::class, 'show'])->name('show');
+
+    Route::middleware('role:admin|staff_input')->group(function () {
+        Route::patch('/{job}/toggle-status', [JobController::class, 'toggleStatus'])->name('toggle-status');
     });
 });
 
