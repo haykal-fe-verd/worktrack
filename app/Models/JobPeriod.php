@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'job_id',
@@ -56,5 +57,13 @@ class JobPeriod extends Model
     public function previousPeriod(): BelongsTo
     {
         return $this->belongsTo(JobPeriod::class, 'previous_period_id');
+    }
+
+    /**
+     * @return HasMany<Assignment, $this>
+     */
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class);
     }
 }
