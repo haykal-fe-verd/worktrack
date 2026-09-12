@@ -53,7 +53,10 @@ export default function Import({
                     }
                 }}
             >
-                <SheetContent className="overflow-y-auto sm:max-w-lg">
+                <SheetContent
+                    className="overflow-y-auto sm:max-w-lg"
+                    aria-describedby={undefined}
+                >
                     <SheetHeader>
                         <SheetTitle>Import Data Karyawan</SheetTitle>
                     </SheetHeader>
@@ -80,14 +83,19 @@ export default function Import({
                                 </dl>
 
                                 {result.errorCount > 0 && (
-                                    <a
-                                        href={route(
-                                            'employees.import.errors',
-                                        )}
-                                        className="mt-4 inline-block rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
+                                    <Button
+                                        variant="outline"
+                                        asChild
+                                        className="mt-4"
                                     >
-                                        Download Laporan Error
-                                    </a>
+                                        <a
+                                            href={route(
+                                                'employees.import.errors',
+                                            )}
+                                        >
+                                            Download Laporan Error
+                                        </a>
+                                    </Button>
                                 )}
                             </div>
                         )}

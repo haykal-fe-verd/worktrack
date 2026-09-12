@@ -49,7 +49,7 @@ export default function Edit({
                     }
                 }}
             >
-                <DialogContent>
+                <DialogContent aria-describedby={undefined}>
                     <form onSubmit={submit}>
                         <DialogHeader>
                             <DialogTitle>

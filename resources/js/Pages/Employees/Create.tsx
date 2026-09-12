@@ -46,7 +46,7 @@ export default function Create() {
                     }
                 }}
             >
-                <DialogContent>
+                <DialogContent aria-describedby={undefined}>
                     <form onSubmit={submit}>
                         <DialogHeader>
                             <DialogTitle>Tambah Karyawan</DialogTitle>
