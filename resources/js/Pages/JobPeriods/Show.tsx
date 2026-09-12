@@ -136,6 +136,18 @@ export default function Show({
                                                         >
                                                             Edit
                                                         </Link>
+                                                        {assignment.status ===
+                                                            'aktif' && (
+                                                            <Link
+                                                                href={route(
+                                                                    'assignments.end.form',
+                                                                    assignment.id,
+                                                                )}
+                                                                className="ml-3 text-red-600 hover:underline"
+                                                            >
+                                                                Akhiri
+                                                            </Link>
+                                                        )}
                                                     </td>
                                                 ) : (
                                                     <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500" />

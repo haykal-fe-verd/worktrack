@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\AssignmentStatus;
 use App\Enums\EmployeeStatus;
 use App\Enums\JobPeriodStatus;
+use App\Http\Requests\EndAssignmentRequest;
 use App\Http\Requests\StoreAssignmentRequest;
 use App\Http\Requests\UpdateAssignmentRequest;
 use App\Models\Assignment;
@@ -106,6 +107,31 @@ class AssignmentController extends Controller
                 'tarif_bayar' => $data['tarif_bayar'],
             ]);
         }
+
+        return redirect()->route('job-periods.show', $assignment->job_period_id);
+    }
+
+    public function endForm(Assignment $assignment): Response
+    {
+        abort_if(! $assignment->is_current || $assignment->status !== AssignmentStatus::Aktif, 404);
+
+        return Inertia::render('Assignments/End', [
+            'assignment' => [
+                'id' => $assignment->id,
+                'employee_nama' => $assignment->employee->nama,
+                'tanggal_mulai' => $assignment->tanggal_mulai->format('Y-m-d'),
+            ],
+        ]);
+    }
+
+    public function end(EndAssignmentRequest $request, Assignment $assignment): RedirectResponse
+    {
+        abort_if(! $assignment->is_current || $assignment->status !== AssignmentStatus::Aktif, 404);
+
+        $assignment->update([
+            'tanggal_selesai' => $request->validated('tanggal_selesai'),
+            'status' => AssignmentStatus::Selesai,
+        ]);
 
         return redirect()->route('job-periods.show', $assignment->job_period_id);
     }
