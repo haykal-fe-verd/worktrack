@@ -4,17 +4,15 @@ import { toast } from 'sonner';
 import { PageProps } from '@/types';
 
 export default function useFlashToast() {
-    const { flash } = usePage<PageProps>().props;
+    const page = usePage<PageProps>();
+    const { flash } = page.props;
 
     useEffect(() => {
         if (flash?.success) {
             toast.success(flash.success);
         }
-    }, [flash?.success]);
-
-    useEffect(() => {
         if (flash?.error) {
             toast.error(flash.error);
         }
-    }, [flash?.error]);
+    }, [page]);
 }
