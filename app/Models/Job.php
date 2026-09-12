@@ -15,6 +15,8 @@ class Job extends Model
     /** @use HasFactory<JobFactory> */
     use HasFactory;
 
+    protected $table = 'client_jobs';
+
     /**
      * @return array<string, string>
      */

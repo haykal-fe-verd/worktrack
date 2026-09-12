@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('job_periods', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('job_id')->constrained(table: 'client_jobs')->cascadeOnDelete();
             $table->string('jenis_dokumen', 10);
             $table->string('no_dokumen', 50)->unique();
             $table->string('kode_po', 50)->nullable();

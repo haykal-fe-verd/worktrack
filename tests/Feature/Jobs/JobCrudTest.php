@@ -94,7 +94,7 @@ class JobCrudTest extends TestCase
         ]);
 
         $response->assertRedirect(route('jobs.index'));
-        $this->assertDatabaseHas('jobs', ['nama_pekerjaan' => 'Siaga Ubur Ubur', 'status' => 'aktif']);
+        $this->assertDatabaseHas('client_jobs', ['nama_pekerjaan' => 'Siaga Ubur Ubur', 'status' => 'aktif']);
         $job = Job::where('nama_pekerjaan', 'Siaga Ubur Ubur')->firstOrFail();
         $this->assertDatabaseHas('job_periods', [
             'job_id' => $job->id,
@@ -119,7 +119,7 @@ class JobCrudTest extends TestCase
         ]);
 
         $response->assertRedirect(route('jobs.index'));
-        $this->assertDatabaseHas('jobs', ['nama_pekerjaan' => 'Helper Gudang']);
+        $this->assertDatabaseHas('client_jobs', ['nama_pekerjaan' => 'Helper Gudang']);
     }
 
     public function test_no_dokumen_must_be_unique_across_all_document_types(): void
