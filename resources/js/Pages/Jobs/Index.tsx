@@ -88,6 +88,12 @@ export default function Index({
                             {canManage && (
                                 <div className="ml-auto flex gap-2">
                                     <Link
+                                        href={route('jobs.import.create')}
+                                        className="rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
+                                    >
+                                        Import
+                                    </Link>
+                                    <Link
                                         href={route('jobs.create')}
                                         className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
                                     >
