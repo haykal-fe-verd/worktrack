@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { JobDetail, JobPeriodRow, PageProps } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 export default function Show({
     job,
@@ -55,6 +55,14 @@ export default function Show({
 
                         {canManage && (
                             <div className="mt-4 flex gap-2">
+                                {hasActivePeriod && (
+                                    <Link
+                                        href={route('jobs.renew', job.id)}
+                                        className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
+                                    >
+                                        Perbarui PR
+                                    </Link>
+                                )}
                                 <button
                                     type="button"
                                     onClick={toggleStatus}
