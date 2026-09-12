@@ -93,6 +93,12 @@ export default function Index({
                                     >
                                         Import
                                     </Link>
+                                    <a
+                                        href={route('jobs.export')}
+                                        className="rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
+                                    >
+                                        Export
+                                    </a>
                                     <Link
                                         href={route('jobs.create')}
                                         className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"

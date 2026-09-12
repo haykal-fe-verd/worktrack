@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExportController;
 use App\Http\Controllers\EmployeeImportController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobExportController;
 use App\Http\Controllers\JobImportController;
 use App\Http\Controllers\JobPeriodController;
 use App\Http\Controllers\ProfileController;
@@ -55,6 +56,7 @@ Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
         Route::get('/import', [JobImportController::class, 'create'])->name('import.create');
         Route::post('/import', [JobImportController::class, 'store'])->name('import.store');
         Route::get('/import/errors', [JobImportController::class, 'downloadErrors'])->name('import.errors');
+        Route::get('/export', [JobExportController::class, 'download'])->name('export');
     });
 
     Route::get('/{job}', [JobController::class, 'show'])->name('show');

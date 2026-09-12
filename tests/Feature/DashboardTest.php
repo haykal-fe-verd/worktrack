@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Employee;
+use App\Models\Job;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,6 +51,23 @@ class DashboardTest extends TestCase
 
         $response->assertInertia(fn (AssertableInertia $page) => $page
             ->where('employeeCount', 3)
+        );
+    }
+
+    public function test_dashboard_shows_active_job_count(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        Job::factory()->count(2)->create();
+        Job::factory()->selesai()->create();
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('jobCount', 2)
         );
     }
 }
