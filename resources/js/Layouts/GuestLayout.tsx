@@ -1,10 +1,16 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import { Toaster } from '@/Components/ui/sonner';
+import useFlashToast from '@/hooks/use-flash-toast';
 import { Link } from '@inertiajs/react';
 import { PropsWithChildren } from 'react';
 
 export default function Guest({ children }: PropsWithChildren) {
+    useFlashToast();
+
     return (
         <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-pln-blue/10 to-slate-50 pt-6 sm:justify-center sm:pt-0">
+            <Toaster richColors position="top-right" />
+
             <div>
                 <Link href="/">
                     <ApplicationLogo className="h-20 w-20 fill-current text-pln-blue" />
