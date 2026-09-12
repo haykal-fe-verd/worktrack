@@ -136,6 +136,7 @@ class EmployeeCrudTest extends TestCase
             'nama_bank' => 'BCA',
         ]);
 
+        $response->assertSessionHas('success', 'Karyawan berhasil ditambahkan.');
         $response->assertRedirect(route('employees.index'));
         $this->assertDatabaseHas('employees', [
             'nik' => '3513126804000099',
@@ -156,6 +157,7 @@ class EmployeeCrudTest extends TestCase
             'nama_bank' => 'BCA',
         ]);
 
+        $response->assertSessionHas('success', 'Karyawan berhasil ditambahkan.');
         $response->assertRedirect(route('employees.index'));
         $this->assertDatabaseHas('employees', [
             'nik' => '3513126804000099',

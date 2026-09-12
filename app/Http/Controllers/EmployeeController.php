@@ -61,7 +61,7 @@ class EmployeeController extends Controller
             'status' => EmployeeStatus::Aktif,
         ]);
 
-        return redirect()->route('employees.index');
+        return redirect()->route('employees.index')->with('success', 'Karyawan berhasil ditambahkan.');
     }
 
     public function show(Request $request, Employee $employee): Response
