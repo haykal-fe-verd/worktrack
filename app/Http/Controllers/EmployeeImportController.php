@@ -31,13 +31,20 @@ class EmployeeImportController extends Controller
 
         session(['employee_import_errors' => $import->errors]);
 
-        return redirect()->route('employees.import.create')
+        $errorCount = count($import->errors);
+
+        $response = redirect()->route('employees.import.create')
             ->with('employee_import_result', [
                 'created' => $import->created,
                 'skipped' => $import->skipped,
-                'errorCount' => count($import->errors),
-            ])
-            ->with('success', "Import selesai: {$import->created} berhasil, {$import->skipped} dilewati, ".count($import->errors).' gagal.');
+                'errorCount' => $errorCount,
+            ]);
+
+        if ($errorCount > 0) {
+            return $response->with('error', "Import selesai dengan {$errorCount} baris gagal ({$import->created} berhasil, {$import->skipped} dilewati). Lihat laporan error untuk detail.");
+        }
+
+        return $response->with('success', "Import selesai: {$import->created} berhasil, {$import->skipped} dilewati, {$errorCount} gagal.");
     }
 
     public function downloadErrors(): BinaryFileResponse

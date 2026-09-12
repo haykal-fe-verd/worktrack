@@ -142,6 +142,22 @@ class EmployeeImportTest extends TestCase
         $this->assertDatabaseCount('employees', 0);
     }
 
+    public function test_a_fully_failed_import_flashes_error_not_success(): void
+    {
+        $admin = $this->admin();
+        $file = $this->makeXlsx([
+            ['Budi Santoso', '12345', 'Jl. A', '1923973699'],
+        ]);
+
+        $response = $this->actingAs($admin)->post('/employees/import', ['file' => $file]);
+
+        $response->assertSessionHas('employee_import_result', fn ($result) => $result['created'] === 0
+            && $result['skipped'] === 0
+            && $result['errorCount'] === 1);
+        $response->assertSessionHas('error', 'Import selesai dengan 1 baris gagal (0 berhasil, 0 dilewati). Lihat laporan error untuk detail.');
+        $response->assertSessionMissing('success');
+    }
+
     public function test_error_report_can_be_downloaded_once_then_is_gone(): void
     {
         $admin = $this->admin();
