@@ -1,4 +1,21 @@
 import Pagination from '@/Components/Pagination';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { EmployeeRow, PageProps, Paginated } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
@@ -55,13 +72,13 @@ export default function Index({
                                 <label className="block text-xs font-medium text-slate-500">
                                     Cari nama/NIK
                                 </label>
-                                <input
+                                <Input
                                     type="text"
                                     value={search}
                                     onChange={(e) =>
                                         setSearch(e.target.value)
                                     }
-                                    className="mt-1 rounded-md border-slate-300 text-sm shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                                    className="mt-1"
                                 />
                             </div>
 
@@ -69,77 +86,75 @@ export default function Index({
                                 <label className="block text-xs font-medium text-slate-500">
                                     Status
                                 </label>
-                                <select
-                                    value={status}
-                                    onChange={(e) =>
-                                        setStatus(e.target.value)
+                                <Select
+                                    value={status === '' ? 'semua' : status}
+                                    onValueChange={(value) =>
+                                        setStatus(
+                                            value === 'semua' ? '' : value,
+                                        )
                                     }
-                                    className="mt-1 rounded-md border-slate-300 text-sm shadow-sm focus:border-pln-blue focus:ring-pln-blue"
                                 >
-                                    <option value="">Semua</option>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="non_aktif">
-                                        Non-aktif
-                                    </option>
-                                </select>
+                                    <SelectTrigger className="mt-1 w-[160px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="semua">
+                                            Semua
+                                        </SelectItem>
+                                        <SelectItem value="aktif">
+                                            Aktif
+                                        </SelectItem>
+                                        <SelectItem value="non_aktif">
+                                            Non-aktif
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
-                            <button
-                                type="submit"
-                                className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
-                            >
-                                Terapkan
-                            </button>
+                            <Button type="submit">Terapkan</Button>
 
                             {canManage && (
                                 <div className="ml-auto flex gap-2">
-                                    <Link
-                                        href={route('employees.import.create')}
-                                        className="rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
-                                    >
-                                        Import
-                                    </Link>
-                                    <a
-                                        href={route('employees.export')}
-                                        className="rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
-                                    >
-                                        Export
-                                    </a>
-                                    <Link
-                                        href={route('employees.create')}
-                                        className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
-                                    >
-                                        Tambah Karyawan
-                                    </Link>
+                                    <Button variant="outline" asChild>
+                                        <Link
+                                            href={route(
+                                                'employees.import.create',
+                                            )}
+                                        >
+                                            Import
+                                        </Link>
+                                    </Button>
+                                    <Button variant="outline" asChild>
+                                        <a href={route('employees.export')}>
+                                            Export
+                                        </a>
+                                    </Button>
+                                    <Button asChild>
+                                        <Link
+                                            href={route('employees.create')}
+                                        >
+                                            Tambah Karyawan
+                                        </Link>
+                                    </Button>
                                 </div>
                             )}
                         </form>
 
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                    <tr>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Nama
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            NIK
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            No. Rekening
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Status
-                                        </th>
-                                        {canManage && (
-                                            <th className="px-3 py-2" />
-                                        )}
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Nama</TableHead>
+                                        <TableHead>NIK</TableHead>
+                                        <TableHead>No. Rekening</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        {canManage && <TableHead />}
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {employees.data.map((employee) => (
-                                        <tr key={employee.id}>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-900">
+                                        <TableRow key={employee.id}>
+                                            <TableCell>
                                                 <Link
                                                     href={route(
                                                         'employees.show',
@@ -149,21 +164,20 @@ export default function Index({
                                                 >
                                                     {employee.nama}
                                                 </Link>
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {employee.nik}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {employee.no_rekening}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
-                                                {employee.status ===
-                                                'aktif'
+                                            </TableCell>
+                                            <TableCell>
+                                                {employee.status === 'aktif'
                                                     ? 'Aktif'
                                                     : 'Non-aktif'}
-                                            </td>
+                                            </TableCell>
                                             {canManage && (
-                                                <td className="whitespace-nowrap px-3 py-2 text-right text-sm">
+                                                <TableCell className="text-right">
                                                     <Link
                                                         href={route(
                                                             'employees.edit',
@@ -187,12 +201,12 @@ export default function Index({
                                                             ? 'Nonaktifkan'
                                                             : 'Aktifkan'}
                                                     </button>
-                                                </td>
+                                                </TableCell>
                                             )}
-                                        </tr>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         <Pagination links={employees.links} />
