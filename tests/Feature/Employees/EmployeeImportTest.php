@@ -90,6 +90,7 @@ class EmployeeImportTest extends TestCase
         $response->assertSessionHas('employee_import_result', fn ($result) => $result['created'] === 2
             && $result['skipped'] === 0
             && $result['errorCount'] === 0);
+        $response->assertSessionHas('success', 'Import selesai: 2 berhasil, 0 dilewati, 0 gagal.');
 
         $this->assertDatabaseCount('employees', 2);
         $this->assertDatabaseHas('employees', ['nik' => '3513126804000001', 'nama' => 'Budi Santoso']);
