@@ -1,16 +1,16 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
 
 interface RenewJob {
     id: number;
     nama_pekerjaan: string;
 }
 
-export default function Renew({ job }: PageProps<{ job: RenewJob }>) {
-    const [showAssignmentNote, setShowAssignmentNote] = useState(false);
-
+export default function Renew({
+    job,
+    activePeriodId,
+}: PageProps<{ job: RenewJob; activePeriodId: number | null }>) {
     return (
         <AuthenticatedLayout
             header={
@@ -55,25 +55,20 @@ export default function Renew({ job }: PageProps<{ job: RenewJob }>) {
                         </p>
                     </Link>
 
-                    <button
-                        type="button"
-                        onClick={() => setShowAssignmentNote(true)}
-                        className="block w-full rounded-lg border border-slate-200 bg-white p-4 text-left shadow-sm hover:border-pln-blue"
-                    >
-                        <h3 className="text-sm font-semibold text-pln-navy">
-                            (c) Assignment Saja
-                        </h3>
-                        <p className="mt-1 text-sm text-slate-600">
-                            Job & No. PR tidak berubah, hanya penugasan
-                            pekerja yang berbeda.
-                        </p>
-                    </button>
-
-                    {showAssignmentNote && (
-                        <div className="rounded-lg bg-pln-blue/10 p-4 text-sm text-pln-navy">
-                            Job & Periode PR tidak berubah — kelola
-                            penugasan pekerja di modul Assignment.
-                        </div>
+                    {activePeriodId && (
+                        <Link
+                            href={route('job-periods.show', activePeriodId)}
+                            className="block rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
+                        >
+                            <h3 className="text-sm font-semibold text-pln-navy">
+                                (c) Assignment Saja
+                            </h3>
+                            <p className="mt-1 text-sm text-slate-600">
+                                Job & No. PR tidak berubah — kelola
+                                penugasan pekerja untuk periode aktif
+                                ini.
+                            </p>
+                        </Link>
                     )}
                 </div>
             </div>

@@ -116,6 +116,7 @@ class JobController extends Controller
                 'id' => $job->id,
                 'nama_pekerjaan' => $job->nama_pekerjaan,
             ],
+            'activePeriodId' => $job->activePeriod?->id,
         ]);
     }
 

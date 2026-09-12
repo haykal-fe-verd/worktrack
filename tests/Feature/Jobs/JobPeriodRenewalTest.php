@@ -66,17 +66,18 @@ class JobPeriodRenewalTest extends TestCase
         $this->actingAs($viewer)->post("/jobs/{$job->id}/periods", [])->assertForbidden();
     }
 
-    public function test_renew_picker_page_renders_for_a_job_with_an_active_period(): void
+    public function test_renew_picker_page_renders_with_active_period_id_for_scenario_c(): void
     {
         $admin = $this->admin();
         $job = Job::factory()->create(['nama_pekerjaan' => 'Mesin 2']);
-        JobPeriod::factory()->create(['job_id' => $job->id]);
+        $period = JobPeriod::factory()->create(['job_id' => $job->id]);
 
         $response = $this->actingAs($admin)->get("/jobs/{$job->id}/renew", $this->inertiaHeaders());
 
         $response->assertOk();
         $response->assertJsonPath('component', 'Jobs/Renew');
         $response->assertJsonPath('props.job.nama_pekerjaan', 'Mesin 2');
+        $response->assertJsonPath('props.activePeriodId', $period->id);
     }
 
     public function test_scenario_a_continuation_links_to_previous_period_and_closes_it(): void
