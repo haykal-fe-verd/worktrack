@@ -107,3 +107,12 @@ export interface JobPeriodDetail {
     jumlah_tk_rencana: number;
     status: JobPeriodStatus;
 }
+
+export interface EmployeeAssignmentRow {
+    id: number;
+    job_nama_pekerjaan: string;
+    no_dokumen: string;
+    tanggal_mulai: string;
+    tanggal_selesai: string | null;
+    status: AssignmentStatus;
+}

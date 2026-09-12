@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\EmployeeStatus;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Models\Assignment;
 use App\Models\Employee;
 use App\Support\Masks;
 use Illuminate\Http\RedirectResponse;
@@ -61,6 +62,34 @@ class EmployeeController extends Controller
         ]);
 
         return redirect()->route('employees.index');
+    }
+
+    public function show(Request $request, Employee $employee): Response
+    {
+        $canManage = $request->user()->hasAnyRole(['admin', 'staff_input']);
+
+        $assignments = $employee->assignments()->with('jobPeriod.job')->orderByDesc('tanggal_mulai')->get();
+
+        return Inertia::render('Employees/Show', [
+            'employee' => [
+                'id' => $employee->id,
+                'nama' => $employee->nama,
+                'nik' => $canManage ? $employee->nik : Masks::partial($employee->nik),
+                'alamat' => $employee->alamat,
+                'no_rekening' => $canManage ? $employee->no_rekening : Masks::partial($employee->no_rekening),
+                'nama_bank' => $employee->nama_bank,
+                'status' => $employee->status->value,
+            ],
+            'assignments' => $assignments->map(fn (Assignment $assignment) => [
+                'id' => $assignment->id,
+                'job_nama_pekerjaan' => $assignment->jobPeriod->job->nama_pekerjaan,
+                'no_dokumen' => $assignment->jobPeriod->no_dokumen,
+                'tanggal_mulai' => $assignment->tanggal_mulai->format('Y-m-d'),
+                'tanggal_selesai' => $assignment->tanggal_selesai?->format('Y-m-d'),
+                'status' => $assignment->status->value,
+            ])->values(),
+            'canManage' => $canManage,
+        ]);
     }
 
     public function edit(Employee $employee): Response

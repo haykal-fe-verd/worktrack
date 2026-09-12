@@ -37,14 +37,18 @@ Route::middleware('auth')->prefix('employees')->name('employees.')->group(functi
     Route::middleware('role:admin|staff_input')->group(function () {
         Route::get('/create', [EmployeeController::class, 'create'])->name('create');
         Route::post('/', [EmployeeController::class, 'store'])->name('store');
-        Route::get('/{employee}/edit', [EmployeeController::class, 'edit'])->name('edit');
-        Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
-        Route::patch('/{employee}/toggle-status', [EmployeeController::class, 'toggleStatus'])->name('toggle-status');
-
         Route::get('/import', [EmployeeImportController::class, 'create'])->name('import.create');
         Route::post('/import', [EmployeeImportController::class, 'store'])->name('import.store');
         Route::get('/import/errors', [EmployeeImportController::class, 'downloadErrors'])->name('import.errors');
         Route::get('/export', [EmployeeExportController::class, 'download'])->name('export');
+    });
+
+    Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show')->whereNumber('employee');
+
+    Route::middleware('role:admin|staff_input')->group(function () {
+        Route::get('/{employee}/edit', [EmployeeController::class, 'edit'])->name('edit');
+        Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
+        Route::patch('/{employee}/toggle-status', [EmployeeController::class, 'toggleStatus'])->name('toggle-status');
     });
 });
 

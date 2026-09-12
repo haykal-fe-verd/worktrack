@@ -140,7 +140,15 @@ export default function Index({
                                     {employees.data.map((employee) => (
                                         <tr key={employee.id}>
                                             <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-900">
-                                                {employee.nama}
+                                                <Link
+                                                    href={route(
+                                                        'employees.show',
+                                                        employee.id,
+                                                    )}
+                                                    className="text-pln-blue hover:underline"
+                                                >
+                                                    {employee.nama}
+                                                </Link>
                                             </td>
                                             <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
                                                 {employee.nik}
