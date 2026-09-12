@@ -58,7 +58,7 @@ class AssignmentController extends Controller
 
     public function edit(Assignment $assignment): Response
     {
-        abort_if(! $assignment->is_current, 404);
+        abort_if(! $assignment->is_current || $assignment->status !== AssignmentStatus::Aktif, 404);
 
         return Inertia::render('Assignments/Edit', [
             'assignment' => [
@@ -74,7 +74,7 @@ class AssignmentController extends Controller
 
     public function update(UpdateAssignmentRequest $request, Assignment $assignment): RedirectResponse
     {
-        abort_if(! $assignment->is_current, 404);
+        abort_if(! $assignment->is_current || $assignment->status !== AssignmentStatus::Aktif, 404);
 
         $data = $request->validated();
 
@@ -92,9 +92,9 @@ class AssignmentController extends Controller
                     'employee_id' => $assignment->employee_id,
                     'job_period_id' => $assignment->job_period_id,
                     'tanggal_mulai' => $data['tanggal_mulai'],
-                    'tanggal_selesai' => $data['tanggal_selesai'],
-                    'tarif_jual' => $data['tarif_jual'],
-                    'tarif_bayar' => $data['tarif_bayar'],
+                    'tanggal_selesai' => $data['tanggal_selesai'] ?? null,
+                    'tarif_jual' => $data['tarif_jual'] ?? null,
+                    'tarif_bayar' => $data['tarif_bayar'] ?? null,
                     'status' => AssignmentStatus::Aktif,
                     'is_current' => true,
                     'previous_assignment_id' => $assignment->id,
@@ -103,8 +103,8 @@ class AssignmentController extends Controller
             });
         } else {
             $assignment->update([
-                'tarif_jual' => $data['tarif_jual'],
-                'tarif_bayar' => $data['tarif_bayar'],
+                'tarif_jual' => $data['tarif_jual'] ?? null,
+                'tarif_bayar' => $data['tarif_bayar'] ?? null,
             ]);
         }
 

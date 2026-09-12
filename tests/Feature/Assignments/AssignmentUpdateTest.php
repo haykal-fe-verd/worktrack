@@ -97,4 +97,24 @@ class AssignmentUpdateTest extends TestCase
 
         $this->actingAs($admin)->get("/assignments/{$assignment->id}/edit")->assertNotFound();
     }
+
+    public function test_cannot_edit_or_update_an_ended_assignment(): void
+    {
+        $admin = $this->admin();
+        $assignment = Assignment::factory()->selesai()->create([
+            'created_by' => $admin->id,
+            'tanggal_mulai' => '2025-09-01',
+        ]);
+
+        $this->assertTrue($assignment->is_current);
+
+        $this->actingAs($admin)->get("/assignments/{$assignment->id}/edit")->assertNotFound();
+
+        $this->actingAs($admin)->put("/assignments/{$assignment->id}", [
+            'tanggal_mulai' => '2025-09-01',
+            'tanggal_selesai' => null,
+            'tarif_jual' => $assignment->tarif_jual,
+            'tarif_bayar' => $assignment->tarif_bayar,
+        ])->assertNotFound();
+    }
 }
