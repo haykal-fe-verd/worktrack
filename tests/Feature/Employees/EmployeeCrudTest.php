@@ -207,6 +207,7 @@ class EmployeeCrudTest extends TestCase
             'no_rekening' => '2222222222',
         ]);
 
+        $response->assertSessionHas('success', 'Karyawan berhasil diperbarui.');
         $response->assertRedirect(route('employees.index'));
         $employee->refresh();
         $this->assertSame('Nama Diperbarui', $employee->nama);
@@ -220,6 +221,7 @@ class EmployeeCrudTest extends TestCase
 
         $this->actingAs($admin)
             ->patch("/employees/{$employee->id}/toggle-status")
+            ->assertSessionHas('success', 'Status karyawan berhasil diperbarui.')
             ->assertRedirect(route('employees.index'));
 
         $this->assertSame('non_aktif', $employee->fresh()->status->value);
@@ -236,6 +238,7 @@ class EmployeeCrudTest extends TestCase
 
         $this->actingAs($staffInput)
             ->patch("/employees/{$employee->id}/toggle-status")
+            ->assertSessionHas('success', 'Status karyawan berhasil diperbarui.')
             ->assertRedirect(route('employees.index'));
 
         $this->assertSame('non_aktif', $employee->fresh()->status->value);
@@ -250,13 +253,14 @@ class EmployeeCrudTest extends TestCase
         $admin = $this->admin();
         $employee = Employee::factory()->nonAktif()->create();
 
-        $this->actingAs($admin)->put("/employees/{$employee->id}", [
+        $response = $this->actingAs($admin)->put("/employees/{$employee->id}", [
             'nama' => $employee->nama,
             'nik' => $employee->nik,
             'alamat' => $employee->alamat,
             'no_rekening' => $employee->no_rekening,
         ]);
 
+        $response->assertSessionHas('success', 'Karyawan berhasil diperbarui.');
         $this->assertSame('non_aktif', $employee->fresh()->status->value);
     }
 

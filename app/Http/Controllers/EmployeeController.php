@@ -110,7 +110,7 @@ class EmployeeController extends Controller
     {
         $employee->update($request->validated());
 
-        return redirect()->route('employees.index');
+        return redirect()->route('employees.index')->with('success', 'Karyawan berhasil diperbarui.');
     }
 
     public function toggleStatus(Employee $employee): RedirectResponse
@@ -121,6 +121,6 @@ class EmployeeController extends Controller
                 : EmployeeStatus::Aktif,
         ]);
 
-        return redirect()->route('employees.index');
+        return redirect()->route('employees.index')->with('success', 'Status karyawan berhasil diperbarui.');
     }
 }

@@ -1,10 +1,16 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { EmployeeDetail, PageProps } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Edit({
@@ -23,43 +29,59 @@ export default function Edit({
         put(route('employees.update', employee.id));
     };
 
+    const close = () => router.visit(route('employees.index'));
+
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-pln-navy">
-                    Edit Karyawan: {employee.nama}
+                    Data Karyawan
                 </h2>
             }
         >
             <Head title={`Edit ${employee.nama}`} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
-                        <form onSubmit={submit}>
+            <Dialog
+                open
+                onOpenChange={(open) => {
+                    if (!open) {
+                        close();
+                    }
+                }}
+            >
+                <DialogContent>
+                    <form onSubmit={submit}>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Edit Karyawan: {employee.nama}
+                            </DialogTitle>
+                        </DialogHeader>
+
+                        <div className="mt-4 space-y-4">
                             <div>
-                                <InputLabel htmlFor="nama" value="Nama" />
-                                <TextInput
+                                <Label htmlFor="nama">Nama</Label>
+                                <Input
                                     id="nama"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.nama}
                                     onChange={(e) =>
                                         setData('nama', e.target.value)
                                     }
                                     required
-                                    isFocused
+                                    autoFocus
                                 />
-                                <InputError
-                                    message={errors.nama}
-                                    className="mt-2"
-                                />
+                                {errors.nama && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.nama}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel htmlFor="nik" value="NIK" />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="nik">NIK</Label>
+                                <Input
                                     id="nik"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.nik}
                                     onChange={(e) =>
                                         setData('nik', e.target.value)
@@ -67,17 +89,15 @@ export default function Edit({
                                     maxLength={16}
                                     required
                                 />
-                                <InputError
-                                    message={errors.nik}
-                                    className="mt-2"
-                                />
+                                {errors.nik && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.nik}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="alamat"
-                                    value="Alamat"
-                                />
+                            <div>
+                                <Label htmlFor="alamat">Alamat</Label>
                                 <textarea
                                     id="alamat"
                                     className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
@@ -87,20 +107,20 @@ export default function Edit({
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.alamat}
-                                    className="mt-2"
-                                />
+                                {errors.alamat && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.alamat}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="no_rekening"
-                                    value="No. Rekening"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="no_rekening">
+                                    No. Rekening
+                                </Label>
+                                <Input
                                     id="no_rekening"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.no_rekening}
                                     onChange={(e) =>
                                         setData(
@@ -110,43 +130,48 @@ export default function Edit({
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.no_rekening}
-                                    className="mt-2"
-                                />
+                                {errors.no_rekening && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.no_rekening}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="nama_bank"
-                                    value="Nama Bank (opsional)"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="nama_bank">
+                                    Nama Bank (opsional)
+                                </Label>
+                                <Input
                                     id="nama_bank"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.nama_bank}
                                     onChange={(e) =>
-                                        setData(
-                                            'nama_bank',
-                                            e.target.value,
-                                        )
+                                        setData('nama_bank', e.target.value)
                                     }
                                 />
-                                <InputError
-                                    message={errors.nama_bank}
-                                    className="mt-2"
-                                />
+                                {errors.nama_bank && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.nama_bank}
+                                    </p>
+                                )}
                             </div>
+                        </div>
 
-                            <div className="mt-6 flex justify-end">
-                                <PrimaryButton disabled={processing}>
-                                    Simpan
-                                </PrimaryButton>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                        <DialogFooter className="mt-6">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={close}
+                            >
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                Simpan
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }
