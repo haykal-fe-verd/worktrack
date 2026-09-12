@@ -39,6 +39,12 @@ export default function Authenticated({
                                 >
                                     Karyawan
                                 </NavLink>
+                                <NavLink
+                                    href={route('jobs.index')}
+                                    active={route().current('jobs.*')}
+                                >
+                                    Job & PR
+                                </NavLink>
                                 {user.roles.includes('admin') && (
                                     <NavLink
                                         href={route('users.index')}
@@ -156,6 +162,12 @@ export default function Authenticated({
                             active={route().current('employees.*')}
                         >
                             Karyawan
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('jobs.index')}
+                            active={route().current('jobs.*')}
+                        >
+                            Job & PR
                         </ResponsiveNavLink>
                         {user.roles.includes('admin') && (
                             <ResponsiveNavLink

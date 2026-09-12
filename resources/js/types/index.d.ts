@@ -49,3 +49,36 @@ export interface EmployeeDetail {
     nama_bank: string | null;
     status: EmployeeStatus;
 }
+
+export type JobStatus = 'aktif' | 'selesai';
+export type JobPeriodStatus = 'aktif' | 'berakhir' | 'diperbarui';
+export type DocumentType = 'PR' | 'PO' | 'DO' | 'WO';
+
+export interface JobRow {
+    id: number;
+    nama_pekerjaan: string;
+    klien: string | null;
+    lokasi: string | null;
+    status: JobStatus;
+    periods_count: number;
+}
+
+export interface JobDetail {
+    id: number;
+    nama_pekerjaan: string;
+    lokasi: string | null;
+    klien: string | null;
+    status: JobStatus;
+}
+
+export interface JobPeriodRow {
+    id: number;
+    jenis_dokumen: DocumentType;
+    no_dokumen: string;
+    kode_po: string | null;
+    nilai_po: number;
+    tanggal_mulai: string;
+    tanggal_selesai: string | null;
+    jumlah_tk_rencana: number;
+    status: JobPeriodStatus;
+}
