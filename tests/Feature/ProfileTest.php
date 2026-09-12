@@ -34,6 +34,7 @@ class ProfileTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
+            ->assertSessionHas('success', 'Profil berhasil diperbarui.')
             ->assertRedirect('/profile');
 
         $user->refresh();
@@ -73,6 +74,7 @@ class ProfileTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
+            ->assertSessionHas('success', 'Akun berhasil dihapus.')
             ->assertRedirect('/');
 
         $this->assertGuest();
