@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Assignment;
 use App\Models\Employee;
 use App\Models\Job;
 use App\Models\User;
@@ -68,6 +69,23 @@ class DashboardTest extends TestCase
 
         $response->assertInertia(fn (Assert $page) => $page
             ->where('jobCount', 2)
+        );
+    }
+
+    public function test_dashboard_shows_active_assignment_count(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        Assignment::factory()->count(2)->create(['created_by' => $admin->id]);
+        Assignment::factory()->selesai()->create(['created_by' => $admin->id]);
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('assignmentCount', 2)
         );
     }
 }

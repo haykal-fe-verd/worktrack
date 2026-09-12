@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AssignmentStatus;
 use App\Enums\JobStatus;
 use App\Enums\Role;
+use App\Models\Assignment;
 use App\Models\Employee;
 use App\Models\Job;
 use App\Models\User;
@@ -20,6 +22,9 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'employeeCount' => Employee::count(),
             'jobCount' => Job::where('status', JobStatus::Aktif)->count(),
+            'assignmentCount' => Assignment::where('is_current', true)
+                ->where('status', AssignmentStatus::Aktif)
+                ->count(),
             'roleCounts' => [
                 'admin' => User::role(Role::Admin->value)->count(),
                 'staff_input' => User::role(Role::StaffInput->value)->count(),

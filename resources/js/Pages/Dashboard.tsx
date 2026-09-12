@@ -14,10 +14,12 @@ export default function Dashboard({
     roleCounts,
     employeeCount,
     jobCount,
+    assignmentCount,
 }: PageProps<{
     roleCounts: RoleCounts;
     employeeCount: number;
     jobCount: number;
+    assignmentCount: number;
 }>) {
     return (
         <AuthenticatedLayout
@@ -68,13 +70,9 @@ export default function Dashboard({
                             </div>
                         </BentoCard>
 
-                        <BentoCard
-                            title="Assignment"
-                            accent="yellow"
-                            badge="Segera Hadir"
-                        >
-                            <div className="text-2xl font-bold text-pln-navy/30">
-                                —
+                        <BentoCard title="Assignment" accent="yellow">
+                            <div className="text-2xl font-bold text-pln-navy">
+                                {assignmentCount}
                             </div>
                         </BentoCard>
 
