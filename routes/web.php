@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExportController;
@@ -71,6 +72,11 @@ Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
 
 Route::middleware('auth')->prefix('job-periods')->name('job-periods.')->group(function () {
     Route::get('/{jobPeriod}', [JobPeriodController::class, 'show'])->name('show')->whereNumber('jobPeriod');
+
+    Route::middleware('role:admin|staff_input')->group(function () {
+        Route::get('/{jobPeriod}/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
+        Route::post('/{jobPeriod}/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
+    });
 });
 
 require __DIR__.'/auth.php';

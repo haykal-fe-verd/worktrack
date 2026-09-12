@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { AssignmentRow, JobPeriodDetail, PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function Show({
     jobPeriod,
@@ -62,6 +62,20 @@ export default function Show({
                                 </dd>
                             </div>
                         </dl>
+
+                        {canManage && (
+                            <div className="mt-4">
+                                <Link
+                                    href={route(
+                                        'job-periods.assignments.create',
+                                        jobPeriod.id,
+                                    )}
+                                    className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
+                                >
+                                    Assign Karyawan
+                                </Link>
+                            </div>
+                        )}
 
                         {warningJumlahTk && (
                             <div className="mt-4 rounded-lg bg-pln-yellow/20 p-3 text-sm text-pln-navy">
