@@ -69,4 +69,8 @@ Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
     });
 });
 
+Route::middleware('auth')->prefix('job-periods')->name('job-periods.')->group(function () {
+    Route::get('/{jobPeriod}', [JobPeriodController::class, 'show'])->name('show')->whereNumber('jobPeriod');
+});
+
 require __DIR__.'/auth.php';

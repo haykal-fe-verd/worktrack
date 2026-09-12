@@ -82,3 +82,28 @@ export interface JobPeriodRow {
     jumlah_tk_rencana: number;
     status: JobPeriodStatus;
 }
+
+export type AssignmentStatus = 'aktif' | 'selesai' | 'diperbarui';
+
+export interface AssignmentRow {
+    id: number;
+    employee_nama: string;
+    tanggal_mulai: string;
+    tanggal_selesai: string | null;
+    status: AssignmentStatus;
+    is_current: boolean;
+    tarif_jual: string | null;
+    tarif_bayar: string | null;
+}
+
+export interface JobPeriodDetail {
+    id: number;
+    job_id: number;
+    job_nama_pekerjaan: string;
+    jenis_dokumen: DocumentType;
+    no_dokumen: string;
+    tanggal_mulai: string;
+    tanggal_selesai: string | null;
+    jumlah_tk_rencana: number;
+    status: JobPeriodStatus;
+}

@@ -102,6 +102,9 @@ export default function Show({
                                         <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
                                             Status
                                         </th>
+                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                            Aksi
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
@@ -126,6 +129,17 @@ export default function Show({
                                             </td>
                                             <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
                                                 {period.status}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                                <Link
+                                                    href={route(
+                                                        'job-periods.show',
+                                                        period.id,
+                                                    )}
+                                                    className="text-pln-blue hover:underline"
+                                                >
+                                                    Detail
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))}
