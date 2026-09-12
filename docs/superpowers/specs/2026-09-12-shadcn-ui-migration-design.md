@@ -23,13 +23,13 @@ Bergantung pada: Semua modul yang sudah ada (Auth, Employee, Job, Users) — mig
 
 Migrasi ini dipecah menjadi 5 sub-project berurutan (masing-masing dapat spec & plan sendiri saat gilirannya tiba):
 
-1. **Setup shadcn + Layout & Auth** (dispesifikasikan penuh di dokumen ini) — install & konfigurasi shadcn, tema warna PLN, komponen dasar, infrastruktur toast, migrasi `AuthenticatedLayout`/`GuestLayout`/nav, halaman Auth (Login, ForgotPassword, ResetPassword, ConfirmPassword, VerifyEmail), Profile.
-2. **Dashboard** — `BentoCard` di atas shadcn `Card`, tetap konsep bento-grid, tambah toast kalau relevan.
-3. **Employee** — Index, Create/Edit/Show jadi Dialog, Import jadi Sheet, toast di setiap aksi.
-4. **Job** — Index, Create/Show(+riwayat periode) jadi Dialog besar, alur Perbarui PR (3 skenario) jadi Dialog bertingkat, Import jadi Sheet, toast di setiap aksi.
+1. **Setup shadcn + Layout & Auth** (dispesifikasikan penuh di dokumen ini) — install & konfigurasi shadcn, tema warna PLN, komponen dasar, infrastruktur toast, migrasi `AuthenticatedLayout`/`GuestLayout`/nav, halaman Auth (Login, ForgotPassword, ResetPassword, ConfirmPassword, VerifyEmail), Profile. ✅ Selesai.
+2. **Dashboard** — `BentoCard` di atas shadcn `Card`, tetap konsep bento-grid, tambah toast kalau relevan. ✅ Selesai.
+3. **Employee** — Index, Create/Edit/Show jadi Dialog, Import jadi Sheet, toast di setiap aksi. ✅ Selesai.
+4. **Job & Assignment** — Index, Create/Show(+riwayat periode) jadi Dialog besar, alur Perbarui PR (3 skenario) jadi Dialog bertingkat, Import jadi Sheet; **plus** `JobPeriods/Show.tsx` (hub Assignment, jadi Dialog besar) dan `Assignments/Create.tsx`/`Edit.tsx`/`End.tsx` (jadi Dialog) — digabung ke sini (bukan sub-project terpisah) karena alur navigasinya menyatu langsung (Job → JobPeriod → Assignment); toast di setiap aksi.
 5. **Users management** — Index, Create/Edit jadi Dialog, toast di setiap aksi.
 
-(Assignment module dibangun **setelah** sub-project 5 selesai, langsung memakai shadcn — tidak ada migrasi ulang untuk Assignment.)
+**Catatan revisi (13 Sept 2026):** modul Assignment (spec [2026-09-12-assignment-design.md](2026-09-12-assignment-design.md)) sudah dibangun sebelum sub-project 5 selesai — lebih cepat dari asumsi awal dokumen ini — sehingga halaman-halamannya (`Assignments/*.tsx`, `JobPeriods/Show.tsx`) masih memakai komponen Breeze lama. Keputusan: gabungkan migrasinya ke sub-project 4 (bukan sub-project ke-6 terpisah) supaya satu rangkaian navigasi Job→JobPeriod→Assignment konsisten secara visual sekaligus.
 
 Sub-project 2-5 didetailkan lewat siklus brainstorming masing-masing saat gilirannya tiba (pola sama seperti modul-modul sebelumnya). Dokumen ini fokus ke sub-project 1.
 
