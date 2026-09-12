@@ -25,7 +25,7 @@ export default function Authenticated({
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Toaster richColors position="top-right" />
+            <Toaster richColors position="top-right" theme="light" />
 
             <nav className="border-b border-slate-200 bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -72,7 +72,7 @@ export default function Authenticated({
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="rounded-full border-transparent bg-pln-yellow/20 text-pln-navy hover:bg-pln-yellow/30"
+                                        className="rounded-full border-transparent bg-pln-yellow/20 text-pln-navy hover:bg-pln-yellow/30 hover:text-pln-navy"
                                     >
                                         {user.name}
                                     </Button>

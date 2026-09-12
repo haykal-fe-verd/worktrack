@@ -9,7 +9,7 @@ export default function Guest({ children }: PropsWithChildren) {
 
     return (
         <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-pln-blue/10 to-slate-50 pt-6 sm:justify-center sm:pt-0">
-            <Toaster richColors position="top-right" />
+            <Toaster richColors position="top-right" theme="light" />
 
             <div>
                 <Link href="/">

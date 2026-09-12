@@ -2,6 +2,7 @@ import { Button } from '@/Components/ui/button';
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -88,12 +89,12 @@ export default function DeleteUserForm({
                             </DialogTitle>
                         </DialogHeader>
 
-                        <p className="mt-1 text-sm text-gray-600">
+                        <DialogDescription className="mt-1 text-sm text-gray-600">
                             Once your account is deleted, all of its resources
                             and data will be permanently deleted. Please enter
                             your password to confirm you would like to
                             permanently delete your account.
-                        </p>
+                        </DialogDescription>
 
                         <div className="mt-6">
                             <Label htmlFor="password" className="sr-only">
