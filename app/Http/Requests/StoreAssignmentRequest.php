@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\AssignmentStatus;
 use App\Enums\EmployeeStatus;
 use App\Models\Assignment;
 use App\Models\Employee;
@@ -56,6 +57,7 @@ class StoreAssignmentRequest extends FormRequest
             if ($jobPeriod && Assignment::where('employee_id', $employeeId)
                 ->where('job_period_id', $jobPeriod->id)
                 ->where('is_current', true)
+                ->where('status', AssignmentStatus::Aktif)
                 ->exists()) {
                 $validator->errors()->add('employee_id', 'Karyawan ini sudah punya penugasan aktif pada periode ini.');
             }
