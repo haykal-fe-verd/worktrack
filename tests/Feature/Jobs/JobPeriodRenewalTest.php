@@ -23,6 +23,15 @@ class JobPeriodRenewalTest extends TestCase
         return $user;
     }
 
+    private function staffInput(): User
+    {
+        $this->seed(RoleSeeder::class);
+        $user = User::factory()->create();
+        $user->assignRole('staff_input');
+
+        return $user;
+    }
+
     private function viewer(): User
     {
         $this->seed(RoleSeeder::class);
@@ -123,5 +132,25 @@ class JobPeriodRenewalTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('no_dokumen');
+    }
+
+    public function test_staff_input_can_access_the_renew_picker_and_submit_a_continuation(): void
+    {
+        $staffInput = $this->staffInput();
+        $job = Job::factory()->create();
+        $oldPeriod = JobPeriod::factory()->create(['job_id' => $job->id, 'no_dokumen' => 'staff-input-old']);
+
+        $this->actingAs($staffInput)->get("/jobs/{$job->id}/renew")->assertOk();
+
+        $response = $this->actingAs($staffInput)->post("/jobs/{$job->id}/periods", [
+            'jenis_dokumen' => 'PR',
+            'no_dokumen' => 'staff-input-new',
+            'nilai_po' => 1000000,
+            'tanggal_mulai' => '2025-09-01',
+            'jumlah_tk_rencana' => 5,
+        ]);
+
+        $response->assertRedirect(route('jobs.show', $job));
+        $this->assertSame($oldPeriod->id, JobPeriod::where('no_dokumen', 'staff-input-new')->firstOrFail()->previous_period_id);
     }
 }

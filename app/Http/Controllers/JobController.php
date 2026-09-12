@@ -9,6 +9,7 @@ use App\Models\Job;
 use App\Models\JobPeriod;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -56,24 +57,26 @@ class JobController extends Controller
 
     public function store(StoreJobRequest $request): RedirectResponse
     {
-        $job = Job::create([
-            'nama_pekerjaan' => $request->validated('nama_pekerjaan'),
-            'lokasi' => $request->validated('lokasi'),
-            'klien' => $request->validated('klien'),
-            'status' => JobStatus::Aktif,
-        ]);
+        DB::transaction(function () use ($request) {
+            $job = Job::create([
+                'nama_pekerjaan' => $request->validated('nama_pekerjaan'),
+                'lokasi' => $request->validated('lokasi'),
+                'klien' => $request->validated('klien'),
+                'status' => JobStatus::Aktif,
+            ]);
 
-        $job->periods()->create([
-            'jenis_dokumen' => $request->validated('jenis_dokumen'),
-            'no_dokumen' => $request->validated('no_dokumen'),
-            'kode_po' => $request->validated('kode_po'),
-            'nilai_po' => $request->validated('nilai_po'),
-            'tanggal_mulai' => $request->validated('tanggal_mulai'),
-            'tanggal_selesai' => $request->validated('tanggal_selesai'),
-            'jumlah_tk_rencana' => $request->validated('jumlah_tk_rencana'),
-            'keterangan' => $request->validated('keterangan'),
-            'status' => JobPeriodStatus::Aktif,
-        ]);
+            $job->periods()->create([
+                'jenis_dokumen' => $request->validated('jenis_dokumen'),
+                'no_dokumen' => $request->validated('no_dokumen'),
+                'kode_po' => $request->validated('kode_po'),
+                'nilai_po' => $request->validated('nilai_po'),
+                'tanggal_mulai' => $request->validated('tanggal_mulai'),
+                'tanggal_selesai' => $request->validated('tanggal_selesai'),
+                'jumlah_tk_rencana' => $request->validated('jumlah_tk_rencana'),
+                'keterangan' => $request->validated('keterangan'),
+                'status' => JobPeriodStatus::Aktif,
+            ]);
+        });
 
         return redirect()->route('jobs.index');
     }
@@ -101,7 +104,7 @@ class JobController extends Controller
                 'jumlah_tk_rencana' => $period->jumlah_tk_rencana,
                 'status' => $period->status->value,
             ])->values(),
-            'hasActivePeriod' => $job->periods()->where('status', JobPeriodStatus::Aktif)->exists(),
+            'hasActivePeriod' => $job->activePeriod()->exists(),
             'canManage' => $request->user()->hasAnyRole(['admin', 'staff_input']),
         ]);
     }

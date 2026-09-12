@@ -25,6 +25,15 @@ class JobImportTest extends TestCase
         return $user;
     }
 
+    private function staffInput(): User
+    {
+        $this->seed(RoleSeeder::class);
+        $user = User::factory()->create();
+        $user->assignRole('staff_input');
+
+        return $user;
+    }
+
     private function viewer(): User
     {
         $this->seed(RoleSeeder::class);
@@ -61,6 +70,11 @@ class JobImportTest extends TestCase
     public function test_viewer_cannot_access_import(): void
     {
         $this->actingAs($this->viewer())->get('/jobs/import')->assertForbidden();
+    }
+
+    public function test_staff_input_can_access_import(): void
+    {
+        $this->actingAs($this->staffInput())->get('/jobs/import')->assertOk();
     }
 
     public function test_valid_rows_are_imported_as_independent_jobs(): void

@@ -59,7 +59,7 @@ Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
         Route::get('/export', [JobExportController::class, 'download'])->name('export');
     });
 
-    Route::get('/{job}', [JobController::class, 'show'])->name('show');
+    Route::get('/{job}', [JobController::class, 'show'])->name('show')->whereNumber('job');
 
     Route::middleware('role:admin|staff_input')->group(function () {
         Route::patch('/{job}/toggle-status', [JobController::class, 'toggleStatus'])->name('toggle-status');

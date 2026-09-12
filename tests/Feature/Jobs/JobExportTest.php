@@ -35,4 +35,25 @@ class JobExportTest extends TestCase
             ->assertOk()
             ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     }
+
+    private function staffInput(): User
+    {
+        $this->seed(RoleSeeder::class);
+        $user = User::factory()->create();
+        $user->assignRole('staff_input');
+
+        return $user;
+    }
+
+    public function test_staff_input_can_export(): void
+    {
+        $staffInput = $this->staffInput();
+        $job = Job::factory()->create();
+        JobPeriod::factory()->create(['job_id' => $job->id]);
+
+        $this->actingAs($staffInput)
+            ->get('/jobs/export')
+            ->assertOk()
+            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
 }
