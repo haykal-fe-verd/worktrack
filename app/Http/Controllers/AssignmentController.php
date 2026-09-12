@@ -6,10 +6,12 @@ use App\Enums\AssignmentStatus;
 use App\Enums\EmployeeStatus;
 use App\Enums\JobPeriodStatus;
 use App\Http\Requests\StoreAssignmentRequest;
+use App\Http\Requests\UpdateAssignmentRequest;
 use App\Models\Assignment;
 use App\Models\Employee;
 use App\Models\JobPeriod;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,5 +53,60 @@ class AssignmentController extends Controller
         ]);
 
         return redirect()->route('job-periods.show', $jobPeriod);
+    }
+
+    public function edit(Assignment $assignment): Response
+    {
+        abort_if(! $assignment->is_current, 404);
+
+        return Inertia::render('Assignments/Edit', [
+            'assignment' => [
+                'id' => $assignment->id,
+                'employee_nama' => $assignment->employee->nama,
+                'tanggal_mulai' => $assignment->tanggal_mulai->format('Y-m-d'),
+                'tanggal_selesai' => $assignment->tanggal_selesai?->format('Y-m-d'),
+                'tarif_jual' => $assignment->tarif_jual,
+                'tarif_bayar' => $assignment->tarif_bayar,
+            ],
+        ]);
+    }
+
+    public function update(UpdateAssignmentRequest $request, Assignment $assignment): RedirectResponse
+    {
+        abort_if(! $assignment->is_current, 404);
+
+        $data = $request->validated();
+
+        $dateChanged = $data['tanggal_mulai'] !== $assignment->tanggal_mulai->format('Y-m-d')
+            || ($data['tanggal_selesai'] ?? null) !== $assignment->tanggal_selesai?->format('Y-m-d');
+
+        if ($dateChanged) {
+            DB::transaction(function () use ($data, $assignment, $request) {
+                $assignment->update([
+                    'status' => AssignmentStatus::Diperbarui,
+                    'is_current' => false,
+                ]);
+
+                Assignment::create([
+                    'employee_id' => $assignment->employee_id,
+                    'job_period_id' => $assignment->job_period_id,
+                    'tanggal_mulai' => $data['tanggal_mulai'],
+                    'tanggal_selesai' => $data['tanggal_selesai'],
+                    'tarif_jual' => $data['tarif_jual'],
+                    'tarif_bayar' => $data['tarif_bayar'],
+                    'status' => AssignmentStatus::Aktif,
+                    'is_current' => true,
+                    'previous_assignment_id' => $assignment->id,
+                    'created_by' => $request->user()->id,
+                ]);
+            });
+        } else {
+            $assignment->update([
+                'tarif_jual' => $data['tarif_jual'],
+                'tarif_bayar' => $data['tarif_bayar'],
+            ]);
+        }
+
+        return redirect()->route('job-periods.show', $assignment->job_period_id);
     }
 }

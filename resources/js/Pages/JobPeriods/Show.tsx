@@ -104,6 +104,9 @@ export default function Show({
                                         <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
                                             Status
                                         </th>
+                                        {canManage && (
+                                            <th className="px-3 py-2" />
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
@@ -121,6 +124,22 @@ export default function Show({
                                             <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
                                                 {assignment.status}
                                             </td>
+                                            {canManage &&
+                                                (assignment.is_current ? (
+                                                    <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                                        <Link
+                                                            href={route(
+                                                                'assignments.edit',
+                                                                assignment.id,
+                                                            )}
+                                                            className="text-pln-blue hover:underline"
+                                                        >
+                                                            Edit
+                                                        </Link>
+                                                    </td>
+                                                ) : (
+                                                    <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500" />
+                                                ))}
                                         </tr>
                                     ))}
                                 </tbody>

@@ -79,4 +79,9 @@ Route::middleware('auth')->prefix('job-periods')->name('job-periods.')->group(fu
     });
 });
 
+Route::middleware(['auth', 'role:admin|staff_input'])->prefix('assignments')->name('assignments.')->group(function () {
+    Route::get('/{assignment}/edit', [AssignmentController::class, 'edit'])->name('edit');
+    Route::put('/{assignment}', [AssignmentController::class, 'update'])->name('update');
+});
+
 require __DIR__.'/auth.php';
