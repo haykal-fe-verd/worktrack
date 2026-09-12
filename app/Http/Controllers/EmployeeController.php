@@ -68,7 +68,7 @@ class EmployeeController extends Controller
     {
         $canManage = $request->user()->hasAnyRole(['admin', 'staff_input']);
 
-        $assignments = $employee->assignments()->with('jobPeriod.job')->orderByDesc('tanggal_mulai')->get();
+        $assignments = $employee->assignments()->with('jobPeriod.job')->orderByDesc('tanggal_mulai')->orderByDesc('id')->get();
 
         return Inertia::render('Employees/Show', [
             'employee' => [
@@ -88,7 +88,6 @@ class EmployeeController extends Controller
                 'tanggal_selesai' => $assignment->tanggal_selesai?->format('Y-m-d'),
                 'status' => $assignment->status->value,
             ])->values(),
-            'canManage' => $canManage,
         ]);
     }
 

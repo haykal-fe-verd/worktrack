@@ -50,7 +50,7 @@ class JobPeriodController extends Controller
     {
         $canManage = $request->user()->hasAnyRole(['admin', 'staff_input']);
 
-        $assignments = $jobPeriod->assignments()->with('employee')->orderByDesc('tanggal_mulai')->get();
+        $assignments = $jobPeriod->assignments()->with('employee')->orderByDesc('tanggal_mulai')->orderByDesc('id')->get();
         $activeCount = $assignments->where('is_current', true)->where('status', AssignmentStatus::Aktif)->count();
 
         return Inertia::render('JobPeriods/Show', [

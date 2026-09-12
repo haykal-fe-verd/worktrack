@@ -8,7 +8,6 @@ export default function Show({
 }: PageProps<{
     employee: EmployeeDetail;
     assignments: EmployeeAssignmentRow[];
-    canManage: boolean;
 }>) {
     return (
         <AuthenticatedLayout

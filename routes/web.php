@@ -84,10 +84,10 @@ Route::middleware('auth')->prefix('job-periods')->name('job-periods.')->group(fu
 });
 
 Route::middleware(['auth', 'role:admin|staff_input'])->prefix('assignments')->name('assignments.')->group(function () {
-    Route::get('/{assignment}/edit', [AssignmentController::class, 'edit'])->name('edit');
-    Route::put('/{assignment}', [AssignmentController::class, 'update'])->name('update');
-    Route::get('/{assignment}/end', [AssignmentController::class, 'endForm'])->name('end.form');
-    Route::patch('/{assignment}/end', [AssignmentController::class, 'end'])->name('end');
+    Route::get('/{assignment}/edit', [AssignmentController::class, 'edit'])->name('edit')->whereNumber('assignment');
+    Route::put('/{assignment}', [AssignmentController::class, 'update'])->name('update')->whereNumber('assignment');
+    Route::get('/{assignment}/end', [AssignmentController::class, 'endForm'])->name('end.form')->whereNumber('assignment');
+    Route::patch('/{assignment}/end', [AssignmentController::class, 'end'])->name('end')->whereNumber('assignment');
 });
 
 require __DIR__.'/auth.php';
