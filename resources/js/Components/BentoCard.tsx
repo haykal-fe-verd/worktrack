@@ -1,3 +1,5 @@
+import { Card } from '@/Components/ui/card';
+import { cn } from '@/lib/utils';
 import { PropsWithChildren } from 'react';
 
 type Accent = 'blue' | 'yellow' | 'white';
@@ -14,12 +16,12 @@ const ACCENTS: Record<
     { card: string; label: string; badge: string }
 > = {
     blue: {
-        card: 'bg-pln-blue text-white',
+        card: 'border-none bg-pln-blue text-white',
         label: 'text-white/80',
         badge: 'bg-white/20 text-white',
     },
     yellow: {
-        card: 'bg-pln-yellow text-pln-navy',
+        card: 'border-none bg-pln-yellow text-pln-navy',
         label: 'text-pln-navy/70',
         badge: 'bg-pln-navy/10 text-pln-navy',
     },
@@ -40,11 +42,18 @@ export default function BentoCard({
     const style = ACCENTS[accent];
 
     return (
-        <div
-            className={`flex flex-col justify-between rounded-2xl p-5 shadow-sm ${style.card} ${className}`}
+        <Card
+            className={cn(
+                'flex flex-col justify-between rounded-2xl p-5 shadow-sm',
+                style.card,
+                className,
+            )}
         >
             <span
-                className={`text-xs font-medium uppercase tracking-wide ${style.label}`}
+                className={cn(
+                    'text-xs font-medium uppercase tracking-wide',
+                    style.label,
+                )}
             >
                 {title}
             </span>
@@ -53,11 +62,14 @@ export default function BentoCard({
 
             {badge && (
                 <span
-                    className={`mt-3 inline-block w-fit rounded-full px-2 py-0.5 text-[10px] font-semibold ${style.badge}`}
+                    className={cn(
+                        'mt-3 inline-block w-fit rounded-full px-2 py-0.5 text-[10px] font-semibold',
+                        style.badge,
+                    )}
                 >
                     {badge}
                 </span>
             )}
-        </div>
+        </Card>
     );
 }
