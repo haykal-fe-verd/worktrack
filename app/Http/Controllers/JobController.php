@@ -112,6 +112,6 @@ class JobController extends Controller
             'status' => $job->status === JobStatus::Aktif ? JobStatus::Selesai : JobStatus::Aktif,
         ]);
 
-        return redirect()->route('jobs.index');
+        return redirect()->route('jobs.show', $job);
     }
 }
