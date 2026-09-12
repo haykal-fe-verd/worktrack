@@ -106,6 +106,16 @@ class JobController extends Controller
         ]);
     }
 
+    public function renew(Job $job): Response
+    {
+        return Inertia::render('Jobs/Renew', [
+            'job' => [
+                'id' => $job->id,
+                'nama_pekerjaan' => $job->nama_pekerjaan,
+            ],
+        ]);
+    }
+
     public function toggleStatus(Job $job): RedirectResponse
     {
         $job->update([

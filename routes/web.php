@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExportController;
 use App\Http\Controllers\EmployeeImportController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobPeriodController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,9 @@ Route::middleware('auth')->prefix('jobs')->name('jobs.')->group(function () {
 
     Route::middleware('role:admin|staff_input')->group(function () {
         Route::patch('/{job}/toggle-status', [JobController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/{job}/renew', [JobController::class, 'renew'])->name('renew');
+        Route::get('/{job}/periods/create', [JobPeriodController::class, 'create'])->name('periods.create');
+        Route::post('/{job}/periods', [JobPeriodController::class, 'store'])->name('periods.store');
     });
 });
 
