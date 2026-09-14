@@ -65,7 +65,8 @@ class AttendanceRecapExport implements FromCollection, WithHeadings
             'hadir' => 'Hadir',
             'tidak_hadir' => 'Tidak Hadir',
             'izin' => 'Izin',
-            default => 'Belum Diisi',
+            'belum_diisi' => 'Belum Diisi',
+            default => '',
         };
     }
 }

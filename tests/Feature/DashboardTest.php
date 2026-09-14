@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\AssignmentStatus;
+use App\Enums\JobPeriodStatus;
 use App\Models\Assignment;
 use App\Models\Attendance;
 use App\Models\Employee;
@@ -94,6 +96,11 @@ class DashboardTest extends TestCase
 
     public function test_dashboard_shows_belum_diisi_count_for_the_current_week(): void
     {
+        // Freeze "today" to mid-week so both days of the assignment below
+        // (Monday and Tuesday) are in the past relative to "today" — the
+        // dashboard's belum-diisi count never counts days after today.
+        Carbon::setTestNow('2025-09-03');
+
         $this->seed(RoleSeeder::class);
 
         $admin = User::factory()->create();
@@ -122,5 +129,53 @@ class DashboardTest extends TestCase
         $response->assertInertia(fn (Assert $page) => $page
             ->where('belumDiisiCount', 1)
         );
+
+        Carbon::setTestNow();
+    }
+
+    public function test_belum_diisi_count_excludes_assignments_that_cannot_be_filled_from_input_absensi(): void
+    {
+        // Freeze "today" to mid-week so both days of each assignment below
+        // are in the past relative to "today".
+        Carbon::setTestNow('2025-09-03');
+
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $weekStart = now()->startOfWeek(Carbon::MONDAY);
+
+        // Superseded assignment (is_current = false, Diperbarui) under an
+        // active JobPeriod: this can never be filled from Input Absensi
+        // (AttendanceController::input only queries is_current assignments).
+        $supersededPeriod = JobPeriod::factory()->create(['status' => JobPeriodStatus::Aktif]);
+        Assignment::factory()->create([
+            'job_period_id' => $supersededPeriod->id,
+            'tanggal_mulai' => $weekStart->format('Y-m-d'),
+            'tanggal_selesai' => $weekStart->copy()->addDays(1)->format('Y-m-d'),
+            'status' => AssignmentStatus::Diperbarui,
+            'is_current' => false,
+            'created_by' => $admin->id,
+        ]);
+
+        // Eligible assignment: is_current, Aktif, under an active JobPeriod.
+        $activePeriod = JobPeriod::factory()->create(['status' => JobPeriodStatus::Aktif]);
+        Assignment::factory()->create([
+            'job_period_id' => $activePeriod->id,
+            'tanggal_mulai' => $weekStart->format('Y-m-d'),
+            'tanggal_selesai' => $weekStart->copy()->addDays(1)->format('Y-m-d'),
+            'status' => AssignmentStatus::Aktif,
+            'is_current' => true,
+            'created_by' => $admin->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('belumDiisiCount', 2)
+        );
+
+        Carbon::setTestNow();
     }
 }

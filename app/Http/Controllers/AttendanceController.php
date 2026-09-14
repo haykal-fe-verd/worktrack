@@ -18,6 +18,10 @@ class AttendanceController extends Controller
 {
     public function input(Request $request): Response
     {
+        $request->validate([
+            'week_start' => ['sometimes', 'date'],
+        ]);
+
         $jobs = Job::where('status', JobStatus::Aktif)
             ->orderBy('nama_pekerjaan')
             ->get(['id', 'nama_pekerjaan']);

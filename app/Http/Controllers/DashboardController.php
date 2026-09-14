@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $weekStart = now()->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
         $weekEnd = now()->endOfWeek(Carbon::SUNDAY)->format('Y-m-d');
 
-        $belumDiisiCount = AttendanceRecap::build($weekStart, $weekEnd)
+        $belumDiisiCount = AttendanceRecap::build($weekStart, $weekEnd, null, true)
             ->sum(fn (array $row) => collect($row['days'])->filter(fn (string $status) => $status === 'belum_diisi')->count());
 
         return Inertia::render('Dashboard', [

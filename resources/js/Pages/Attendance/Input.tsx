@@ -66,10 +66,17 @@ function AttendanceCellButton({
             {
                 preserveScroll: true,
                 preserveState: true,
-                only: ['rows'],
+                only: ['rows', 'flash', 'errors'],
+                onSuccess: () => {
+                    setOpen(false);
+                },
+                onError: () => {
+                    // Keep the popover open so the user can see the
+                    // validation error (surfaced via the flash/errors
+                    // props) and retry instead of losing their input.
+                },
                 onFinish: () => {
                     setProcessing(false);
-                    setOpen(false);
                 },
             },
         );

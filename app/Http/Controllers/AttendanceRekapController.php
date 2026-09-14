@@ -7,6 +7,7 @@ use App\Models\Job;
 use App\Support\AttendanceRecap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,6 +17,8 @@ class AttendanceRekapController extends Controller
 {
     public function index(Request $request): Response
     {
+        $this->validateFilters($request);
+
         [$dateFrom, $dateTo, $jobId] = $this->resolveFilters($request);
 
         $rows = AttendanceRecap::build($dateFrom, $dateTo, $jobId);
@@ -36,6 +39,8 @@ class AttendanceRekapController extends Controller
 
     public function export(Request $request): BinaryFileResponse
     {
+        $this->validateFilters($request);
+
         [$dateFrom, $dateTo, $jobId] = $this->resolveFilters($request);
 
         $rows = AttendanceRecap::build($dateFrom, $dateTo, $jobId);
@@ -45,6 +50,32 @@ class AttendanceRekapController extends Controller
             new AttendanceRecapExport($rows, $dateKeys),
             'rekap-absensi-mingguan.xlsx'
         );
+    }
+
+    /**
+     * Validate the optional date_from/date_to/job_id query parameters.
+     *
+     * Only validates when the parameters are present, since both routes
+     * fall back to the current week when they're omitted entirely.
+     */
+    private function validateFilters(Request $request): void
+    {
+        $request->validate([
+            'date_from' => ['sometimes', 'date'],
+            'date_to' => ['sometimes', 'date', 'after_or_equal:date_from'],
+            'job_id' => ['sometimes', 'nullable', 'integer', 'exists:client_jobs,id'],
+        ]);
+
+        if ($request->filled('date_from') && $request->filled('date_to')) {
+            $span = Carbon::parse($request->query('date_from'))
+                ->diffInDays(Carbon::parse($request->query('date_to')));
+
+            if ($span > 366) {
+                throw ValidationException::withMessages([
+                    'date_to' => 'Rentang tanggal tidak boleh lebih dari 366 hari.',
+                ]);
+            }
+        }
     }
 
     /**
