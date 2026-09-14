@@ -1,3 +1,12 @@
+import { Button } from '@/Components/ui/button';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps, RoleName } from '@/types';
 import { Head, Link } from '@inertiajs/react';
@@ -24,43 +33,36 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white p-6 shadow-sm sm:rounded-lg">
                         <div className="mb-4 flex justify-end">
-                            <Link
-                                href={route('users.create')}
-                                className="rounded-md border border-transparent bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
-                            >
-                                Tambah User
-                            </Link>
+                            <Button asChild>
+                                <Link href={route('users.create')}>
+                                    Tambah User
+                                </Link>
+                            </Button>
                         </div>
 
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                    <tr>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Nama
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Email
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Role
-                                        </th>
-                                        <th className="px-3 py-2" />
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Nama</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Role</TableHead>
+                                        <TableHead />
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {users.map((user) => (
-                                        <tr key={user.id}>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-900">
+                                        <TableRow key={user.id}>
+                                            <TableCell>
                                                 {user.name}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {user.email}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {user.role ?? '—'}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-right text-sm">
+                                            </TableCell>
+                                            <TableCell className="text-right">
                                                 <Link
                                                     href={route(
                                                         'users.edit',
@@ -70,11 +72,11 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                                                 >
                                                     Edit
                                                 </Link>
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
                     </div>
                 </div>
