@@ -36,11 +36,13 @@ const STATUS_LABEL: Record<AttendanceRecapStatusValue, string> = {
 export default function Rekap({
     jobs,
     filters,
+    dateKeys,
     rows,
     canManage,
 }: PageProps<{
     jobs: JobOption[];
     filters: AttendanceFilters;
+    dateKeys: string[];
     rows: AttendanceRecapRow[];
     canManage: boolean;
 }>) {
@@ -49,8 +51,6 @@ export default function Rekap({
     const [jobId, setJobId] = useState(
         filters.job_id ? String(filters.job_id) : 'semua',
     );
-
-    const dateKeys = rows.length > 0 ? Object.keys(rows[0].days) : [];
 
     const applyFilters: FormEventHandler = (e) => {
         e.preventDefault();
