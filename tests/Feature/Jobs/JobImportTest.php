@@ -89,6 +89,7 @@ class JobImportTest extends TestCase
 
         $response->assertRedirect(route('jobs.import.create'));
         $response->assertSessionHas('job_import_result', fn ($result) => $result['created'] === 2 && $result['errorCount'] === 0);
+        $response->assertSessionHas('success', 'Import selesai: 2 berhasil, 0 gagal.');
 
         $this->assertDatabaseCount('client_jobs', 2);
         $this->assertDatabaseHas('client_jobs', ['nama_pekerjaan' => 'Helper Gudang']);
@@ -129,6 +130,20 @@ class JobImportTest extends TestCase
 
         $response->assertSessionHas('job_import_result', fn ($result) => $result['errorCount'] === 1);
         $this->assertDatabaseCount('client_jobs', 0);
+    }
+
+    public function test_error_flash_message_is_set_when_a_row_fails(): void
+    {
+        $admin = $this->admin();
+        $file = $this->makeXlsx([
+            ['tidak ada pola', 'Helper Gudang', '3 Org', '2025-05-07', '2025-05-20', 'PTC03E', '6.812.604', ''],
+        ]);
+
+        $response = $this->actingAs($admin)->post('/jobs/import', ['file' => $file]);
+
+        $response->assertSessionHas('job_import_result', fn ($result) => $result['created'] === 0 && $result['errorCount'] === 1);
+        $response->assertSessionHas('error', 'Import selesai dengan 1 baris gagal (0 berhasil). Lihat laporan error untuk detail.');
+        $response->assertSessionMissing('success');
     }
 
     public function test_duplicate_no_dokumen_is_an_error(): void

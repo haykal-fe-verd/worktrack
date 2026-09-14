@@ -43,10 +43,19 @@ class JobImportController extends Controller
 
         session(['job_import_errors' => $import->errors]);
 
-        return redirect()->route('jobs.import.create')->with('job_import_result', [
-            'created' => $import->created,
-            'errorCount' => count($import->errors),
-        ]);
+        $errorCount = count($import->errors);
+
+        $response = redirect()->route('jobs.import.create')
+            ->with('job_import_result', [
+                'created' => $import->created,
+                'errorCount' => $errorCount,
+            ]);
+
+        if ($errorCount > 0) {
+            return $response->with('error', "Import selesai dengan {$errorCount} baris gagal ({$import->created} berhasil). Lihat laporan error untuk detail.");
+        }
+
+        return $response->with('success', "Import selesai: {$import->created} berhasil, {$errorCount} gagal.");
     }
 
     public function downloadErrors(): BinaryFileResponse
