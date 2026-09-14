@@ -55,6 +55,7 @@ class AssignmentUpdateTest extends TestCase
             'tarif_bayar' => $old->tarif_bayar,
         ]);
 
+        $response->assertSessionHas('success', 'Penugasan berhasil diperbarui.');
         $response->assertRedirect(route('job-periods.show', $old->job_period_id));
 
         $old->refresh();
@@ -76,12 +77,14 @@ class AssignmentUpdateTest extends TestCase
             'tanggal_selesai' => null,
         ]);
 
-        $this->actingAs($admin)->put("/assignments/{$assignment->id}", [
+        $response = $this->actingAs($admin)->put("/assignments/{$assignment->id}", [
             'tanggal_mulai' => '2025-09-01',
             'tanggal_selesai' => null,
             'tarif_jual' => 999999,
             'tarif_bayar' => 888888,
         ]);
+
+        $response->assertSessionHas('success', 'Penugasan berhasil diperbarui.');
 
         $assignment->refresh();
         $this->assertSame('999999.00', $assignment->tarif_jual);
