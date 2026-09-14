@@ -122,3 +122,23 @@ export interface EmployeeAssignmentRow {
     tanggal_selesai: string | null;
     status: AssignmentStatus;
 }
+
+export type AttendanceStatusValue = 'hadir' | 'tidak_hadir' | 'izin';
+
+export interface AttendanceCellData {
+    tanggal: string;
+    disabled: boolean;
+    status: AttendanceStatusValue | null;
+    catatan: string | null;
+}
+
+export interface AttendanceGridRow {
+    assignment_id: number;
+    employee_nama: string;
+    cells: AttendanceCellData[];
+}
+
+export interface JobOption {
+    id: number;
+    nama_pekerjaan: string;
+}
