@@ -1,10 +1,16 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface EmployeeOption {
@@ -34,31 +40,49 @@ export default function Create({
         post(route('job-periods.assignments.store', jobPeriod.id));
     };
 
+    const close = () =>
+        router.visit(route('job-periods.show', jobPeriod.id));
+
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-pln-navy">
-                    Assign Karyawan: {jobPeriod.no_dokumen}
+                    Data Job & Periode PR
                 </h2>
             }
         >
             <Head title={`Assign Karyawan - ${jobPeriod.no_dokumen}`} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
-                        <form onSubmit={submit}>
+            <Dialog
+                open
+                onOpenChange={(open) => {
+                    if (!open) {
+                        close();
+                    }
+                }}
+            >
+                <DialogContent aria-describedby={undefined}>
+                    <form onSubmit={submit}>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Assign Karyawan: {jobPeriod.no_dokumen}
+                            </DialogTitle>
+                        </DialogHeader>
+
+                        <div className="mt-4 space-y-4">
                             <div>
-                                <InputLabel
-                                    htmlFor="employee_id"
-                                    value="Karyawan"
-                                />
+                                <Label htmlFor="employee_id">
+                                    Karyawan
+                                </Label>
                                 <select
                                     id="employee_id"
                                     className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
                                     value={data.employee_id}
                                     onChange={(e) =>
-                                        setData('employee_id', e.target.value)
+                                        setData(
+                                            'employee_id',
+                                            e.target.value,
+                                        )
                                     }
                                     required
                                 >
@@ -72,21 +96,21 @@ export default function Create({
                                         </option>
                                     ))}
                                 </select>
-                                <InputError
-                                    message={errors.employee_id}
-                                    className="mt-2"
-                                />
+                                {errors.employee_id && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.employee_id}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="tanggal_mulai"
-                                    value="Tanggal Mulai"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="tanggal_mulai">
+                                    Tanggal Mulai
+                                </Label>
+                                <Input
                                     id="tanggal_mulai"
                                     type="date"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.tanggal_mulai}
                                     onChange={(e) =>
                                         setData(
@@ -96,21 +120,21 @@ export default function Create({
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.tanggal_mulai}
-                                    className="mt-2"
-                                />
+                                {errors.tanggal_mulai && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.tanggal_mulai}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="tanggal_selesai"
-                                    value="Tanggal Selesai (opsional)"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="tanggal_selesai">
+                                    Tanggal Selesai (opsional)
+                                </Label>
+                                <Input
                                     id="tanggal_selesai"
                                     type="date"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.tanggal_selesai}
                                     onChange={(e) =>
                                         setData(
@@ -119,63 +143,77 @@ export default function Create({
                                         )
                                     }
                                 />
-                                <InputError
-                                    message={errors.tanggal_selesai}
-                                    className="mt-2"
-                                />
+                                {errors.tanggal_selesai && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.tanggal_selesai}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="tarif_jual"
-                                    value="Tarif Jual (opsional)"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="tarif_jual">
+                                    Tarif Jual (opsional)
+                                </Label>
+                                <Input
                                     id="tarif_jual"
                                     type="number"
                                     step="0.01"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.tarif_jual}
                                     onChange={(e) =>
-                                        setData('tarif_jual', e.target.value)
+                                        setData(
+                                            'tarif_jual',
+                                            e.target.value,
+                                        )
                                     }
                                 />
-                                <InputError
-                                    message={errors.tarif_jual}
-                                    className="mt-2"
-                                />
+                                {errors.tarif_jual && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.tarif_jual}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="tarif_bayar"
-                                    value="Tarif Bayar (opsional)"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="tarif_bayar">
+                                    Tarif Bayar (opsional)
+                                </Label>
+                                <Input
                                     id="tarif_bayar"
                                     type="number"
                                     step="0.01"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.tarif_bayar}
                                     onChange={(e) =>
-                                        setData('tarif_bayar', e.target.value)
+                                        setData(
+                                            'tarif_bayar',
+                                            e.target.value,
+                                        )
                                     }
                                 />
-                                <InputError
-                                    message={errors.tarif_bayar}
-                                    className="mt-2"
-                                />
+                                {errors.tarif_bayar && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.tarif_bayar}
+                                    </p>
+                                )}
                             </div>
+                        </div>
 
-                            <div className="mt-6 flex justify-end">
-                                <PrimaryButton disabled={processing}>
-                                    Simpan
-                                </PrimaryButton>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                        <DialogFooter className="mt-6">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={close}
+                            >
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                Simpan
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }

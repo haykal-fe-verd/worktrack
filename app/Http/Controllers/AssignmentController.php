@@ -53,7 +53,7 @@ class AssignmentController extends Controller
             'created_by' => $request->user()->id,
         ]);
 
-        return redirect()->route('job-periods.show', $jobPeriod);
+        return redirect()->route('job-periods.show', $jobPeriod)->with('success', 'Karyawan berhasil ditugaskan.');
     }
 
     public function edit(Assignment $assignment): Response

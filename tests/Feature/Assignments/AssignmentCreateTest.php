@@ -55,6 +55,7 @@ class AssignmentCreateTest extends TestCase
             'tarif_bayar' => 400000,
         ]);
 
+        $response->assertSessionHas('success', 'Karyawan berhasil ditugaskan.');
         $response->assertRedirect(route('job-periods.show', $period));
 
         $assignment = Assignment::where('employee_id', $employee->id)->firstOrFail();
@@ -128,6 +129,7 @@ class AssignmentCreateTest extends TestCase
             'tanggal_mulai' => '2025-09-20',
         ]);
 
+        $response->assertSessionHas('success', 'Karyawan berhasil ditugaskan.');
         $response->assertRedirect(route('job-periods.show', $period));
 
         $new = Assignment::where('employee_id', $employee->id)
@@ -150,12 +152,14 @@ class AssignmentCreateTest extends TestCase
             'employee_id' => $employee->id,
             'tanggal_mulai' => '2025-09-01',
         ]);
+        $responseA->assertSessionHas('success', 'Karyawan berhasil ditugaskan.');
         $responseA->assertRedirect(route('job-periods.show', $periodA));
 
         $responseB = $this->actingAs($admin)->post("/job-periods/{$periodB->id}/assignments", [
             'employee_id' => $employee->id,
             'tanggal_mulai' => '2025-09-01',
         ]);
+        $responseB->assertSessionHas('success', 'Karyawan berhasil ditugaskan.');
         $responseB->assertRedirect(route('job-periods.show', $periodB));
 
         $assignmentA = Assignment::where('employee_id', $employee->id)
