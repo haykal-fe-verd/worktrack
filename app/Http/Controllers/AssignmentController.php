@@ -119,6 +119,7 @@ class AssignmentController extends Controller
         return Inertia::render('Assignments/End', [
             'assignment' => [
                 'id' => $assignment->id,
+                'job_period_id' => $assignment->job_period_id,
                 'employee_nama' => $assignment->employee->nama,
                 'tanggal_mulai' => $assignment->tanggal_mulai->format('Y-m-d'),
             ],
@@ -134,6 +135,6 @@ class AssignmentController extends Controller
             'status' => AssignmentStatus::Selesai,
         ]);
 
-        return redirect()->route('job-periods.show', $assignment->job_period_id);
+        return redirect()->route('job-periods.show', $assignment->job_period_id)->with('success', 'Penugasan berhasil diakhiri.');
     }
 }

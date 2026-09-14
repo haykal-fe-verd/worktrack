@@ -1,14 +1,21 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface EndAssignmentInfo {
     id: number;
+    job_period_id: number;
     employee_nama: string;
     tanggal_mulai: string;
 }
@@ -25,55 +32,76 @@ export default function End({
         patch(route('assignments.end', assignment.id));
     };
 
+    const close = () =>
+        router.visit(route('job-periods.show', assignment.job_period_id));
+
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-pln-navy">
-                    Akhiri Penugasan: {assignment.employee_nama}
+                    Data Job & Periode PR
                 </h2>
             }
         >
             <Head title={`Akhiri Penugasan - ${assignment.employee_nama}`} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
-                        <form onSubmit={submit}>
-                            <div>
-                                <InputLabel
-                                    htmlFor="tanggal_selesai"
-                                    value="Tanggal Akhir"
-                                />
-                                <TextInput
-                                    id="tanggal_selesai"
-                                    type="date"
-                                    className="mt-1 block w-full"
-                                    value={data.tanggal_selesai}
-                                    onChange={(e) =>
-                                        setData(
-                                            'tanggal_selesai',
-                                            e.target.value,
-                                        )
-                                    }
-                                    min={assignment.tanggal_mulai}
-                                    required
-                                    isFocused
-                                />
-                                <InputError
-                                    message={errors.tanggal_selesai}
-                                    className="mt-2"
-                                />
-                            </div>
+            <Dialog
+                open
+                onOpenChange={(open) => {
+                    if (!open) {
+                        close();
+                    }
+                }}
+            >
+                <DialogContent aria-describedby={undefined}>
+                    <form onSubmit={submit}>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Akhiri Penugasan: {assignment.employee_nama}
+                            </DialogTitle>
+                        </DialogHeader>
 
-                            <div className="mt-6 flex justify-end">
-                                <PrimaryButton disabled={processing}>
-                                    Akhiri Penugasan
-                                </PrimaryButton>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                        <div className="mt-4">
+                            <Label htmlFor="tanggal_selesai">
+                                Tanggal Akhir
+                            </Label>
+                            <Input
+                                id="tanggal_selesai"
+                                type="date"
+                                className="mt-1"
+                                value={data.tanggal_selesai}
+                                onChange={(e) =>
+                                    setData(
+                                        'tanggal_selesai',
+                                        e.target.value,
+                                    )
+                                }
+                                min={assignment.tanggal_mulai}
+                                required
+                                autoFocus
+                            />
+                            {errors.tanggal_selesai && (
+                                <p className="mt-2 text-sm text-destructive">
+                                    {errors.tanggal_selesai}
+                                </p>
+                            )}
+                        </div>
+
+                        <DialogFooter className="mt-6">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={close}
+                            >
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                Akhiri Penugasan
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }

@@ -52,6 +52,7 @@ class AssignmentEndTest extends TestCase
             'tanggal_selesai' => '2025-09-15',
         ]);
 
+        $response->assertSessionHas('success', 'Penugasan berhasil diakhiri.');
         $response->assertRedirect(route('job-periods.show', $assignment->job_period_id));
 
         $assignment->refresh();
