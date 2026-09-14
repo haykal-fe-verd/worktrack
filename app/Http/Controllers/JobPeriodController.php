@@ -43,7 +43,7 @@ class JobPeriodController extends Controller
             }
         });
 
-        return redirect()->route('jobs.show', $job);
+        return redirect()->route('jobs.show', $job)->with('success', 'Periode PR baru berhasil ditambahkan.');
     }
 
     public function show(Request $request, JobPeriod $jobPeriod): Response

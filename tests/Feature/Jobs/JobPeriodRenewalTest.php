@@ -94,6 +94,7 @@ class JobPeriodRenewalTest extends TestCase
             'jumlah_tk_rencana' => 10,
         ]);
 
+        $response->assertSessionHas('success', 'Periode PR baru berhasil ditambahkan.');
         $response->assertRedirect(route('jobs.show', $job));
 
         $newPeriod = JobPeriod::where('no_dokumen', '035768')->firstOrFail();
@@ -151,6 +152,7 @@ class JobPeriodRenewalTest extends TestCase
             'jumlah_tk_rencana' => 5,
         ]);
 
+        $response->assertSessionHas('success', 'Periode PR baru berhasil ditambahkan.');
         $response->assertRedirect(route('jobs.show', $job));
         $this->assertSame($oldPeriod->id, JobPeriod::where('no_dokumen', 'staff-input-new')->firstOrFail()->previous_period_id);
     }

@@ -1,10 +1,16 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface RenewJob {
@@ -29,25 +35,39 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
         post(route('jobs.periods.store', job.id));
     };
 
+    const close = () => router.visit(route('jobs.show', job.id));
+
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-pln-navy">
-                    Periode PR Baru: {job.nama_pekerjaan}
+                    Data Job & Periode PR
                 </h2>
             }
         >
             <Head title={`Periode PR Baru - ${job.nama_pekerjaan}`} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
-                        <form onSubmit={submit}>
+            <Dialog
+                open
+                onOpenChange={(open) => {
+                    if (!open) {
+                        close();
+                    }
+                }}
+            >
+                <DialogContent aria-describedby={undefined}>
+                    <form onSubmit={submit}>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Periode PR Baru: {job.nama_pekerjaan}
+                            </DialogTitle>
+                        </DialogHeader>
+
+                        <div className="mt-4 space-y-4">
                             <div>
-                                <InputLabel
-                                    htmlFor="jenis_dokumen"
-                                    value="Jenis Dokumen"
-                                />
+                                <Label htmlFor="jenis_dokumen">
+                                    Jenis Dokumen
+                                </Label>
                                 <select
                                     id="jenis_dokumen"
                                     className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
@@ -64,20 +84,20 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                     <option value="DO">DO</option>
                                     <option value="WO">WO</option>
                                 </select>
-                                <InputError
-                                    message={errors.jenis_dokumen}
-                                    className="mt-2"
-                                />
+                                {errors.jenis_dokumen && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.jenis_dokumen}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="no_dokumen"
-                                    value="No. Dokumen"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="no_dokumen">
+                                    No. Dokumen
+                                </Label>
+                                <Input
                                     id="no_dokumen"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.no_dokumen}
                                     onChange={(e) =>
                                         setData(
@@ -86,65 +106,63 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                         )
                                     }
                                     required
-                                    isFocused
+                                    autoFocus
                                 />
-                                <InputError
-                                    message={errors.no_dokumen}
-                                    className="mt-2"
-                                />
+                                {errors.no_dokumen && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.no_dokumen}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="kode_po"
-                                    value="Kode PO (opsional)"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="kode_po">
+                                    Kode PO (opsional)
+                                </Label>
+                                <Input
                                     id="kode_po"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.kode_po}
                                     onChange={(e) =>
                                         setData('kode_po', e.target.value)
                                     }
                                 />
-                                <InputError
-                                    message={errors.kode_po}
-                                    className="mt-2"
-                                />
+                                {errors.kode_po && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.kode_po}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="nilai_po"
-                                    value="Nilai PO"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="nilai_po">Nilai PO</Label>
+                                <Input
                                     id="nilai_po"
                                     type="number"
                                     step="0.01"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.nilai_po}
                                     onChange={(e) =>
                                         setData('nilai_po', e.target.value)
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.nilai_po}
-                                    className="mt-2"
-                                />
+                                {errors.nilai_po && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.nilai_po}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4 grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <InputLabel
-                                        htmlFor="tanggal_mulai"
-                                        value="Tanggal Mulai"
-                                    />
-                                    <TextInput
+                                    <Label htmlFor="tanggal_mulai">
+                                        Tanggal Mulai
+                                    </Label>
+                                    <Input
                                         id="tanggal_mulai"
                                         type="date"
-                                        className="mt-1 block w-full"
+                                        className="mt-1"
                                         value={data.tanggal_mulai}
                                         onChange={(e) =>
                                             setData(
@@ -154,21 +172,21 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                         }
                                         required
                                     />
-                                    <InputError
-                                        message={errors.tanggal_mulai}
-                                        className="mt-2"
-                                    />
+                                    {errors.tanggal_mulai && (
+                                        <p className="mt-2 text-sm text-destructive">
+                                            {errors.tanggal_mulai}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="tanggal_selesai"
-                                        value="Tanggal Selesai"
-                                    />
-                                    <TextInput
+                                    <Label htmlFor="tanggal_selesai">
+                                        Tanggal Selesai
+                                    </Label>
+                                    <Input
                                         id="tanggal_selesai"
                                         type="date"
-                                        className="mt-1 block w-full"
+                                        className="mt-1"
                                         value={data.tanggal_selesai}
                                         onChange={(e) =>
                                             setData(
@@ -177,22 +195,22 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                             )
                                         }
                                     />
-                                    <InputError
-                                        message={errors.tanggal_selesai}
-                                        className="mt-2"
-                                    />
+                                    {errors.tanggal_selesai && (
+                                        <p className="mt-2 text-sm text-destructive">
+                                            {errors.tanggal_selesai}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="jumlah_tk_rencana"
-                                    value="Jumlah TK Rencana"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="jumlah_tk_rencana">
+                                    Jumlah TK Rencana
+                                </Label>
+                                <Input
                                     id="jumlah_tk_rencana"
                                     type="number"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.jumlah_tk_rencana}
                                     onChange={(e) =>
                                         setData(
@@ -202,17 +220,17 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.jumlah_tk_rencana}
-                                    className="mt-2"
-                                />
+                                {errors.jumlah_tk_rencana && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.jumlah_tk_rencana}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="keterangan"
-                                    value="Keterangan (opsional)"
-                                />
+                            <div>
+                                <Label htmlFor="keterangan">
+                                    Keterangan (opsional)
+                                </Label>
                                 <textarea
                                     id="keterangan"
                                     className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
@@ -224,21 +242,29 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                         )
                                     }
                                 />
-                                <InputError
-                                    message={errors.keterangan}
-                                    className="mt-2"
-                                />
+                                {errors.keterangan && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.keterangan}
+                                    </p>
+                                )}
                             </div>
+                        </div>
 
-                            <div className="mt-6 flex justify-end">
-                                <PrimaryButton disabled={processing}>
-                                    Simpan
-                                </PrimaryButton>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                        <DialogFooter className="mt-6">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={close}
+                            >
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                Simpan
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }
