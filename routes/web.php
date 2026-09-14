@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceRekapController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExportController;
@@ -91,9 +92,13 @@ Route::middleware(['auth', 'role:admin|staff_input'])->prefix('assignments')->na
     Route::patch('/{assignment}/end', [AssignmentController::class, 'end'])->name('end')->whereNumber('assignment');
 });
 
-Route::middleware(['auth', 'role:admin|staff_input'])->prefix('attendance')->name('attendance.')->group(function () {
-    Route::get('/input', [AttendanceController::class, 'input'])->name('input');
-    Route::post('/input', [AttendanceController::class, 'store'])->name('input.store');
+Route::middleware('auth')->prefix('attendance')->name('attendance.')->group(function () {
+    Route::get('/rekap', [AttendanceRekapController::class, 'index'])->name('rekap');
+
+    Route::middleware('role:admin|staff_input')->group(function () {
+        Route::get('/input', [AttendanceController::class, 'input'])->name('input');
+        Route::post('/input', [AttendanceController::class, 'store'])->name('input.store');
+    });
 });
 
 require __DIR__.'/auth.php';

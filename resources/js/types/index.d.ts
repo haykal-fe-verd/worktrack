@@ -142,3 +142,22 @@ export interface JobOption {
     id: number;
     nama_pekerjaan: string;
 }
+
+export type AttendanceRecapStatusValue =
+    | AttendanceStatusValue
+    | 'belum_diisi';
+
+export interface AttendanceRecapRow {
+    assignment_id: number;
+    employee_nama: string;
+    job_nama_pekerjaan: string;
+    no_dokumen: string;
+    days: Record<string, AttendanceRecapStatusValue>;
+    summary: { hadir: number; tidak_hadir: number; izin: number };
+}
+
+export interface AttendanceFilters {
+    date_from: string;
+    date_to: string;
+    job_id: number | null;
+}

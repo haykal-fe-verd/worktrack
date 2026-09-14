@@ -56,6 +56,12 @@ export default function Authenticated({
                                 >
                                     Job & PR
                                 </NavLink>
+                                <NavLink
+                                    href={route('attendance.rekap')}
+                                    active={route().current('attendance.*')}
+                                >
+                                    Absensi
+                                </NavLink>
                                 {user.roles.includes('admin') && (
                                     <NavLink
                                         href={route('users.index')}
@@ -161,6 +167,12 @@ export default function Authenticated({
                             active={route().current('jobs.*')}
                         >
                             Job & PR
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('attendance.rekap')}
+                            active={route().current('attendance.*')}
+                        >
+                            Absensi
                         </ResponsiveNavLink>
                         {user.roles.includes('admin') && (
                             <ResponsiveNavLink
