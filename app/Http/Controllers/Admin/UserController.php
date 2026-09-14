@@ -65,6 +65,6 @@ class UserController extends Controller
     {
         $user->syncRoles([$request->validated('role')]);
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('success', 'Role user berhasil diperbarui.');
     }
 }

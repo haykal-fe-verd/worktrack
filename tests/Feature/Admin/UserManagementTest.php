@@ -74,7 +74,7 @@ class UserManagementTest extends TestCase
 
         $this->actingAs($admin)->put("/users/{$user->id}", [
             'role' => 'staff_input',
-        ])->assertRedirect('/users');
+        ])->assertSessionHas('success', 'Role user berhasil diperbarui.')->assertRedirect('/users');
 
         $user->refresh();
         $this->assertTrue($user->hasRole('staff_input'));
@@ -147,7 +147,7 @@ class UserManagementTest extends TestCase
 
         $this->actingAs($admin)->put("/users/{$secondAdmin->id}", [
             'role' => 'viewer',
-        ])->assertRedirect('/users');
+        ])->assertSessionHas('success', 'Role user berhasil diperbarui.')->assertRedirect('/users');
 
         $secondAdmin->refresh();
         $this->assertTrue($secondAdmin->hasRole('viewer'));
