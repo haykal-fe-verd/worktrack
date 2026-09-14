@@ -1,4 +1,21 @@
 import Pagination from '@/Components/Pagination';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { JobRow, PageProps, Paginated } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
@@ -51,13 +68,13 @@ export default function Index({
                                 <label className="block text-xs font-medium text-slate-500">
                                     Cari nama/klien
                                 </label>
-                                <input
+                                <Input
                                     type="text"
                                     value={search}
                                     onChange={(e) =>
                                         setSearch(e.target.value)
                                     }
-                                    className="mt-1 rounded-md border-slate-300 text-sm shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                                    className="mt-1"
                                 />
                             </div>
 
@@ -65,75 +82,73 @@ export default function Index({
                                 <label className="block text-xs font-medium text-slate-500">
                                     Status
                                 </label>
-                                <select
-                                    value={status}
-                                    onChange={(e) =>
-                                        setStatus(e.target.value)
+                                <Select
+                                    value={status === '' ? 'semua' : status}
+                                    onValueChange={(value) =>
+                                        setStatus(
+                                            value === 'semua' ? '' : value,
+                                        )
                                     }
-                                    className="mt-1 rounded-md border-slate-300 text-sm shadow-sm focus:border-pln-blue focus:ring-pln-blue"
                                 >
-                                    <option value="">Semua</option>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="selesai">Selesai</option>
-                                </select>
+                                    <SelectTrigger className="mt-1 w-[160px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="semua">
+                                            Semua
+                                        </SelectItem>
+                                        <SelectItem value="aktif">
+                                            Aktif
+                                        </SelectItem>
+                                        <SelectItem value="selesai">
+                                            Selesai
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
-                            <button
-                                type="submit"
-                                className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
-                            >
-                                Terapkan
-                            </button>
+                            <Button type="submit">Terapkan</Button>
 
                             {canManage && (
                                 <div className="ml-auto flex gap-2">
-                                    <Link
-                                        href={route('jobs.import.create')}
-                                        className="rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
-                                    >
-                                        Import
-                                    </Link>
-                                    <a
-                                        href={route('jobs.export')}
-                                        className="rounded-md border border-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-pln-blue hover:bg-pln-blue/10"
-                                    >
-                                        Export
-                                    </a>
-                                    <Link
-                                        href={route('jobs.create')}
-                                        className="rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
-                                    >
-                                        Tambah Job
-                                    </Link>
+                                    <Button variant="outline" asChild>
+                                        <Link
+                                            href={route(
+                                                'jobs.import.create',
+                                            )}
+                                        >
+                                            Import
+                                        </Link>
+                                    </Button>
+                                    <Button variant="outline" asChild>
+                                        <a href={route('jobs.export')}>
+                                            Export
+                                        </a>
+                                    </Button>
+                                    <Button asChild>
+                                        <Link href={route('jobs.create')}>
+                                            Tambah Job
+                                        </Link>
+                                    </Button>
                                 </div>
                             )}
                         </form>
 
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                    <tr>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Nama Pekerjaan
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Klien
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Lokasi
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Periode PR
-                                        </th>
-                                        <th className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">
-                                            Status
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Nama Pekerjaan</TableHead>
+                                        <TableHead>Klien</TableHead>
+                                        <TableHead>Lokasi</TableHead>
+                                        <TableHead>Periode PR</TableHead>
+                                        <TableHead>Status</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {jobs.data.map((job) => (
-                                        <tr key={job.id}>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-900">
+                                        <TableRow key={job.id}>
+                                            <TableCell>
                                                 <Link
                                                     href={route(
                                                         'jobs.show',
@@ -143,25 +158,25 @@ export default function Index({
                                                 >
                                                     {job.nama_pekerjaan}
                                                 </Link>
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {job.klien ?? '—'}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {job.lokasi ?? '—'}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {job.periods_count}
-                                            </td>
-                                            <td className="whitespace-nowrap px-3 py-2 text-sm text-gray-500">
+                                            </TableCell>
+                                            <TableCell>
                                                 {job.status === 'aktif'
                                                     ? 'Aktif'
                                                     : 'Selesai'}
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         <Pagination links={jobs.links} />
