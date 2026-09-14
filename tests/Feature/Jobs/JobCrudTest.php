@@ -197,6 +197,7 @@ class JobCrudTest extends TestCase
 
         $this->actingAs($admin)
             ->patch("/jobs/{$job->id}/toggle-status")
+            ->assertSessionHas('success', 'Status job berhasil diperbarui.')
             ->assertRedirect(route('jobs.show', $job));
 
         $this->assertSame('selesai', $job->fresh()->status->value);

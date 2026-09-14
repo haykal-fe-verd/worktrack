@@ -126,6 +126,6 @@ class JobController extends Controller
             'status' => $job->status === JobStatus::Aktif ? JobStatus::Selesai : JobStatus::Aktif,
         ]);
 
-        return redirect()->route('jobs.show', $job);
+        return redirect()->route('jobs.show', $job)->with('success', 'Status job berhasil diperbarui.');
     }
 }
