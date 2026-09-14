@@ -3,11 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\Assignment;
+use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Job;
+use App\Models\JobPeriod;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Inertia\Testing\AssertableInertia;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -86,6 +89,38 @@ class DashboardTest extends TestCase
 
         $response->assertInertia(fn (Assert $page) => $page
             ->where('assignmentCount', 2)
+        );
+    }
+
+    public function test_dashboard_shows_belum_diisi_count_for_the_current_week(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $weekStart = now()->startOfWeek(Carbon::MONDAY);
+
+        $period = JobPeriod::factory()->create();
+        $assignment = Assignment::factory()->create([
+            'job_period_id' => $period->id,
+            'tanggal_mulai' => $weekStart->format('Y-m-d'),
+            'tanggal_selesai' => $weekStart->copy()->addDays(1)->format('Y-m-d'),
+            'created_by' => $admin->id,
+        ]);
+
+        // Only Monday has a record; Tuesday (the assignment's other day) is belum diisi.
+        Attendance::factory()->create([
+            'assignment_id' => $assignment->id,
+            'tanggal' => $weekStart->format('Y-m-d'),
+            'status' => 'hadir',
+            'recorded_by' => $admin->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('belumDiisiCount', 1)
         );
     }
 }

@@ -15,11 +15,13 @@ export default function Dashboard({
     employeeCount,
     jobCount,
     assignmentCount,
+    belumDiisiCount,
 }: PageProps<{
     roleCounts: RoleCounts;
     employeeCount: number;
     jobCount: number;
     assignmentCount: number;
+    belumDiisiCount: number;
 }>) {
     return (
         <AuthenticatedLayout
@@ -76,14 +78,13 @@ export default function Dashboard({
                             </div>
                         </BentoCard>
 
-                        <BentoCard
-                            title="Absensi Mingguan"
-                            accent="white"
-                            badge="Segera Hadir"
-                        >
-                            <div className="text-2xl font-bold text-slate-300">
-                                —
+                        <BentoCard title="Absensi Mingguan" accent="white">
+                            <div className="text-2xl font-bold text-pln-navy">
+                                {belumDiisiCount}
                             </div>
+                            <p className="mt-1 text-xs text-slate-400">
+                                belum diisi minggu ini
+                            </p>
                         </BentoCard>
                     </div>
                 </div>
