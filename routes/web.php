@@ -94,6 +94,7 @@ Route::middleware(['auth', 'role:admin|staff_input'])->prefix('assignments')->na
 
 Route::middleware('auth')->prefix('attendance')->name('attendance.')->group(function () {
     Route::get('/rekap', [AttendanceRekapController::class, 'index'])->name('rekap');
+    Route::get('/rekap/export', [AttendanceRekapController::class, 'export'])->name('rekap.export');
 
     Route::middleware('role:admin|staff_input')->group(function () {
         Route::get('/input', [AttendanceController::class, 'input'])->name('input');

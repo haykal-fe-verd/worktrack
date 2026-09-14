@@ -65,6 +65,10 @@ export default function Rekap({
         );
     };
 
+    const exportUrl = `${route('attendance.rekap.export')}?date_from=${dateFrom}&date_to=${dateTo}${
+        jobId === 'semua' ? '' : `&job_id=${jobId}`
+    }`;
+
     return (
         <AuthenticatedLayout
             header={
@@ -141,8 +145,11 @@ export default function Rekap({
 
                             <Button type="submit">Terapkan</Button>
 
-                            {canManage && (
-                                <div className="ml-auto">
+                            <div className="ml-auto flex gap-2">
+                                <Button variant="outline" asChild>
+                                    <a href={exportUrl}>Export</a>
+                                </Button>
+                                {canManage && (
                                     <Button asChild>
                                         <Link
                                             href={route(
@@ -152,8 +159,8 @@ export default function Rekap({
                                             Input Absensi
                                         </Link>
                                     </Button>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </form>
 
                         <div className="overflow-x-auto">
