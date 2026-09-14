@@ -1,9 +1,22 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/Components/ui/dialog';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Create() {
@@ -19,108 +32,139 @@ export default function Create() {
         post(route('users.store'));
     };
 
+    const close = () => router.visit(route('users.index'));
+
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-pln-navy">
-                    Tambah User
+                    Manajemen User
                 </h2>
             }
         >
             <Head title="Tambah User" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
-                        <form onSubmit={submit}>
+            <Dialog
+                open
+                onOpenChange={(open) => {
+                    if (!open) {
+                        close();
+                    }
+                }}
+            >
+                <DialogContent aria-describedby={undefined}>
+                    <form onSubmit={submit}>
+                        <DialogHeader>
+                            <DialogTitle>Tambah User</DialogTitle>
+                        </DialogHeader>
+
+                        <div className="mt-4 space-y-4">
                             <div>
-                                <InputLabel htmlFor="name" value="Nama" />
-                                <TextInput
+                                <Label htmlFor="name">Nama</Label>
+                                <Input
                                     id="name"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.name}
                                     onChange={(e) =>
                                         setData('name', e.target.value)
                                     }
                                     required
-                                    isFocused
+                                    autoFocus
                                 />
-                                <InputError
-                                    message={errors.name}
-                                    className="mt-2"
-                                />
+                                {errors.name && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel htmlFor="email" value="Email" />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="email">Email</Label>
+                                <Input
                                     id="email"
                                     type="email"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.email}
                                     onChange={(e) =>
                                         setData('email', e.target.value)
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.email}
-                                    className="mt-2"
-                                />
+                                {errors.email && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.email}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel
-                                    htmlFor="password"
-                                    value="Password"
-                                />
-                                <TextInput
+                            <div>
+                                <Label htmlFor="password">Password</Label>
+                                <Input
                                     id="password"
                                     type="password"
-                                    className="mt-1 block w-full"
+                                    className="mt-1"
                                     value={data.password}
                                     onChange={(e) =>
-                                        setData('password', e.target.value)
+                                        setData(
+                                            'password',
+                                            e.target.value,
+                                        )
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={errors.password}
-                                    className="mt-2"
-                                />
+                                {errors.password && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.password}
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="mt-4">
-                                <InputLabel htmlFor="role" value="Role" />
-                                <select
-                                    id="role"
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                            <div>
+                                <Label htmlFor="role">Role</Label>
+                                <Select
                                     value={data.role}
-                                    onChange={(e) =>
-                                        setData('role', e.target.value)
+                                    onValueChange={(value) =>
+                                        setData('role', value)
                                     }
                                 >
-                                    <option value="viewer">Viewer</option>
-                                    <option value="staff_input">
-                                        Staff Input
-                                    </option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                                <InputError
-                                    message={errors.role}
-                                    className="mt-2"
-                                />
+                                    <SelectTrigger id="role" className="mt-1">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="viewer">
+                                            Viewer
+                                        </SelectItem>
+                                        <SelectItem value="staff_input">
+                                            Staff Input
+                                        </SelectItem>
+                                        <SelectItem value="admin">
+                                            Admin
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {errors.role && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {errors.role}
+                                    </p>
+                                )}
                             </div>
+                        </div>
 
-                            <div className="mt-6 flex justify-end">
-                                <PrimaryButton disabled={processing}>
-                                    Simpan
-                                </PrimaryButton>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                        <DialogFooter className="mt-6">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={close}
+                            >
+                                Batal
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                Simpan
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }

@@ -46,7 +46,7 @@ class UserController extends Controller
 
         $user->assignRole($request->validated('role'));
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
     public function edit(User $user): Response

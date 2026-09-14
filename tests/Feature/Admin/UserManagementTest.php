@@ -40,7 +40,7 @@ class UserManagementTest extends TestCase
             'role' => 'viewer',
         ]);
 
-        $response->assertRedirect('/users');
+        $response->assertSessionHas('success', 'User berhasil ditambahkan.')->assertRedirect('/users');
 
         $newUser = User::where('email', 'staff.baru@worktrack.test')->first();
         $this->assertNotNull($newUser);
@@ -52,12 +52,14 @@ class UserManagementTest extends TestCase
     {
         $admin = $this->admin();
 
-        $this->actingAs($admin)->post('/users', [
+        $response = $this->actingAs($admin)->post('/users', [
             'name' => 'Staff Input',
             'email' => 'staff.input@worktrack.test',
             'password' => 'password123',
             'role' => 'staff_input',
         ]);
+
+        $response->assertSessionHas('success', 'User berhasil ditambahkan.');
 
         $newUser = User::where('email', 'staff.input@worktrack.test')->first();
         $this->assertTrue($newUser->hasRole('staff_input'));
