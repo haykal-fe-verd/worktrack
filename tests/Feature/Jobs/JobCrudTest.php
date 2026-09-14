@@ -93,6 +93,7 @@ class JobCrudTest extends TestCase
             'jumlah_tk_rencana' => 31,
         ]);
 
+        $response->assertSessionHas('success', 'Job berhasil ditambahkan.');
         $response->assertRedirect(route('jobs.index'));
         $this->assertDatabaseHas('client_jobs', ['nama_pekerjaan' => 'Siaga Ubur Ubur', 'status' => 'aktif']);
         $job = Job::where('nama_pekerjaan', 'Siaga Ubur Ubur')->firstOrFail();
@@ -118,6 +119,7 @@ class JobCrudTest extends TestCase
             'jumlah_tk_rencana' => 3,
         ]);
 
+        $response->assertSessionHas('success', 'Job berhasil ditambahkan.');
         $response->assertRedirect(route('jobs.index'));
         $this->assertDatabaseHas('client_jobs', ['nama_pekerjaan' => 'Helper Gudang']);
     }

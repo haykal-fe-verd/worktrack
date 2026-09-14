@@ -78,7 +78,7 @@ class JobController extends Controller
             ]);
         });
 
-        return redirect()->route('jobs.index');
+        return redirect()->route('jobs.index')->with('success', 'Job berhasil ditambahkan.');
     }
 
     public function show(Request $request, Job $job): Response
