@@ -33,7 +33,7 @@ export default function Authenticated({
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href={route('dashboard')}>
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-pln-blue" />
+                                    <ApplicationLogo className="h-9 w-9" />
                                 </Link>
                             </div>
 
