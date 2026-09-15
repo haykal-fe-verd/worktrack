@@ -36,7 +36,7 @@ class EmployeesImport implements ToCollection, WithHeadingRow
                 continue;
             }
 
-            $existing = Employee::where('nik', $nik)->first();
+            $existing = Employee::where('nik_hash', Employee::hashNik($nik))->first();
 
             if ($existing) {
                 if ($existing->nama === $nama) {

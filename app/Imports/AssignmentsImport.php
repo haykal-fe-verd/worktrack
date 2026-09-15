@@ -41,7 +41,7 @@ class AssignmentsImport implements ToCollection, WithHeadingRow
                 continue;
             }
 
-            $employee = Employee::where('nik', $nik)->first();
+            $employee = Employee::where('nik_hash', Employee::hashNik($nik))->first();
 
             if (! $employee) {
                 $this->recordError($row, 'NIK tidak terdaftar');

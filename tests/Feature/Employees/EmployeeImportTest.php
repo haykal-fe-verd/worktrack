@@ -93,7 +93,8 @@ class EmployeeImportTest extends TestCase
         $response->assertSessionHas('success', 'Import selesai: 2 berhasil, 0 dilewati, 0 gagal.');
 
         $this->assertDatabaseCount('employees', 2);
-        $this->assertDatabaseHas('employees', ['nik' => '3513126804000001', 'nama' => 'Budi Santoso']);
+        $employee = Employee::where('nama', 'Budi Santoso')->firstOrFail();
+        $this->assertSame('3513126804000001', $employee->nik);
     }
 
     public function test_duplicate_nik_with_same_name_is_skipped_not_errored(): void
