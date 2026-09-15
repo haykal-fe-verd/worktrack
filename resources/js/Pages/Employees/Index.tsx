@@ -37,6 +37,7 @@ export default function Index({
 }>) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [status, setStatus] = useState(filters.status ?? '');
+    const [togglingId, setTogglingId] = useState<number | null>(null);
 
     const applyFilters: FormEventHandler = (e) => {
         e.preventDefault();
@@ -48,7 +49,16 @@ export default function Index({
     };
 
     const toggleStatus = (employeeId: number) => {
-        router.patch(route('employees.toggle-status', employeeId));
+        if (togglingId !== null) {
+            return;
+        }
+
+        setTogglingId(employeeId);
+        router.patch(
+            route('employees.toggle-status', employeeId),
+            {},
+            { onFinish: () => setTogglingId(null) },
+        );
     };
 
     return (
@@ -152,6 +162,16 @@ export default function Index({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
+                                    {employees.data.length === 0 && (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={canManage ? 5 : 4}
+                                                className="text-center text-slate-500"
+                                            >
+                                                Tidak ada data karyawan.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                     {employees.data.map((employee) => (
                                         <TableRow key={employee.id}>
                                             <TableCell>
@@ -189,12 +209,16 @@ export default function Index({
                                                     </Link>
                                                     <button
                                                         type="button"
+                                                        disabled={
+                                                            togglingId ===
+                                                            employee.id
+                                                        }
                                                         onClick={() =>
                                                             toggleStatus(
                                                                 employee.id,
                                                             )
                                                         }
-                                                        className="text-slate-500 hover:text-slate-700"
+                                                        className="text-slate-500 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
                                                     >
                                                         {employee.status ===
                                                         'aktif'

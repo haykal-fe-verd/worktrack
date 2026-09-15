@@ -151,6 +151,16 @@ export default function Index({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
+                                    {jobs.data.length === 0 && (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={5}
+                                                className="text-center text-slate-500"
+                                            >
+                                                Tidak ada data job.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                     {jobs.data.map((job) => (
                                         <TableRow key={job.id}>
                                             <TableCell>

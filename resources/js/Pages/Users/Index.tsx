@@ -51,6 +51,16 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
+                                    {users.length === 0 && (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={4}
+                                                className="text-center text-slate-500"
+                                            >
+                                                Tidak ada data user.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                     {users.map((user) => (
                                         <TableRow key={user.id}>
                                             <TableCell>

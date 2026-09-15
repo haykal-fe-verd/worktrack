@@ -192,6 +192,19 @@ export default function Rekap({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
+                                    {rows.length === 0 && (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={
+                                                    3 + dateKeys.length + 3
+                                                }
+                                                className="text-center text-slate-500"
+                                            >
+                                                Tidak ada data absensi
+                                                untuk rentang/filter ini.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                     {rows.map((row) => (
                                         <TableRow
                                             key={row.assignment_id}
