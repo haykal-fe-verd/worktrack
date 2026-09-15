@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\AssignmentImportController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRekapController;
 use App\Http\Controllers\DashboardController;
@@ -86,6 +87,10 @@ Route::middleware('auth')->prefix('job-periods')->name('job-periods.')->group(fu
 });
 
 Route::middleware(['auth', 'role:admin|staff_input'])->prefix('assignments')->name('assignments.')->group(function () {
+    Route::get('/import', [AssignmentImportController::class, 'create'])->name('import.create');
+    Route::post('/import', [AssignmentImportController::class, 'store'])->name('import.store');
+    Route::get('/import/errors', [AssignmentImportController::class, 'downloadErrors'])->name('import.errors');
+
     Route::get('/{assignment}/edit', [AssignmentController::class, 'edit'])->name('edit')->whereNumber('assignment');
     Route::put('/{assignment}', [AssignmentController::class, 'update'])->name('update')->whereNumber('assignment');
     Route::get('/{assignment}/end', [AssignmentController::class, 'endForm'])->name('end.form')->whereNumber('assignment');
