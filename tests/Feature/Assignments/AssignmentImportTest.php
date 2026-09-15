@@ -13,7 +13,9 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Tests\TestCase;
 
@@ -66,6 +68,38 @@ class AssignmentImportTest extends TestCase
         foreach ($rows as $index => $row) {
             $sheet->fromArray($row, null, 'A'.($index + 2));
         }
+
+        (new Xlsx($spreadsheet))->save($path);
+
+        return new UploadedFile($path, 'assignments.xlsx', null, null, true);
+    }
+
+    /**
+     * Builds an xlsx with the same header row as makeXlsx(), but lets the caller
+     * write raw (non-string) values and formatting directly onto the sheet —
+     * needed to produce genuine Excel-native date/numeric cells, which
+     * fromArray() with plain PHP strings cannot reproduce.
+     *
+     * @param  array<int, array<int, mixed>>  $rows
+     * @param  callable(Worksheet): void  $configureSheet
+     */
+    private function makeXlsxWithRawCells(array $rows, callable $configureSheet): UploadedFile
+    {
+        $path = tempnam(sys_get_temp_dir(), 'import').'.xlsx';
+
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray(
+            ['NIK', 'NO_DOKUMEN', 'TANGGAL_MULAI', 'TANGGAL_SELESAI', 'TARIF_JUAL', 'TARIF_BAYAR'],
+            null,
+            'A1',
+        );
+
+        foreach ($rows as $index => $row) {
+            $sheet->fromArray($row, null, 'A'.($index + 2));
+        }
+
+        $configureSheet($sheet);
 
         (new Xlsx($spreadsheet))->save($path);
 
@@ -276,6 +310,54 @@ class AssignmentImportTest extends TestCase
         $assignment = Assignment::firstOrFail();
         $this->assertEqualsWithDelta(1234567.89, (float) $assignment->tarif_jual, 0.001);
         $this->assertEqualsWithDelta(1900000.0, (float) $assignment->tarif_bayar, 0.001);
+    }
+
+    public function test_native_excel_date_cell_is_parsed_correctly(): void
+    {
+        $admin = $this->admin();
+        Employee::factory()->create(['nik' => '1234567890123456']);
+        $jobPeriod = JobPeriod::factory()->create(['no_dokumen' => 'PR-001']);
+
+        $file = $this->makeXlsxWithRawCells(
+            [['1234567890123456', 'PR-001', '', '', '', '']],
+            function ($sheet): void {
+                // Write a genuine Excel serial-date number with a date number
+                // format, so PhpSpreadsheet/maatwebsite hand the import a raw
+                // float (like a real user's date-typed column) rather than a
+                // date string.
+                $sheet->setCellValue('C2', ExcelDate::PHPToExcel(new \DateTime('2025-01-01')));
+                $sheet->getStyle('C2')->getNumberFormat()->setFormatCode('yyyy-mm-dd');
+            },
+        );
+
+        $response = $this->actingAs($admin)->post('/assignments/import', ['file' => $file]);
+
+        $response->assertSessionHas('assignment_import_result', fn ($result) => $result['created'] === 1 && $result['errorCount'] === 0);
+
+        $assignment = Assignment::where('job_period_id', $jobPeriod->id)->firstOrFail();
+        $this->assertSame('2025-01-01', $assignment->tanggal_mulai->format('Y-m-d'));
+    }
+
+    public function test_numeric_tarif_cell_with_decimal_is_not_inflated(): void
+    {
+        $admin = $this->admin();
+        Employee::factory()->create(['nik' => '1234567890123456']);
+        JobPeriod::factory()->create(['no_dokumen' => 'PR-001']);
+
+        $file = $this->makeXlsxWithRawCells(
+            [['1234567890123456', 'PR-001', '2025-01-01', '', '', '']],
+            function ($sheet): void {
+                // Write a genuine numeric (float) cell, as would result from a
+                // user typing a decimal amount into a numeric-formatted cell,
+                // rather than a plain string.
+                $sheet->setCellValue('E2', 1234567.89);
+            },
+        );
+
+        $this->actingAs($admin)->post('/assignments/import', ['file' => $file]);
+
+        $assignment = Assignment::firstOrFail();
+        $this->assertEqualsWithDelta(1234567.89, (float) $assignment->tarif_jual, 0.001);
     }
 
     public function test_import_succeeds_for_a_job_period_regardless_of_status(): void

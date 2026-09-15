@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
 class AssignmentsImport implements ToCollection, WithHeadingRow
@@ -33,8 +34,6 @@ class AssignmentsImport implements ToCollection, WithHeadingRow
             $noDokumen = trim((string) ($row['no_dokumen'] ?? ''));
             $tanggalMulaiRaw = $row['tanggal_mulai'] ?? null;
             $tanggalSelesaiRaw = $row['tanggal_selesai'] ?? null;
-            $tarifJualRaw = trim((string) ($row['tarif_jual'] ?? ''));
-            $tarifBayarRaw = trim((string) ($row['tarif_bayar'] ?? ''));
 
             if (! preg_match('/^\d{16}$/', $nik)) {
                 $this->recordError($row, 'NIK harus 16 digit angka');
@@ -111,8 +110,8 @@ class AssignmentsImport implements ToCollection, WithHeadingRow
                 'status' => $isPastEnd ? AssignmentStatus::Selesai : AssignmentStatus::Aktif,
                 'is_current' => true,
                 'previous_assignment_id' => null,
-                'tarif_jual' => $this->parseAmount($tarifJualRaw),
-                'tarif_bayar' => $this->parseAmount($tarifBayarRaw),
+                'tarif_jual' => $this->parseAmount($row['tarif_jual'] ?? null),
+                'tarif_bayar' => $this->parseAmount($row['tarif_bayar'] ?? null),
                 'created_by' => $this->userId,
             ]);
 
@@ -126,6 +125,14 @@ class AssignmentsImport implements ToCollection, WithHeadingRow
             return $value->format('Y-m-d');
         }
 
+        if (is_numeric($value)) {
+            try {
+                return Date::excelToDateTimeObject((float) $value)->format('Y-m-d');
+            } catch (Throwable) {
+                return null;
+            }
+        }
+
         if (is_string($value) && trim($value) !== '') {
             try {
                 return Carbon::parse($value)->format('Y-m-d');
@@ -137,13 +144,23 @@ class AssignmentsImport implements ToCollection, WithHeadingRow
         return null;
     }
 
-    private function parseAmount(string $value): ?float
+    private function parseAmount(mixed $value): ?float
     {
-        if ($value === '') {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        $normalized = str_replace('.', '', $value);
+        if (is_numeric($value)) {
+            return (float) $value;
+        }
+
+        $stringValue = trim((string) $value);
+
+        if ($stringValue === '') {
+            return null;
+        }
+
+        $normalized = str_replace('.', '', $stringValue);
         $normalized = str_replace(',', '.', $normalized);
 
         return (float) preg_replace('/[^0-9.\-]/', '', $normalized);
