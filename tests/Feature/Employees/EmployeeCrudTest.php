@@ -279,6 +279,30 @@ class EmployeeCrudTest extends TestCase
         $response->assertJsonPath('props.employees.data.0.nama', 'Budi Santoso');
     }
 
+    public function test_search_finds_employee_by_full_exact_nik(): void
+    {
+        $admin = $this->admin();
+        Employee::factory()->create(['nama' => 'Budi Santoso', 'nik' => '1111111111111111']);
+        Employee::factory()->create(['nama' => 'Siti Aminah', 'nik' => '2222222222222222']);
+
+        $response = $this->actingAs($admin)->get('/employees?search=2222222222222222', $this->inertiaHeaders());
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'props.employees.data');
+        $response->assertJsonPath('props.employees.data.0.nama', 'Siti Aminah');
+    }
+
+    public function test_search_with_partial_nik_finds_nothing_via_nik(): void
+    {
+        $admin = $this->admin();
+        Employee::factory()->create(['nama' => 'Budi Santoso', 'nik' => '1111111111111111']);
+
+        $response = $this->actingAs($admin)->get('/employees?search=11111111', $this->inertiaHeaders());
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'props.employees.data');
+    }
+
     public function test_status_filter_narrows_the_list(): void
     {
         $admin = $this->admin();

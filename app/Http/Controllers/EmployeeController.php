@@ -24,8 +24,11 @@ class EmployeeController extends Controller
                 $search = $request->input('search');
 
                 $query->where(function ($query) use ($search) {
-                    $query->where('nama', 'like', "%{$search}%")
-                        ->orWhere('nik', 'like', "%{$search}%");
+                    $query->where('nama', 'like', "%{$search}%");
+
+                    if (preg_match('/^\d{16}$/', $search)) {
+                        $query->orWhere('nik_hash', Employee::hashNik($search));
+                    }
                 });
             })
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
