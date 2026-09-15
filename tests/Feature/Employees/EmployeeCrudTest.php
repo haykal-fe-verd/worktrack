@@ -139,10 +139,11 @@ class EmployeeCrudTest extends TestCase
         $response->assertSessionHas('success', 'Karyawan berhasil ditambahkan.');
         $response->assertRedirect(route('employees.index'));
         $this->assertDatabaseHas('employees', [
-            'nik' => '3513126804000099',
             'nama' => 'Budi Santoso',
             'status' => 'aktif',
         ]);
+        $employee = Employee::where('nama', 'Budi Santoso')->firstOrFail();
+        $this->assertSame('3513126804000099', $employee->nik);
     }
 
     public function test_staff_input_can_create_an_employee(): void
@@ -160,10 +161,11 @@ class EmployeeCrudTest extends TestCase
         $response->assertSessionHas('success', 'Karyawan berhasil ditambahkan.');
         $response->assertRedirect(route('employees.index'));
         $this->assertDatabaseHas('employees', [
-            'nik' => '3513126804000099',
             'nama' => 'Budi Santoso',
             'status' => 'aktif',
         ]);
+        $employee = Employee::where('nama', 'Budi Santoso')->firstOrFail();
+        $this->assertSame('3513126804000099', $employee->nik);
     }
 
     public function test_nik_must_be_exactly_sixteen_digits(): void

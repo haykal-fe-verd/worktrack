@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Employee;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEmployeeRequest extends FormRequest
@@ -22,10 +24,28 @@ class StoreEmployeeRequest extends FormRequest
     {
         return [
             'nama' => ['required', 'string', 'max:255'],
-            'nik' => ['required', 'string', 'regex:/^\d{16}$/', 'unique:employees,nik'],
+            'nik' => ['required', 'string', 'regex:/^\d{16}$/'],
             'alamat' => ['required', 'string'],
             'no_rekening' => ['required', 'string', 'regex:/^\d+$/'],
             'nama_bank' => ['nullable', 'string', 'max:100'],
         ];
+    }
+
+    /**
+     * @param  Validator  $validator
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $nik = $this->input('nik');
+
+            if (! $nik) {
+                return;
+            }
+
+            if (Employee::where('nik_hash', Employee::hashNik($nik))->exists()) {
+                $validator->errors()->add('nik', 'NIK sudah terdaftar.');
+            }
+        });
     }
 }
