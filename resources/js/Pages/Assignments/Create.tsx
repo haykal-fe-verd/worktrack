@@ -8,6 +8,13 @@ import {
 } from '@/Components/ui/dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
@@ -74,28 +81,29 @@ export default function Create({
                                 <Label htmlFor="employee_id">
                                     Karyawan
                                 </Label>
-                                <select
-                                    id="employee_id"
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                                <Select
                                     value={data.employee_id}
-                                    onChange={(e) =>
-                                        setData(
-                                            'employee_id',
-                                            e.target.value,
-                                        )
+                                    onValueChange={(value) =>
+                                        setData('employee_id', value)
                                     }
-                                    required
                                 >
-                                    <option value="">Pilih karyawan</option>
-                                    {employees.map((employee) => (
-                                        <option
-                                            key={employee.id}
-                                            value={employee.id}
-                                        >
-                                            {employee.nama}
-                                        </option>
-                                    ))}
-                                </select>
+                                    <SelectTrigger
+                                        id="employee_id"
+                                        className="mt-1"
+                                    >
+                                        <SelectValue placeholder="Pilih karyawan" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {employees.map((employee) => (
+                                            <SelectItem
+                                                key={employee.id}
+                                                value={String(employee.id)}
+                                            >
+                                                {employee.nama}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 {errors.employee_id && (
                                     <p className="mt-2 text-sm text-destructive">
                                         {errors.employee_id}

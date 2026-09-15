@@ -8,6 +8,13 @@ import {
 } from '@/Components/ui/dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
@@ -68,22 +75,25 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                 <Label htmlFor="jenis_dokumen">
                                     Jenis Dokumen
                                 </Label>
-                                <select
-                                    id="jenis_dokumen"
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                                <Select
                                     value={data.jenis_dokumen}
-                                    onChange={(e) =>
-                                        setData(
-                                            'jenis_dokumen',
-                                            e.target.value,
-                                        )
+                                    onValueChange={(value) =>
+                                        setData('jenis_dokumen', value)
                                     }
                                 >
-                                    <option value="PR">PR</option>
-                                    <option value="PO">PO</option>
-                                    <option value="DO">DO</option>
-                                    <option value="WO">WO</option>
-                                </select>
+                                    <SelectTrigger
+                                        id="jenis_dokumen"
+                                        className="mt-1"
+                                    >
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="PR">PR</SelectItem>
+                                        <SelectItem value="PO">PO</SelectItem>
+                                        <SelectItem value="DO">DO</SelectItem>
+                                        <SelectItem value="WO">WO</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 {errors.jenis_dokumen && (
                                     <p className="mt-2 text-sm text-destructive">
                                         {errors.jenis_dokumen}
