@@ -121,6 +121,11 @@ export default function Index({
                                         </Link>
                                     </Button>
                                     <Button variant="outline" asChild>
+                                        <Link href={route('assignments.import.create')}>
+                                            Import Penugasan
+                                        </Link>
+                                    </Button>
+                                    <Button variant="outline" asChild>
                                         <a href={route('jobs.export')}>
                                             Export
                                         </a>
