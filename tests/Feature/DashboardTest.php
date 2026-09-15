@@ -178,4 +178,161 @@ class DashboardTest extends TestCase
 
         Carbon::setTestNow();
     }
+
+    public function test_dashboard_shows_canmanage_and_isadmin_flags_for_admin(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('canManage', true)
+            ->where('isAdmin', true)
+        );
+    }
+
+    public function test_dashboard_shows_canmanage_true_and_isadmin_false_for_staff_input(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $staffInput = User::factory()->create();
+        $staffInput->assignRole('staff_input');
+
+        $response = $this->actingAs($staffInput)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('canManage', true)
+            ->where('isAdmin', false)
+        );
+    }
+
+    public function test_dashboard_shows_canmanage_and_isadmin_false_for_viewer(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $viewer = User::factory()->create();
+        $viewer->assignRole('viewer');
+
+        $response = $this->actingAs($viewer)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('canManage', false)
+            ->where('isAdmin', false)
+        );
+    }
+
+    public function test_dashboard_limits_recent_employees_and_jobs_to_five(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        Employee::factory()->create(['nama' => 'Karyawan Terbaru']);
+        Employee::factory()->count(5)->create();
+        Job::factory()->create(['nama_pekerjaan' => 'Job Terbaru']);
+        Job::factory()->count(5)->create();
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->has('recentEmployees', 5)
+            ->has('recentJobs', 5)
+            ->where('recentEmployees.0.nama', 'Karyawan Terbaru')
+            ->where('recentJobs.0.nama_pekerjaan', 'Job Terbaru')
+        );
+    }
+
+    public function test_dashboard_shows_job_periods_ending_within_the_next_14_days(): void
+    {
+        Carbon::setTestNow('2025-09-03');
+
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $job = Job::factory()->create(['nama_pekerjaan' => 'Job Segera Berakhir']);
+        JobPeriod::factory()->create([
+            'job_id' => $job->id,
+            'status' => JobPeriodStatus::Aktif,
+            'tanggal_selesai' => now()->addDays(5)->format('Y-m-d'),
+        ]);
+
+        // Too far in the future — excluded.
+        JobPeriod::factory()->create([
+            'status' => JobPeriodStatus::Aktif,
+            'tanggal_selesai' => now()->addDays(30)->format('Y-m-d'),
+        ]);
+
+        // Already ended — excluded.
+        JobPeriod::factory()->create([
+            'status' => JobPeriodStatus::Aktif,
+            'tanggal_selesai' => now()->subDays(2)->format('Y-m-d'),
+        ]);
+
+        // No tanggal_selesai — excluded.
+        JobPeriod::factory()->create([
+            'status' => JobPeriodStatus::Aktif,
+            'tanggal_selesai' => null,
+        ]);
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->has('upcomingJobPeriods', 1)
+            ->where('upcomingJobPeriods.0.job_nama_pekerjaan', 'Job Segera Berakhir')
+        );
+
+        Carbon::setTestNow();
+    }
+
+    public function test_dashboard_shows_attendance_summary_counts_for_the_current_week(): void
+    {
+        Carbon::setTestNow('2025-09-03');
+
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $weekStart = now()->startOfWeek(Carbon::MONDAY);
+
+        $period = JobPeriod::factory()->create(['status' => JobPeriodStatus::Aktif]);
+        $assignment = Assignment::factory()->create([
+            'job_period_id' => $period->id,
+            'status' => AssignmentStatus::Aktif,
+            'is_current' => true,
+            'tanggal_mulai' => $weekStart->format('Y-m-d'),
+            'tanggal_selesai' => $weekStart->copy()->addDays(2)->format('Y-m-d'),
+            'created_by' => $admin->id,
+        ]);
+
+        Attendance::factory()->create([
+            'assignment_id' => $assignment->id,
+            'tanggal' => $weekStart->format('Y-m-d'),
+            'status' => 'hadir',
+            'recorded_by' => $admin->id,
+        ]);
+        Attendance::factory()->create([
+            'assignment_id' => $assignment->id,
+            'tanggal' => $weekStart->copy()->addDay()->format('Y-m-d'),
+            'status' => 'izin',
+            'recorded_by' => $admin->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('attendanceSummary.hadir', 1)
+            ->where('attendanceSummary.tidak_hadir', 0)
+            ->where('attendanceSummary.izin', 1)
+            ->where('attendanceSummary.belum_diisi', 1)
+        );
+
+        Carbon::setTestNow();
+    }
 }
