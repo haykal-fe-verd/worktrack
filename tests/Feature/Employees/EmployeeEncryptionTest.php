@@ -62,4 +62,27 @@ class EmployeeEncryptionTest extends TestCase
             Employee::hashNik('3513126804000099'),
         );
     }
+
+    public function test_hash_nik_throws_when_hash_key_is_not_configured(): void
+    {
+        config(['app.hash_key' => null]);
+
+        $this->expectException(\RuntimeException::class);
+
+        Employee::hashNik('3513126804000099');
+    }
+
+    public function test_nik_hash_self_heals_when_null_even_without_nik_change(): void
+    {
+        $employee = Employee::factory()->create(['nik' => '3513126804000099']);
+
+        DB::table('employees')->where('id', $employee->id)->update(['nik_hash' => null]);
+
+        $employee->fresh()->update(['alamat' => 'New address']);
+
+        $raw = DB::table('employees')->where('id', $employee->id)->first();
+
+        $this->assertNotNull($raw->nik_hash);
+        $this->assertSame(Employee::hashNik('3513126804000099'), $raw->nik_hash);
+    }
 }

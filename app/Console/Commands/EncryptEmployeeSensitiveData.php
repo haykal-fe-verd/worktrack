@@ -61,6 +61,14 @@ class EncryptEmployeeSensitiveData extends Command
 
         $this->info("Encrypted {$encrypted} row(s), skipped {$skipped} row(s) already encrypted.");
 
+        $remaining = DB::table('employees')->whereNull('nik_hash')->count();
+
+        if ($remaining > 0) {
+            $this->warn("{$remaining} row(s) still have a NULL nik_hash — this should not happen after a full run. Investigate before ending maintenance mode.");
+        } else {
+            $this->info('All employees now have a nik_hash. Safe to end maintenance mode.');
+        }
+
         return self::SUCCESS;
     }
 

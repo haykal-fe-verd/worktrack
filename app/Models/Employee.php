@@ -18,7 +18,7 @@ class Employee extends Model
     protected static function booted(): void
     {
         static::saving(function (Employee $employee) {
-            if ($employee->nik !== null && $employee->isDirty('nik')) {
+            if ($employee->nik !== null && ($employee->isDirty('nik') || $employee->nik_hash === null)) {
                 $employee->nik_hash = self::hashNik($employee->nik);
             }
         });
@@ -44,7 +44,13 @@ class Employee extends Model
      */
     public static function hashNik(string $nik): string
     {
-        return hash_hmac('sha256', $nik, (string) config('app.hash_key'));
+        $key = (string) config('app.hash_key');
+
+        if ($key === '') {
+            throw new \RuntimeException('HASH_KEY is not configured; the employees.nik blind index cannot be computed securely.');
+        }
+
+        return hash_hmac('sha256', $nik, $key);
     }
 
     /**

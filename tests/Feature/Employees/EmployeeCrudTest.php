@@ -216,6 +216,23 @@ class EmployeeCrudTest extends TestCase
         $this->assertSame('2222222222', $employee->no_rekening);
     }
 
+    public function test_admin_cannot_update_an_employee_to_another_employees_nik(): void
+    {
+        $admin = $this->admin();
+        Employee::factory()->create(['nik' => '1111111111111111']);
+        $employeeToUpdate = Employee::factory()->create(['nik' => '2222222222222222']);
+
+        $response = $this->actingAs($admin)->put("/employees/{$employeeToUpdate->id}", [
+            'nama' => $employeeToUpdate->nama,
+            'nik' => '1111111111111111',
+            'alamat' => $employeeToUpdate->alamat,
+            'no_rekening' => $employeeToUpdate->no_rekening,
+        ]);
+
+        $response->assertSessionHasErrors('nik');
+        $this->assertSame('2222222222222222', $employeeToUpdate->fresh()->nik);
+    }
+
     public function test_admin_can_toggle_employee_status(): void
     {
         $admin = $this->admin();

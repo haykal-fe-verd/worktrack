@@ -62,6 +62,15 @@ class EncryptEmployeeSensitiveDataTest extends TestCase
         $this->assertSame($afterFirstRun->nik_hash, $afterSecondRun->nik_hash);
     }
 
+    public function test_it_reports_safe_to_end_maintenance_mode_when_all_rows_have_a_nik_hash(): void
+    {
+        $this->insertPlaintextEmployee('3513126804000099', '1923973699');
+
+        $this->artisan('employees:encrypt-sensitive-data')
+            ->expectsOutputToContain('Safe to end maintenance mode')
+            ->assertExitCode(0);
+    }
+
     public function test_it_leaves_already_encrypted_rows_untouched(): void
     {
         $employee = Employee::factory()->create(['nik' => '2222222222222222', 'no_rekening' => '5555555555']);

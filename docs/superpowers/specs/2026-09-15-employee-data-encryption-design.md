@@ -75,11 +75,15 @@ Command mencetak ringkasan di akhir: jumlah baris yang dienkripsi, jumlah yang d
 
 ## 5. Urutan Deploy (WAJIB diikuti, prosedur manual — tidak diotomasi)
 
-1. `php artisan migrate` — hanya mengubah struktur tabel (perlebar `nik`/`no_rekening`, tambah kolom `nik_hash`). Data lama belum tersentuh, aplikasi masih baca/tulis `nik`/`no_rekening` sebagai plaintext di titik ini (kode lama belum di-deploy, cast belum aktif).
-2. `php artisan employees:encrypt-sensitive-data` — mengenkripsi seluruh data lama yang masih plaintext dan mengisi `nik_hash` untuk semua baris.
-3. Deploy kode yang mengaktifkan cast `encrypted` di model `Employee` + semua perubahan query di §3.
+Migrasi schema, command backfill, dan kode yang mengaktifkan cast `encrypted` semuanya ada dalam SATU deployable artifact (satu branch/release) — bukan tiga deploy terpisah. Yang penting adalah URUTAN OPERASI saat deploy tunggal itu dijalankan, bukan urutan beberapa kali deploy:
 
-**Peringatan:** kalau urutan dibalik (kode dengan cast `encrypted` aktif di-deploy sebelum langkah 2 selesai), setiap pembacaan model `Employee` akan melempar `DecryptException` karena mencoba mendekripsi nilai yang masih plaintext — aplikasi akan error total di semua fitur yang menyentuh data Karyawan.
+1. Aktifkan maintenance mode (`php artisan down`) — mencegah request masuk selama jendela singkat antara kode baru aktif dan data lama belum terenkripsi.
+2. Deploy kode (kode baru sudah termasuk cast `encrypted` yang aktif — TIDAK BOLEH ada request yang menyentuh model `Employee` sebelum langkah 4 selesai, makanya maintenance mode wajib di langkah 1).
+3. `php artisan migrate` — mengubah struktur tabel (perlebar `nik`/`no_rekening`, tambah kolom `nik_hash`).
+4. `php artisan employees:encrypt-sensitive-data` — mengenkripsi seluruh data lama yang masih plaintext dan mengisi `nik_hash` untuk semua baris.
+5. Nonaktifkan maintenance mode (`php artisan up`).
+
+**Peringatan:** kalau maintenance mode tidak diaktifkan sebelum deploy, setiap request yang menyentuh model `Employee` di antara langkah 2 dan 4 akan melempar `DecryptException` karena kode baru (cast aktif) mencoba mendekripsi data yang masih plaintext — downtime/error total pada seluruh fitur Karyawan sampai langkah 4 selesai.
 
 ## 6. Testing
 
