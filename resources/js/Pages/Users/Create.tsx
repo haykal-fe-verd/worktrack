@@ -17,6 +17,7 @@ import {
 } from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
+import { Save, X } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 export default function Create() {
@@ -156,9 +157,11 @@ export default function Create() {
                                 variant="secondary"
                                 onClick={close}
                             >
+                                <X className="mr-2 h-4 w-4" />
                                 Batal
                             </Button>
                             <Button type="submit" disabled={processing}>
+                                <Save className="mr-2 h-4 w-4" />
                                 Simpan
                             </Button>
                         </DialogFooter>

@@ -25,6 +25,7 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', Rule::in(array_column(Role::cases(), 'value'))],
         ];
     }

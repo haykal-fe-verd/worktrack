@@ -8,35 +8,29 @@ import {
 } from '@/Components/ui/dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps, RoleName } from '@/types';
+import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
 import { Save, X } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
-interface EditableUser {
+interface ResettableUser {
     id: number;
     name: string;
     email: string;
-    role: RoleName | null;
 }
 
-export default function Edit({ user }: PageProps<{ user: EditableUser }>) {
+export default function ResetPassword({
+    user,
+}: PageProps<{ user: ResettableUser }>) {
     const { data, setData, put, processing, errors } = useForm({
-        name: user.name,
-        role: user.role ?? 'viewer',
+        password: '',
+        password_confirmation: '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(route('users.update', user.id));
+        put(route('users.reset-password.update', user.id));
     };
 
     const close = () => router.visit(route('users.index'));
@@ -49,7 +43,7 @@ export default function Edit({ user }: PageProps<{ user: EditableUser }>) {
                 </h2>
             }
         >
-            <Head title={`Edit ${user.name}`} />
+            <Head title={`Reset Password - ${user.name}`} />
 
             <Dialog
                 open
@@ -63,7 +57,7 @@ export default function Edit({ user }: PageProps<{ user: EditableUser }>) {
                     <form onSubmit={submit}>
                         <DialogHeader>
                             <DialogTitle>
-                                Edit User: {user.name}
+                                Reset Password: {user.name}
                             </DialogTitle>
                         </DialogHeader>
 
@@ -73,55 +67,47 @@ export default function Edit({ user }: PageProps<{ user: EditableUser }>) {
 
                         <div className="mt-4 space-y-4">
                             <div>
-                                <Label htmlFor="name">Nama</Label>
+                                <Label htmlFor="password">
+                                    Password Baru
+                                </Label>
                                 <Input
-                                    id="name"
+                                    id="password"
+                                    type="password"
                                     className="mt-1"
-                                    value={data.name}
+                                    value={data.password}
                                     onChange={(e) =>
-                                        setData('name', e.target.value)
+                                        setData(
+                                            'password',
+                                            e.target.value,
+                                        )
                                     }
                                     required
                                     autoFocus
                                 />
-                                {errors.name && (
+                                {errors.password && (
                                     <p className="mt-2 text-sm text-destructive">
-                                        {errors.name}
+                                        {errors.password}
                                     </p>
                                 )}
                             </div>
 
                             <div>
-                                <Label htmlFor="role">Role</Label>
-                                <Select
-                                    value={data.role}
-                                    onValueChange={(value) =>
-                                        setData('role', value as RoleName)
+                                <Label htmlFor="password_confirmation">
+                                    Konfirmasi Password Baru
+                                </Label>
+                                <Input
+                                    id="password_confirmation"
+                                    type="password"
+                                    className="mt-1"
+                                    value={data.password_confirmation}
+                                    onChange={(e) =>
+                                        setData(
+                                            'password_confirmation',
+                                            e.target.value,
+                                        )
                                     }
-                                >
-                                    <SelectTrigger
-                                        id="role"
-                                        className="mt-1"
-                                    >
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="viewer">
-                                            Viewer
-                                        </SelectItem>
-                                        <SelectItem value="staff_input">
-                                            Staff Input
-                                        </SelectItem>
-                                        <SelectItem value="admin">
-                                            Admin
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {errors.role && (
-                                    <p className="mt-2 text-sm text-destructive">
-                                        {errors.role}
-                                    </p>
-                                )}
+                                    required
+                                />
                             </div>
                         </div>
 

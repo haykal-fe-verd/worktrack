@@ -117,6 +117,21 @@ export interface JobPeriodDetail {
     status: JobPeriodStatus;
 }
 
+export interface UserRow {
+    id: number;
+    name: string;
+    email: string;
+    role: RoleName | null;
+}
+
+export interface UserDetail {
+    id: number;
+    name: string;
+    email: string;
+    role: RoleName | null;
+    created_at: string;
+}
+
 export interface EmployeeAssignmentRow {
     id: number;
     job_nama_pekerjaan: string;

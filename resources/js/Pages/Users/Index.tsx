@@ -1,11 +1,22 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/Components/ui/alert-dialog';
 import Pagination from '@/Components/Pagination';
-import { Button } from '@/Components/ui/button';
+import { Button, buttonVariants } from '@/Components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
+import { Input } from '@/Components/ui/input';
 import {
     Select,
     SelectContent,
@@ -22,30 +33,75 @@ import {
     TableRow,
 } from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Paginated, PageProps, RoleName } from '@/types';
+import { cn } from '@/lib/utils';
+import { Paginated, PageProps, UserRow } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
+import {
+    Eye,
+    KeyRound,
+    MoreHorizontal,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+} from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 
-interface UserRow {
-    id: number;
-    name: string;
-    email: string;
-    role: RoleName | null;
+interface Filters {
+    search?: string;
+    role?: string;
 }
+
+const ROLE_LABELS: Record<string, string> = {
+    admin: 'Admin',
+    staff_input: 'Staff Input',
+    viewer: 'Viewer',
+};
 
 export default function Index({
     users,
+    filters,
     perPageOptions,
 }: PageProps<{
     users: Paginated<UserRow>;
+    filters: Filters;
     perPageOptions: number[];
 }>) {
+    const [search, setSearch] = useState(filters.search ?? '');
+    const [role, setRole] = useState(filters.role ?? '');
+    const [deletingUser, setDeletingUser] = useState<UserRow | null>(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+
+    const applyFilters: FormEventHandler = (e) => {
+        e.preventDefault();
+        router.get(
+            route('users.index'),
+            { search, role, per_page: users.per_page },
+            { preserveState: true, replace: true },
+        );
+    };
+
     const changePerPage = (value: string) => {
         router.get(
             route('users.index'),
-            { per_page: value },
+            { search, role, per_page: value },
             { preserveState: true, replace: true },
         );
+    };
+
+    const deleteUser = (userId: number) => {
+        if (deletingId !== null) {
+            return;
+        }
+
+        setDeletingId(userId);
+        router.delete(route('users.destroy', userId), {
+            onFinish: () => {
+                setDeletingId(null);
+                setDeleteDialogOpen(false);
+            },
+        });
     };
 
     return (
@@ -60,8 +116,57 @@ export default function Index({
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white p-6 shadow-sm sm:rounded-lg">
-                        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
+                        <form
+                            onSubmit={applyFilters}
+                            className="mb-4 flex flex-wrap items-end gap-3"
+                        >
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500">
+                                    Cari nama/email
+                                </label>
+                                <Input
+                                    type="text"
+                                    value={search}
+                                    onChange={(e) =>
+                                        setSearch(e.target.value)
+                                    }
+                                    className="mt-1"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500">
+                                    Role
+                                </label>
+                                <Select
+                                    value={role === '' ? 'semua' : role}
+                                    onValueChange={(value) =>
+                                        setRole(
+                                            value === 'semua' ? '' : value,
+                                        )
+                                    }
+                                >
+                                    <SelectTrigger className="mt-1 w-[160px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="semua">
+                                            Semua
+                                        </SelectItem>
+                                        <SelectItem value="admin">
+                                            Admin
+                                        </SelectItem>
+                                        <SelectItem value="staff_input">
+                                            Staff Input
+                                        </SelectItem>
+                                        <SelectItem value="viewer">
+                                            Viewer
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
                             <div>
                                 <label className="block text-xs font-medium text-slate-500">
                                     Per Halaman
@@ -86,24 +191,38 @@ export default function Index({
                                 </Select>
                             </div>
 
-                            <Button asChild>
-                                <Link href={route('users.create')}>
-                                    Tambah User
-                                </Link>
+                            <Button type="submit">
+                                <Search className="mr-2 h-4 w-4" />
+                                Terapkan
                             </Button>
-                        </div>
+
+                            <div className="ml-auto flex gap-2">
+                                <Button asChild>
+                                    <Link href={route('users.create')}>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Tambah User
+                                    </Link>
+                                </Button>
+                            </div>
+                        </form>
 
                         <div className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Nama</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Role</TableHead>
-                                        <TableHead />
+                                        <TableHead className="py-2">
+                                            Nama
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Email
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Role
+                                        </TableHead>
+                                        <TableHead className="py-2" />
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -111,7 +230,7 @@ export default function Index({
                                         <TableRow>
                                             <TableCell
                                                 colSpan={5}
-                                                className="text-center text-slate-500"
+                                                className="py-2 text-center text-slate-500"
                                             >
                                                 Tidak ada data user.
                                             </TableCell>
@@ -119,19 +238,23 @@ export default function Index({
                                     )}
                                     {users.data.map((user, index) => (
                                         <TableRow key={user.id}>
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {(users.from ?? 1) + index}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {user.name}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {user.email}
                                             </TableCell>
-                                            <TableCell>
-                                                {user.role ?? '—'}
+                                            <TableCell className="py-2">
+                                                {user.role
+                                                    ? (ROLE_LABELS[
+                                                          user.role
+                                                      ] ?? user.role)
+                                                    : '—'}
                                             </TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell className="py-2 text-right">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger
                                                         asChild
@@ -152,12 +275,57 @@ export default function Index({
                                                         >
                                                             <Link
                                                                 href={route(
+                                                                    'users.show',
+                                                                    user.id,
+                                                                )}
+                                                            >
+                                                                <Eye className="mr-2 h-4 w-4" />
+                                                                Detail
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={route(
                                                                     'users.edit',
                                                                     user.id,
                                                                 )}
                                                             >
+                                                                <Pencil className="mr-2 h-4 w-4" />
                                                                 Edit
                                                             </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={route(
+                                                                    'users.reset-password.edit',
+                                                                    user.id,
+                                                                )}
+                                                            >
+                                                                <KeyRound className="mr-2 h-4 w-4" />
+                                                                Reset Password
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            className="text-destructive focus:text-destructive"
+                                                            disabled={
+                                                                deletingId ===
+                                                                user.id
+                                                            }
+                                                            onSelect={() => {
+                                                                setDeletingUser(
+                                                                    user,
+                                                                );
+                                                                setDeleteDialogOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Trash2 className="mr-2 h-4 w-4" />
+                                                            Hapus
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -172,6 +340,34 @@ export default function Index({
                     </div>
                 </div>
             </div>
+
+            <AlertDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Hapus user?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {`Akun ${deletingUser?.name} akan dihapus permanen dan tidak bisa dikembalikan.`}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogAction
+                            disabled={deletingId !== null}
+                            className={cn(
+                                buttonVariants({ variant: 'destructive' }),
+                            )}
+                            onClick={() =>
+                                deletingUser && deleteUser(deletingUser.id)
+                            }
+                        >
+                            Hapus
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AuthenticatedLayout>
     );
 }

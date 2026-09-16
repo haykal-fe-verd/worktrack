@@ -31,6 +31,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('users')->name('users.')->grou
     Route::post('/', [UserController::class, 'store'])->name('store');
     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
     Route::put('/{user}', [UserController::class, 'update'])->name('update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+    Route::get('/{user}/reset-password', [UserController::class, 'editPassword'])->name('reset-password.edit');
+    Route::put('/{user}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password.update');
+    Route::get('/{user}', [UserController::class, 'show'])->name('show');
 });
 
 Route::middleware('auth')->prefix('employees')->name('employees.')->group(function () {
