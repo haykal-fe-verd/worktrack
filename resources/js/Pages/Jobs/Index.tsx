@@ -29,10 +29,12 @@ interface Filters {
 export default function Index({
     jobs,
     filters,
+    perPageOptions,
     canManage,
 }: PageProps<{
     jobs: Paginated<JobRow>;
     filters: Filters;
+    perPageOptions: number[];
     canManage: boolean;
 }>) {
     const [search, setSearch] = useState(filters.search ?? '');
@@ -42,7 +44,15 @@ export default function Index({
         e.preventDefault();
         router.get(
             route('jobs.index'),
-            { search, status },
+            { search, status, per_page: jobs.per_page },
+            { preserveState: true, replace: true },
+        );
+    };
+
+    const changePerPage = (value: string) => {
+        router.get(
+            route('jobs.index'),
+            { search, status, per_page: value },
             { preserveState: true, replace: true },
         );
     };
@@ -103,6 +113,30 @@ export default function Index({
                                         <SelectItem value="selesai">
                                             Selesai
                                         </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500">
+                                    Per Halaman
+                                </label>
+                                <Select
+                                    value={String(jobs.per_page)}
+                                    onValueChange={changePerPage}
+                                >
+                                    <SelectTrigger className="mt-1 w-[100px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {perPageOptions.map((option) => (
+                                            <SelectItem
+                                                key={option}
+                                                value={String(option)}
+                                            >
+                                                {option}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>

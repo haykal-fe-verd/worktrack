@@ -40,12 +40,14 @@ export default function Rekap({
     filters,
     dateKeys,
     rows,
+    perPageOptions,
     canManage,
 }: PageProps<{
     jobs: JobOption[];
     filters: AttendanceFilters;
     dateKeys: string[];
     rows: Paginated<AttendanceRecapRow>;
+    perPageOptions: number[];
     canManage: boolean;
 }>) {
     const [dateFrom, setDateFrom] = useState(filters.date_from);
@@ -62,6 +64,20 @@ export default function Rekap({
                 date_from: dateFrom,
                 date_to: dateTo,
                 job_id: jobId === 'semua' ? undefined : jobId,
+                per_page: rows.per_page,
+            },
+            { preserveState: true, replace: true },
+        );
+    };
+
+    const changePerPage = (value: string) => {
+        router.get(
+            route('attendance.rekap'),
+            {
+                date_from: dateFrom,
+                date_to: dateTo,
+                job_id: jobId === 'semua' ? undefined : jobId,
+                per_page: value,
             },
             { preserveState: true, replace: true },
         );
@@ -139,6 +155,30 @@ export default function Rekap({
                                                 value={String(job.id)}
                                             >
                                                 {job.nama_pekerjaan}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500">
+                                    Per Halaman
+                                </label>
+                                <Select
+                                    value={String(rows.per_page)}
+                                    onValueChange={changePerPage}
+                                >
+                                    <SelectTrigger className="mt-1 w-[100px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {perPageOptions.map((option) => (
+                                            <SelectItem
+                                                key={option}
+                                                value={String(option)}
+                                            >
+                                                {option}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

@@ -6,19 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Support\PerPage;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $users = User::query()
             ->with('roles:id,name')
             ->orderBy('name')
-            ->paginate(20);
+            ->paginate(PerPage::resolve($request))
+            ->withQueryString();
 
         $users->through(fn (User $user) => [
             'id' => $user->id,
@@ -29,6 +32,7 @@ class UserController extends Controller
 
         return Inertia::render('Users/Index', [
             'users' => $users,
+            'perPageOptions' => PerPage::OPTIONS,
         ]);
     }
 

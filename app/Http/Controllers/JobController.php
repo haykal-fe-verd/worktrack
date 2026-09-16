@@ -7,6 +7,7 @@ use App\Enums\JobStatus;
 use App\Http\Requests\StoreJobRequest;
 use App\Models\Job;
 use App\Models\JobPeriod;
+use App\Support\PerPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class JobController extends Controller
             })
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
             ->orderBy('nama_pekerjaan')
-            ->paginate(20)
+            ->paginate(PerPage::resolve($request))
             ->withQueryString();
 
         $jobs->through(fn (Job $job) => [
@@ -46,6 +47,7 @@ class JobController extends Controller
         return Inertia::render('Jobs/Index', [
             'jobs' => $jobs,
             'filters' => $request->only(['search', 'status']),
+            'perPageOptions' => PerPage::OPTIONS,
             'canManage' => $canManage,
         ]);
     }

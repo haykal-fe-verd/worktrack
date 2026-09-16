@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\AttendanceRecapExport;
 use App\Models\Job;
 use App\Support\AttendanceRecap;
+use App\Support\PerPage;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -26,7 +27,7 @@ class AttendanceRekapController extends Controller
         $rows = AttendanceRecap::build($dateFrom, $dateTo, $jobId)->values();
         $dateKeys = $this->buildDateKeys($dateFrom, $dateTo);
 
-        $perPage = 20;
+        $perPage = PerPage::resolve($request);
         $page = Paginator::resolveCurrentPage();
 
         $paginatedRows = new LengthAwarePaginator(
@@ -46,6 +47,7 @@ class AttendanceRekapController extends Controller
             ],
             'dateKeys' => $dateKeys,
             'rows' => $paginatedRows,
+            'perPageOptions' => PerPage::OPTIONS,
             'canManage' => $request->user()->hasAnyRole(['admin', 'staff_input']),
         ]);
     }

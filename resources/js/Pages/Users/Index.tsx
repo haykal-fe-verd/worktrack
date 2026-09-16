@@ -7,6 +7,13 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/Components/ui/select';
+import {
     Table,
     TableBody,
     TableCell,
@@ -16,7 +23,7 @@ import {
 } from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Paginated, PageProps, RoleName } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { MoreHorizontal } from 'lucide-react';
 
 interface UserRow {
@@ -28,7 +35,19 @@ interface UserRow {
 
 export default function Index({
     users,
-}: PageProps<{ users: Paginated<UserRow> }>) {
+    perPageOptions,
+}: PageProps<{
+    users: Paginated<UserRow>;
+    perPageOptions: number[];
+}>) {
+    const changePerPage = (value: string) => {
+        router.get(
+            route('users.index'),
+            { per_page: value },
+            { preserveState: true, replace: true },
+        );
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -42,7 +61,31 @@ export default function Index({
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white p-6 shadow-sm sm:rounded-lg">
-                        <div className="mb-4 flex justify-end">
+                        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500">
+                                    Per Halaman
+                                </label>
+                                <Select
+                                    value={String(users.per_page)}
+                                    onValueChange={changePerPage}
+                                >
+                                    <SelectTrigger className="mt-1 w-[100px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {perPageOptions.map((option) => (
+                                            <SelectItem
+                                                key={option}
+                                                value={String(option)}
+                                            >
+                                                {option}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
                             <Button asChild>
                                 <Link href={route('users.create')}>
                                     Tambah User

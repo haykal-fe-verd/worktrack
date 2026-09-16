@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Assignment;
 use App\Models\Employee;
 use App\Support\Masks;
+use App\Support\PerPage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -33,7 +34,7 @@ class EmployeeController extends Controller
             })
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
             ->orderBy('nama')
-            ->paginate(20)
+            ->paginate(PerPage::resolve($request))
             ->withQueryString();
 
         $employees->through(fn (Employee $employee) => [
@@ -48,6 +49,7 @@ class EmployeeController extends Controller
         return Inertia::render('Employees/Index', [
             'employees' => $employees,
             'filters' => $request->only(['search', 'status']),
+            'perPageOptions' => PerPage::OPTIONS,
             'canManage' => $canManage,
         ]);
     }

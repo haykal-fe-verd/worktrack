@@ -21,7 +21,7 @@ export default function Pagination({ links }: { links: PaginationLinkData[] }) {
     const pages = links.slice(1, -1);
 
     return (
-        <PaginationRoot className="mt-4 justify-start">
+        <PaginationRoot className="mt-4 justify-center">
             <PaginationContent>
                 <PaginationItem>
                     {previous.url ? (
