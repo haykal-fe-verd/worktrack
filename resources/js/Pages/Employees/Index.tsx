@@ -1,4 +1,15 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/Components/ui/alert-dialog';
 import Pagination from '@/Components/Pagination';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
     DropdownMenu,
@@ -6,7 +17,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
-import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import {
     Select,
@@ -48,6 +58,9 @@ export default function Index({
     const [search, setSearch] = useState(filters.search ?? '');
     const [status, setStatus] = useState(filters.status ?? '');
     const [togglingId, setTogglingId] = useState<number | null>(null);
+    const [confirmingEmployee, setConfirmingEmployee] =
+        useState<EmployeeRow | null>(null);
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
     const applyFilters: FormEventHandler = (e) => {
         e.preventDefault();
@@ -75,7 +88,12 @@ export default function Index({
         router.patch(
             route('employees.toggle-status', employeeId),
             {},
-            { onFinish: () => setTogglingId(null) },
+            {
+                onFinish: () => {
+                    setTogglingId(null);
+                    setConfirmDialogOpen(false);
+                },
+            },
         );
     };
 
@@ -304,11 +322,14 @@ export default function Index({
                                                                     togglingId ===
                                                                     employee.id
                                                                 }
-                                                                onSelect={() =>
-                                                                    toggleStatus(
-                                                                        employee.id,
-                                                                    )
-                                                                }
+                                                                onSelect={() => {
+                                                                    setConfirmingEmployee(
+                                                                        employee,
+                                                                    );
+                                                                    setConfirmDialogOpen(
+                                                                        true,
+                                                                    );
+                                                                }}
                                                             >
                                                                 {employee.status ===
                                                                 'aktif'
@@ -329,6 +350,38 @@ export default function Index({
                     </div>
                 </div>
             </div>
+
+            <AlertDialog
+                open={confirmDialogOpen}
+                onOpenChange={setConfirmDialogOpen}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            {confirmingEmployee?.status === 'aktif'
+                                ? 'Nonaktifkan karyawan?'
+                                : 'Aktifkan karyawan?'}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {confirmingEmployee?.status === 'aktif'
+                                ? `Status ${confirmingEmployee?.nama} akan diubah menjadi Non-aktif.`
+                                : `Status ${confirmingEmployee?.nama} akan diubah menjadi Aktif.`}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogAction
+                            disabled={togglingId !== null}
+                            onClick={() =>
+                                confirmingEmployee &&
+                                toggleStatus(confirmingEmployee.id)
+                            }
+                        >
+                            Lanjutkan
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AuthenticatedLayout>
     );
 }
