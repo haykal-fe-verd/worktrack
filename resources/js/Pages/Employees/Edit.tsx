@@ -11,6 +11,7 @@ import { Label } from '@/Components/ui/label';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { EmployeeDetail, PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
+import { Save, X } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 export default function Edit({
@@ -163,9 +164,11 @@ export default function Edit({
                                 variant="secondary"
                                 onClick={close}
                             >
+                                <X className="mr-2 h-4 w-4" />
                                 Batal
                             </Button>
                             <Button type="submit" disabled={processing}>
+                                <Save className="mr-2 h-4 w-4" />
                                 Simpan
                             </Button>
                         </DialogFooter>
