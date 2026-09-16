@@ -38,8 +38,12 @@ import { EmployeeRow, PageProps, Paginated } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
     Download,
+    Eye,
     MoreHorizontal,
+    Pencil,
     Plus,
+    Power,
+    PowerOff,
     Search,
     Upload,
 } from 'lucide-react';
@@ -311,6 +315,7 @@ export default function Index({
                                                                     employee.id,
                                                                 )}
                                                             >
+                                                                <Eye className="mr-2 h-4 w-4" />
                                                                 Detail
                                                             </Link>
                                                         </DropdownMenuItem>
@@ -324,6 +329,7 @@ export default function Index({
                                                                         employee.id,
                                                                     )}
                                                                 >
+                                                                    <Pencil className="mr-2 h-4 w-4" />
                                                                     Edit
                                                                 </Link>
                                                             </DropdownMenuItem>
@@ -343,6 +349,12 @@ export default function Index({
                                                                     );
                                                                 }}
                                                             >
+                                                                {employee.status ===
+                                                                'aktif' ? (
+                                                                    <PowerOff className="mr-2 h-4 w-4" />
+                                                                ) : (
+                                                                    <Power className="mr-2 h-4 w-4" />
+                                                                )}
                                                                 {employee.status ===
                                                                 'aktif'
                                                                     ? 'Nonaktifkan'
