@@ -1,3 +1,4 @@
+import Pagination from '@/Components/Pagination';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import {
@@ -22,6 +23,7 @@ import {
     AttendanceRecapStatusValue,
     JobOption,
     PageProps,
+    Paginated,
 } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
@@ -43,7 +45,7 @@ export default function Rekap({
     jobs: JobOption[];
     filters: AttendanceFilters;
     dateKeys: string[];
-    rows: AttendanceRecapRow[];
+    rows: Paginated<AttendanceRecapRow>;
     canManage: boolean;
 }>) {
     const [dateFrom, setDateFrom] = useState(filters.date_from);
@@ -192,7 +194,7 @@ export default function Rekap({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {rows.length === 0 && (
+                                    {rows.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
                                                 colSpan={
@@ -205,7 +207,7 @@ export default function Rekap({
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {rows.map((row) => (
+                                    {rows.data.map((row) => (
                                         <TableRow
                                             key={row.assignment_id}
                                         >
@@ -251,6 +253,8 @@ export default function Rekap({
                                 </TableBody>
                             </Table>
                         </div>
+
+                        <Pagination links={rows.links} />
                     </div>
                 </div>
             </div>

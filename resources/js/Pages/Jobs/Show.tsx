@@ -6,6 +6,12 @@ import {
     DialogTitle,
 } from '@/Components/ui/dialog';
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
+import {
     Table,
     TableBody,
     TableCell,
@@ -16,6 +22,7 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { JobDetail, JobPeriodRow, PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { MoreHorizontal } from 'lucide-react';
 
 export default function Show({
     job,
@@ -141,15 +148,35 @@ export default function Show({
                                                 {period.status}
                                             </TableCell>
                                             <TableCell>
-                                                <Link
-                                                    href={route(
-                                                        'job-periods.show',
-                                                        period.id,
-                                                    )}
-                                                    className="text-pln-blue hover:underline"
-                                                >
-                                                    Detail
-                                                </Link>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                        >
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">
+                                                                Aksi
+                                                            </span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={route(
+                                                                    'job-periods.show',
+                                                                    period.id,
+                                                                )}
+                                                            >
+                                                                Detail
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </TableCell>
                                         </TableRow>
                                     ))}

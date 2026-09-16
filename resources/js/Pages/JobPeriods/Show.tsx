@@ -1,9 +1,16 @@
+import { Button } from '@/Components/ui/button';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from '@/Components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
 import {
     Table,
     TableBody,
@@ -15,6 +22,7 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { AssignmentRow, JobPeriodDetail, PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { MoreHorizontal } from 'lucide-react';
 
 export default function Show({
     jobPeriod,
@@ -148,25 +156,49 @@ export default function Show({
                                                 (assignment.is_current &&
                                                 assignment.status ===
                                                     'aktif' ? (
-                                                    <TableCell>
-                                                        <Link
-                                                            href={route(
-                                                                'assignments.edit',
-                                                                assignment.id,
-                                                            )}
-                                                            className="text-pln-blue hover:underline"
-                                                        >
-                                                            Edit
-                                                        </Link>
-                                                        <Link
-                                                            href={route(
-                                                                'assignments.end.form',
-                                                                assignment.id,
-                                                            )}
-                                                            className="ml-3 text-red-600 hover:underline"
-                                                        >
-                                                            Akhiri
-                                                        </Link>
+                                                    <TableCell className="text-right">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger
+                                                                asChild
+                                                            >
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                >
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                    <span className="sr-only">
+                                                                        Aksi
+                                                                    </span>
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuItem
+                                                                    asChild
+                                                                >
+                                                                    <Link
+                                                                        href={route(
+                                                                            'assignments.edit',
+                                                                            assignment.id,
+                                                                        )}
+                                                                    >
+                                                                        Edit
+                                                                    </Link>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem
+                                                                    asChild
+                                                                    className="text-red-600 focus:text-red-600"
+                                                                >
+                                                                    <Link
+                                                                        href={route(
+                                                                            'assignments.end.form',
+                                                                            assignment.id,
+                                                                        )}
+                                                                    >
+                                                                        Akhiri
+                                                                    </Link>
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
                                                     </TableCell>
                                                 ) : (
                                                     <TableCell />

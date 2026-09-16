@@ -1,4 +1,11 @@
+import Pagination from '@/Components/Pagination';
 import { Button } from '@/Components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
 import {
     Table,
     TableBody,
@@ -8,8 +15,9 @@ import {
     TableRow,
 } from '@/Components/ui/table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps, RoleName } from '@/types';
+import { Paginated, PageProps, RoleName } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import { MoreHorizontal } from 'lucide-react';
 
 interface UserRow {
     id: number;
@@ -18,7 +26,9 @@ interface UserRow {
     role: RoleName | null;
 }
 
-export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
+export default function Index({
+    users,
+}: PageProps<{ users: Paginated<UserRow> }>) {
     return (
         <AuthenticatedLayout
             header={
@@ -51,7 +61,7 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {users.length === 0 && (
+                                    {users.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
                                                 colSpan={4}
@@ -61,7 +71,7 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {users.map((user) => (
+                                    {users.data.map((user) => (
                                         <TableRow key={user.id}>
                                             <TableCell>
                                                 {user.name}
@@ -73,21 +83,43 @@ export default function Index({ users }: PageProps<{ users: UserRow[] }>) {
                                                 {user.role ?? '—'}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Link
-                                                    href={route(
-                                                        'users.edit',
-                                                        user.id,
-                                                    )}
-                                                    className="text-pln-blue hover:text-pln-blue-dark"
-                                                >
-                                                    Edit
-                                                </Link>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                        >
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">
+                                                                Aksi
+                                                            </span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={route(
+                                                                    'users.edit',
+                                                                    user.id,
+                                                                )}
+                                                            >
+                                                                Edit
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
                         </div>
+
+                        <Pagination links={users.links} />
                     </div>
                 </div>
             </div>

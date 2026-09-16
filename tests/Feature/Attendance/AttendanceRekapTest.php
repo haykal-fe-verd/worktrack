@@ -70,10 +70,10 @@ class AttendanceRekapTest extends TestCase
         );
 
         $response->assertOk();
-        $response->assertJsonPath('props.rows.0.days.2025-09-01', 'belum_diisi');
-        $response->assertJsonPath('props.rows.0.days.2025-09-02', 'hadir');
-        $response->assertJsonPath('props.rows.0.days.2025-09-03', 'belum_diisi');
-        $response->assertJsonPath('props.rows.0.summary.hadir', 1);
+        $response->assertJsonPath('props.rows.data.0.days.2025-09-01', 'belum_diisi');
+        $response->assertJsonPath('props.rows.data.0.days.2025-09-02', 'hadir');
+        $response->assertJsonPath('props.rows.data.0.days.2025-09-03', 'belum_diisi');
+        $response->assertJsonPath('props.rows.data.0.summary.hadir', 1);
     }
 
     public function test_job_filter_narrows_the_results(): void
@@ -102,7 +102,7 @@ class AttendanceRekapTest extends TestCase
             ['X-Inertia' => 'true', 'X-Inertia-Version' => file_exists($m = public_path('build/manifest.json')) ? hash_file('xxh128', $m) : '']
         );
 
-        $response->assertJsonCount(1, 'props.rows');
+        $response->assertJsonCount(1, 'props.rows.data');
     }
 
     public function test_index_defaults_to_the_current_week_when_no_filters_given(): void
@@ -131,7 +131,7 @@ class AttendanceRekapTest extends TestCase
             ['X-Inertia' => 'true', 'X-Inertia-Version' => file_exists($m = public_path('build/manifest.json')) ? hash_file('xxh128', $m) : '']
         );
 
-        $response->assertJsonCount(0, 'props.rows');
+        $response->assertJsonCount(0, 'props.rows.data');
     }
 
     public function test_days_after_today_are_not_marked_belum_diisi_even_when_tanggal_selesai_is_in_the_future(): void
@@ -156,12 +156,12 @@ class AttendanceRekapTest extends TestCase
         );
 
         $response->assertOk();
-        $response->assertJsonPath('props.rows.0.days.2025-09-01', 'belum_diisi');
-        $response->assertJsonPath('props.rows.0.days.2025-09-03', 'belum_diisi');
+        $response->assertJsonPath('props.rows.data.0.days.2025-09-01', 'belum_diisi');
+        $response->assertJsonPath('props.rows.data.0.days.2025-09-03', 'belum_diisi');
         // 2025-09-04 and 2025-09-05 are after "today" (2025-09-03) and must
         // be absent entirely, not marked belum_diisi.
-        $response->assertJsonMissingPath('props.rows.0.days.2025-09-04');
-        $response->assertJsonMissingPath('props.rows.0.days.2025-09-05');
+        $response->assertJsonMissingPath('props.rows.data.0.days.2025-09-04');
+        $response->assertJsonMissingPath('props.rows.data.0.days.2025-09-05');
 
         Carbon::setTestNow();
     }

@@ -6,6 +6,8 @@ use App\Exports\AttendanceRecapExport;
 use App\Models\Job;
 use App\Support\AttendanceRecap;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -21,8 +23,19 @@ class AttendanceRekapController extends Controller
 
         [$dateFrom, $dateTo, $jobId] = $this->resolveFilters($request);
 
-        $rows = AttendanceRecap::build($dateFrom, $dateTo, $jobId);
+        $rows = AttendanceRecap::build($dateFrom, $dateTo, $jobId)->values();
         $dateKeys = $this->buildDateKeys($dateFrom, $dateTo);
+
+        $perPage = 20;
+        $page = Paginator::resolveCurrentPage();
+
+        $paginatedRows = new LengthAwarePaginator(
+            $rows->forPage($page, $perPage)->values(),
+            $rows->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()],
+        );
 
         return Inertia::render('Attendance/Rekap', [
             'jobs' => Job::orderBy('nama_pekerjaan')->get(['id', 'nama_pekerjaan']),
@@ -32,7 +45,7 @@ class AttendanceRekapController extends Controller
                 'job_id' => $jobId,
             ],
             'dateKeys' => $dateKeys,
-            'rows' => $rows->values(),
+            'rows' => $paginatedRows,
             'canManage' => $request->user()->hasAnyRole(['admin', 'staff_input']),
         ]);
     }

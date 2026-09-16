@@ -1,34 +1,76 @@
+import {
+    Pagination as PaginationRoot,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from '@/Components/ui/pagination';
+import { PaginationLink as PaginationLinkData } from '@/types';
 import { Link } from '@inertiajs/react';
-import { PaginationLink } from '@/types';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function Pagination({ links }: { links: PaginationLink[] }) {
+export default function Pagination({ links }: { links: PaginationLinkData[] }) {
     if (links.length <= 3) {
         return null;
     }
 
+    const previous = links[0];
+    const next = links[links.length - 1];
+    const pages = links.slice(1, -1);
+
     return (
-        <div className="mt-4 flex flex-wrap gap-1">
-            {links.map((link, index) =>
-                link.url ? (
-                    <Link
-                        key={index}
-                        href={link.url}
-                        preserveScroll
-                        className={`rounded px-3 py-1 text-sm ${
-                            link.active
-                                ? 'bg-pln-blue text-white'
-                                : 'text-slate-600 hover:bg-slate-100'
-                        }`}
-                        dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
-                ) : (
-                    <span
-                        key={index}
-                        className="cursor-not-allowed rounded px-3 py-1 text-sm text-slate-300"
-                        dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
-                ),
-            )}
-        </div>
+        <PaginationRoot className="mt-4 justify-start">
+            <PaginationContent>
+                <PaginationItem>
+                    {previous.url ? (
+                        <PaginationPrevious asChild>
+                            <Link href={previous.url} preserveScroll>
+                                <ChevronLeft className="h-4 w-4" />
+                                <span>Sebelumnya</span>
+                            </Link>
+                        </PaginationPrevious>
+                    ) : (
+                        <PaginationPrevious
+                            aria-disabled
+                            className="pointer-events-none opacity-50"
+                        />
+                    )}
+                </PaginationItem>
+
+                {pages.map((link, index) =>
+                    link.url ? (
+                        <PaginationItem key={index}>
+                            <PaginationLink isActive={link.active} asChild>
+                                <Link href={link.url} preserveScroll>
+                                    {link.label}
+                                </Link>
+                            </PaginationLink>
+                        </PaginationItem>
+                    ) : (
+                        <PaginationItem key={index}>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                    ),
+                )}
+
+                <PaginationItem>
+                    {next.url ? (
+                        <PaginationNext asChild>
+                            <Link href={next.url} preserveScroll>
+                                <span>Berikutnya</span>
+                                <ChevronRight className="h-4 w-4" />
+                            </Link>
+                        </PaginationNext>
+                    ) : (
+                        <PaginationNext
+                            aria-disabled
+                            className="pointer-events-none opacity-50"
+                        />
+                    )}
+                </PaginationItem>
+            </PaginationContent>
+        </PaginationRoot>
     );
 }

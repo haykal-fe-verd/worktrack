@@ -18,13 +18,14 @@ class UserController extends Controller
         $users = User::query()
             ->with('roles:id,name')
             ->orderBy('name')
-            ->get()
-            ->map(fn (User $user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->roles->first()?->name,
-            ]);
+            ->paginate(20);
+
+        $users->through(fn (User $user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->roles->first()?->name,
+        ]);
 
         return Inertia::render('Users/Index', [
             'users' => $users,

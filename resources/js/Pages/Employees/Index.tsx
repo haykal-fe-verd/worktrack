@@ -1,5 +1,11 @@
 import Pagination from '@/Components/Pagination';
 import { Button } from '@/Components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
 import { Input } from '@/Components/ui/input';
 import {
     Select,
@@ -19,6 +25,7 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { EmployeeRow, PageProps, Paginated } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { MoreHorizontal } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 interface Filters {
@@ -198,33 +205,51 @@ export default function Index({
                                             </TableCell>
                                             {canManage && (
                                                 <TableCell className="text-right">
-                                                    <Link
-                                                        href={route(
-                                                            'employees.edit',
-                                                            employee.id,
-                                                        )}
-                                                        className="mr-3 text-pln-blue hover:text-pln-blue-dark"
-                                                    >
-                                                        Edit
-                                                    </Link>
-                                                    <button
-                                                        type="button"
-                                                        disabled={
-                                                            togglingId ===
-                                                            employee.id
-                                                        }
-                                                        onClick={() =>
-                                                            toggleStatus(
-                                                                employee.id,
-                                                            )
-                                                        }
-                                                        className="text-slate-500 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-                                                    >
-                                                        {employee.status ===
-                                                        'aktif'
-                                                            ? 'Nonaktifkan'
-                                                            : 'Aktifkan'}
-                                                    </button>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger
+                                                            asChild
+                                                        >
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                            >
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                                <span className="sr-only">
+                                                                    Aksi
+                                                                </span>
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem
+                                                                asChild
+                                                            >
+                                                                <Link
+                                                                    href={route(
+                                                                        'employees.edit',
+                                                                        employee.id,
+                                                                    )}
+                                                                >
+                                                                    Edit
+                                                                </Link>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                disabled={
+                                                                    togglingId ===
+                                                                    employee.id
+                                                                }
+                                                                onSelect={() =>
+                                                                    toggleStatus(
+                                                                        employee.id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                {employee.status ===
+                                                                'aktif'
+                                                                    ? 'Nonaktifkan'
+                                                                    : 'Aktifkan'}
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
                                                 </TableCell>
                                             )}
                                         </TableRow>
