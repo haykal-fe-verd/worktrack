@@ -28,6 +28,7 @@ import {
     PageProps,
 } from '@/types';
 import { Head, router } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
 const STATUS_LABEL: Record<AttendanceStatusValue, string> = {
@@ -239,7 +240,7 @@ export default function Input({
                                         size="sm"
                                         onClick={() => changeWeek(-1)}
                                     >
-                                        ‹
+                                        <ChevronLeft className="h-4 w-4" />
                                     </Button>
                                     <span className="text-sm text-slate-600">
                                         {weekDates[0]} – {weekDates[6]}
@@ -250,7 +251,7 @@ export default function Input({
                                         size="sm"
                                         onClick={() => changeWeek(1)}
                                     >
-                                        ›
+                                        <ChevronRight className="h-4 w-4" />
                                     </Button>
                                 </div>
                             )}
@@ -275,16 +276,16 @@ export default function Input({
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-12">
+                                            <TableHead className="w-12 py-2">
                                                 #
                                             </TableHead>
-                                            <TableHead>
+                                            <TableHead className="py-2">
                                                 Karyawan
                                             </TableHead>
                                             {weekDates.map((date) => (
                                                 <TableHead
                                                     key={date}
-                                                    className="text-center"
+                                                    className="py-2 text-center"
                                                 >
                                                     {date.slice(5)}
                                                 </TableHead>
@@ -296,10 +297,10 @@ export default function Input({
                                             <TableRow
                                                 key={row.assignment_id}
                                             >
-                                                <TableCell className="text-slate-500">
+                                                <TableCell className="py-2 text-slate-500">
                                                     {index + 1}
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell className="py-2">
                                                     {row.employee_nama}
                                                 </TableCell>
                                                 {row.cells.map((cell) => (
@@ -307,7 +308,7 @@ export default function Input({
                                                         key={
                                                             cell.tanggal
                                                         }
-                                                        className="text-center"
+                                                        className="py-2 text-center"
                                                     >
                                                         <AttendanceCellButton
                                                             assignmentId={

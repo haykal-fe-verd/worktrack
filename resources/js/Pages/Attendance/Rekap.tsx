@@ -1,4 +1,5 @@
 import Pagination from '@/Components/Pagination';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import {
@@ -26,6 +27,7 @@ import {
     Paginated,
 } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { ClipboardList, Download, Search } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 const STATUS_LABEL: Record<AttendanceRecapStatusValue, string> = {
@@ -33,6 +35,15 @@ const STATUS_LABEL: Record<AttendanceRecapStatusValue, string> = {
     tidak_hadir: 'A',
     izin: 'I',
     belum_diisi: '?',
+};
+
+const STATUS_BADGE_CLASSES: Record<AttendanceRecapStatusValue, string> = {
+    hadir: 'border-transparent bg-green-100 text-green-700 hover:bg-green-100',
+    tidak_hadir:
+        'border-transparent bg-red-100 text-red-700 hover:bg-red-100',
+    izin: 'border-transparent bg-amber-100 text-amber-700 hover:bg-amber-100',
+    belum_diisi:
+        'border-transparent bg-slate-100 text-slate-400 hover:bg-slate-100',
 };
 
 export default function Rekap({
@@ -185,11 +196,17 @@ export default function Rekap({
                                 </Select>
                             </div>
 
-                            <Button type="submit">Terapkan</Button>
+                            <Button type="submit">
+                                <Search className="mr-2 h-4 w-4" />
+                                Terapkan
+                            </Button>
 
                             <div className="ml-auto flex gap-2">
                                 <Button variant="outline" asChild>
-                                    <a href={exportUrl}>Export</a>
+                                    <a href={exportUrl}>
+                                        <Download className="mr-2 h-4 w-4" />
+                                        Export
+                                    </a>
                                 </Button>
                                 {canManage && (
                                     <Button asChild>
@@ -198,6 +215,7 @@ export default function Rekap({
                                                 'attendance.input',
                                             )}
                                         >
+                                            <ClipboardList className="mr-2 h-4 w-4" />
                                             Input Absensi
                                         </Link>
                                     </Button>
@@ -209,29 +227,33 @@ export default function Rekap({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Karyawan</TableHead>
-                                        <TableHead>Job</TableHead>
-                                        <TableHead>
+                                        <TableHead className="py-2">
+                                            Karyawan
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Job
+                                        </TableHead>
+                                        <TableHead className="py-2">
                                             No. Dokumen
                                         </TableHead>
                                         {dateKeys.map((date) => (
                                             <TableHead
                                                 key={date}
-                                                className="text-center"
+                                                className="py-2 text-center"
                                             >
                                                 {date.slice(5)}
                                             </TableHead>
                                         ))}
-                                        <TableHead className="text-center">
+                                        <TableHead className="py-2 text-center">
                                             H
                                         </TableHead>
-                                        <TableHead className="text-center">
+                                        <TableHead className="py-2 text-center">
                                             A
                                         </TableHead>
-                                        <TableHead className="text-center">
+                                        <TableHead className="py-2 text-center">
                                             I
                                         </TableHead>
                                     </TableRow>
@@ -243,7 +265,7 @@ export default function Rekap({
                                                 colSpan={
                                                     4 + dateKeys.length + 3
                                                 }
-                                                className="text-center text-slate-500"
+                                                className="py-2 text-center text-slate-500"
                                             >
                                                 Tidak ada data absensi
                                                 untuk rentang/filter ini.
@@ -254,44 +276,58 @@ export default function Rekap({
                                         <TableRow
                                             key={row.assignment_id}
                                         >
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {(rows.from ?? 1) + index}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {row.employee_nama}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {
                                                     row.job_nama_pekerjaan
                                                 }
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {row.no_dokumen}
                                             </TableCell>
-                                            {dateKeys.map((date) => (
-                                                <TableCell
-                                                    key={date}
-                                                    className="text-center"
-                                                >
-                                                    {
-                                                        STATUS_LABEL[
-                                                            row.days[
-                                                                date
-                                                            ]
-                                                        ]
-                                                    }
-                                                </TableCell>
-                                            ))}
-                                            <TableCell className="text-center">
+                                            {dateKeys.map((date) => {
+                                                const dayStatus =
+                                                    row.days[date];
+
+                                                return (
+                                                    <TableCell
+                                                        key={date}
+                                                        className="py-2 text-center"
+                                                    >
+                                                        {dayStatus && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className={
+                                                                    STATUS_BADGE_CLASSES[
+                                                                        dayStatus
+                                                                    ]
+                                                                }
+                                                            >
+                                                                {
+                                                                    STATUS_LABEL[
+                                                                        dayStatus
+                                                                    ]
+                                                                }
+                                                            </Badge>
+                                                        )}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                            <TableCell className="py-2 text-center">
                                                 {row.summary.hadir}
                                             </TableCell>
-                                            <TableCell className="text-center">
+                                            <TableCell className="py-2 text-center">
                                                 {
                                                     row.summary
                                                         .tidak_hadir
                                                 }
                                             </TableCell>
-                                            <TableCell className="text-center">
+                                            <TableCell className="py-2 text-center">
                                                 {row.summary.izin}
                                             </TableCell>
                                         </TableRow>
