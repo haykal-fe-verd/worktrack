@@ -169,6 +169,9 @@ export default function Rekap({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead>Karyawan</TableHead>
                                         <TableHead>Job</TableHead>
                                         <TableHead>
@@ -198,7 +201,7 @@ export default function Rekap({
                                         <TableRow>
                                             <TableCell
                                                 colSpan={
-                                                    3 + dateKeys.length + 3
+                                                    4 + dateKeys.length + 3
                                                 }
                                                 className="text-center text-slate-500"
                                             >
@@ -207,10 +210,13 @@ export default function Rekap({
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {rows.data.map((row) => (
+                                    {rows.data.map((row, index) => (
                                         <TableRow
                                             key={row.assignment_id}
                                         >
+                                            <TableCell className="text-slate-500">
+                                                {(rows.from ?? 1) + index}
+                                            </TableCell>
                                             <TableCell>
                                                 {row.employee_nama}
                                             </TableCell>

@@ -275,6 +275,9 @@ export default function Input({
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
+                                            <TableHead className="w-12">
+                                                #
+                                            </TableHead>
                                             <TableHead>
                                                 Karyawan
                                             </TableHead>
@@ -289,10 +292,13 @@ export default function Input({
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {rows.map((row) => (
+                                        {rows.map((row, index) => (
                                             <TableRow
                                                 key={row.assignment_id}
                                             >
+                                                <TableCell className="text-slate-500">
+                                                    {index + 1}
+                                                </TableCell>
                                                 <TableCell>
                                                     {row.employee_nama}
                                                 </TableCell>

@@ -54,6 +54,9 @@ export default function Index({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead>Nama</TableHead>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Role</TableHead>
@@ -64,15 +67,18 @@ export default function Index({
                                     {users.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={4}
+                                                colSpan={5}
                                                 className="text-center text-slate-500"
                                             >
                                                 Tidak ada data user.
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {users.data.map((user) => (
+                                    {users.data.map((user, index) => (
                                         <TableRow key={user.id}>
+                                            <TableCell className="text-slate-500">
+                                                {(users.from ?? 1) + index}
+                                            </TableCell>
                                             <TableCell>
                                                 {user.name}
                                             </TableCell>

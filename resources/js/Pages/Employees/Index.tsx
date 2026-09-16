@@ -161,6 +161,9 @@ export default function Index({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead>Nama</TableHead>
                                         <TableHead>NIK</TableHead>
                                         <TableHead>No. Rekening</TableHead>
@@ -172,15 +175,19 @@ export default function Index({
                                     {employees.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={canManage ? 5 : 4}
+                                                colSpan={canManage ? 6 : 5}
                                                 className="text-center text-slate-500"
                                             >
                                                 Tidak ada data karyawan.
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {employees.data.map((employee) => (
+                                    {employees.data.map((employee, index) => (
                                         <TableRow key={employee.id}>
+                                            <TableCell className="text-slate-500">
+                                                {(employees.from ?? 1) +
+                                                    index}
+                                            </TableCell>
                                             <TableCell>
                                                 <Link
                                                     href={route(

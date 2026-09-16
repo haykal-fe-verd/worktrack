@@ -116,6 +116,9 @@ export default function Show({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead>Jenis</TableHead>
                                         <TableHead>No. Dokumen</TableHead>
                                         <TableHead>Periode</TableHead>
@@ -125,8 +128,11 @@ export default function Show({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {periods.map((period) => (
+                                    {periods.map((period, index) => (
                                         <TableRow key={period.id}>
+                                            <TableCell className="text-slate-500">
+                                                {index + 1}
+                                            </TableCell>
                                             <TableCell>
                                                 {period.jenis_dokumen}
                                             </TableCell>

@@ -143,6 +143,9 @@ export default function Index({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead>Nama Pekerjaan</TableHead>
                                         <TableHead>Klien</TableHead>
                                         <TableHead>Lokasi</TableHead>
@@ -154,15 +157,18 @@ export default function Index({
                                     {jobs.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={5}
+                                                colSpan={6}
                                                 className="text-center text-slate-500"
                                             >
                                                 Tidak ada data job.
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                    {jobs.data.map((job) => (
+                                    {jobs.data.map((job, index) => (
                                         <TableRow key={job.id}>
+                                            <TableCell className="text-slate-500">
+                                                {(jobs.from ?? 1) + index}
+                                            </TableCell>
                                             <TableCell>
                                                 <Link
                                                     href={route(

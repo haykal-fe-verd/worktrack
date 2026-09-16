@@ -12,7 +12,7 @@ import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Pagination({ links }: { links: PaginationLinkData[] }) {
-    if (links.length <= 3) {
+    if (links.length < 3) {
         return null;
     }
 

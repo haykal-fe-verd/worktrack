@@ -131,6 +131,9 @@ export default function Show({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead>Karyawan</TableHead>
                                         <TableHead>Periode</TableHead>
                                         <TableHead>Status</TableHead>
@@ -138,8 +141,11 @@ export default function Show({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {assignments.map((assignment) => (
+                                    {assignments.map((assignment, index) => (
                                         <TableRow key={assignment.id}>
+                                            <TableCell className="text-slate-500">
+                                                {index + 1}
+                                            </TableCell>
                                             <TableCell>
                                                 {assignment.employee_nama}
                                             </TableCell>
