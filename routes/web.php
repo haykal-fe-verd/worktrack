@@ -14,6 +14,7 @@ use App\Http\Controllers\JobExportController;
 use App\Http\Controllers\JobImportController;
 use App\Http\Controllers\JobPeriodController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('users')->name('users.')->grou
     Route::get('/', [UserController::class, 'index'])->name('index');
     Route::get('/create', [UserController::class, 'create'])->name('create');
     Route::post('/', [UserController::class, 'store'])->name('store');
+    Route::get('/export', [UserExportController::class, 'download'])->name('export');
     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
     Route::put('/{user}', [UserController::class, 'update'])->name('update');
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');

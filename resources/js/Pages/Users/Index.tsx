@@ -9,6 +9,7 @@ import {
     AlertDialogTitle,
 } from '@/Components/ui/alert-dialog';
 import Pagination from '@/Components/Pagination';
+import { Badge } from '@/Components/ui/badge';
 import { Button, buttonVariants } from '@/Components/ui/button';
 import {
     DropdownMenu,
@@ -37,6 +38,7 @@ import { cn } from '@/lib/utils';
 import { Paginated, PageProps, UserRow } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
+    Download,
     Eye,
     KeyRound,
     MoreHorizontal,
@@ -56,6 +58,14 @@ const ROLE_LABELS: Record<string, string> = {
     admin: 'Admin',
     staff_input: 'Staff Input',
     viewer: 'Viewer',
+};
+
+const ROLE_BADGE_CLASSES: Record<string, string> = {
+    admin: 'border-transparent bg-purple-100 text-purple-700 hover:bg-purple-100',
+    staff_input:
+        'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-100',
+    viewer:
+        'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100',
 };
 
 export default function Index({
@@ -197,6 +207,12 @@ export default function Index({
                             </Button>
 
                             <div className="ml-auto flex gap-2">
+                                <Button variant="outline" asChild>
+                                    <a href={route('users.export')}>
+                                        <Download className="mr-2 h-4 w-4" />
+                                        Export Excel
+                                    </a>
+                                </Button>
                                 <Button asChild>
                                     <Link href={route('users.create')}>
                                         <Plus className="mr-2 h-4 w-4" />
@@ -248,11 +264,23 @@ export default function Index({
                                                 {user.email}
                                             </TableCell>
                                             <TableCell className="py-2">
-                                                {user.role
-                                                    ? (ROLE_LABELS[
-                                                          user.role
-                                                      ] ?? user.role)
-                                                    : '—'}
+                                                {user.role ? (
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={
+                                                            ROLE_BADGE_CLASSES[
+                                                                user.role
+                                                            ] ??
+                                                            'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100'
+                                                        }
+                                                    >
+                                                        {ROLE_LABELS[
+                                                            user.role
+                                                        ] ?? user.role}
+                                                    </Badge>
+                                                ) : (
+                                                    '—'
+                                                )}
                                             </TableCell>
                                             <TableCell className="py-2 text-right">
                                                 <DropdownMenu>
