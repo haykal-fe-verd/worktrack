@@ -18,6 +18,7 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
+import { Save, X } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 interface RenewJob {
@@ -266,9 +267,11 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                 variant="secondary"
                                 onClick={close}
                             >
+                                <X className="mr-2 h-4 w-4" />
                                 Batal
                             </Button>
                             <Button type="submit" disabled={processing}>
+                                <Save className="mr-2 h-4 w-4" />
                                 Simpan
                             </Button>
                         </DialogFooter>

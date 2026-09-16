@@ -1,3 +1,4 @@
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
     Dialog,
@@ -22,7 +23,35 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { AssignmentRow, JobPeriodDetail, PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Pencil, UserPlus, XCircle } from 'lucide-react';
+
+const PERIOD_STATUS_LABELS: Record<string, string> = {
+    aktif: 'Aktif',
+    berakhir: 'Berakhir',
+    diperbarui: 'Diperbarui',
+};
+
+const PERIOD_STATUS_CLASSES: Record<string, string> = {
+    aktif: 'border-transparent bg-green-100 text-green-700 hover:bg-green-100',
+    berakhir:
+        'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100',
+    diperbarui:
+        'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-100',
+};
+
+const ASSIGNMENT_STATUS_LABELS: Record<string, string> = {
+    aktif: 'Aktif',
+    selesai: 'Selesai',
+    diperbarui: 'Diperbarui',
+};
+
+const ASSIGNMENT_STATUS_CLASSES: Record<string, string> = {
+    aktif: 'border-transparent bg-green-100 text-green-700 hover:bg-green-100',
+    selesai:
+        'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100',
+    diperbarui:
+        'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-100',
+};
 
 export default function Show({
     jobPeriod,
@@ -81,7 +110,18 @@ export default function Show({
                         <div>
                             <dt className="text-slate-500">Status</dt>
                             <dd className="font-medium">
-                                {jobPeriod.status}
+                                <Badge
+                                    variant="outline"
+                                    className={
+                                        PERIOD_STATUS_CLASSES[
+                                            jobPeriod.status
+                                        ]
+                                    }
+                                >
+                                    {PERIOD_STATUS_LABELS[
+                                        jobPeriod.status
+                                    ] ?? jobPeriod.status}
+                                </Badge>
                             </dd>
                         </div>
                         <div>
@@ -103,15 +143,17 @@ export default function Show({
                     </dl>
 
                     {canManage && (
-                        <Link
-                            href={route(
-                                'job-periods.assignments.create',
-                                jobPeriod.id,
-                            )}
-                            className="inline-block rounded-md bg-pln-blue px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-pln-blue-dark"
-                        >
-                            Assign Karyawan
-                        </Link>
+                        <Button asChild>
+                            <Link
+                                href={route(
+                                    'job-periods.assignments.create',
+                                    jobPeriod.id,
+                                )}
+                            >
+                                <UserPlus className="mr-2 h-4 w-4" />
+                                Assign Karyawan
+                            </Link>
+                        </Button>
                     )}
 
                     {warningJumlahTk && (
@@ -131,38 +173,58 @@ export default function Show({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Karyawan</TableHead>
-                                        <TableHead>Periode</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        {canManage && <TableHead />}
+                                        <TableHead className="py-2">
+                                            Karyawan
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Periode
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Status
+                                        </TableHead>
+                                        {canManage && (
+                                            <TableHead className="py-2" />
+                                        )}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {assignments.map((assignment, index) => (
                                         <TableRow key={assignment.id}>
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {index + 1}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {assignment.employee_nama}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {assignment.tanggal_mulai}
                                                 {assignment.tanggal_selesai
                                                     ? ` s/d ${assignment.tanggal_selesai}`
                                                     : ''}
                                             </TableCell>
-                                            <TableCell>
-                                                {assignment.status}
+                                            <TableCell className="py-2">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={
+                                                        ASSIGNMENT_STATUS_CLASSES[
+                                                            assignment
+                                                                .status
+                                                        ]
+                                                    }
+                                                >
+                                                    {ASSIGNMENT_STATUS_LABELS[
+                                                        assignment.status
+                                                    ] ?? assignment.status}
+                                                </Badge>
                                             </TableCell>
                                             {canManage &&
                                                 (assignment.is_current &&
                                                 assignment.status ===
                                                     'aktif' ? (
-                                                    <TableCell className="text-right">
+                                                    <TableCell className="py-2 text-right">
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger
                                                                 asChild
@@ -187,6 +249,7 @@ export default function Show({
                                                                             assignment.id,
                                                                         )}
                                                                     >
+                                                                        <Pencil className="mr-2 h-4 w-4" />
                                                                         Edit
                                                                     </Link>
                                                                 </DropdownMenuItem>
@@ -200,6 +263,7 @@ export default function Show({
                                                                             assignment.id,
                                                                         )}
                                                                     >
+                                                                        <XCircle className="mr-2 h-4 w-4" />
                                                                         Akhiri
                                                                     </Link>
                                                                 </DropdownMenuItem>
@@ -207,7 +271,7 @@ export default function Show({
                                                         </DropdownMenu>
                                                     </TableCell>
                                                 ) : (
-                                                    <TableCell />
+                                                    <TableCell className="py-2" />
                                                 ))}
                                         </TableRow>
                                     ))}

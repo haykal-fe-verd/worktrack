@@ -1,5 +1,12 @@
 import Pagination from '@/Components/Pagination';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
 import { Input } from '@/Components/ui/input';
 import {
     Select,
@@ -19,6 +26,15 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { JobRow, PageProps, Paginated } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import {
+    Download,
+    Eye,
+    MoreHorizontal,
+    Plus,
+    Search,
+    Upload,
+    UserPlus,
+} from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 interface Filters {
@@ -141,31 +157,42 @@ export default function Index({
                                 </Select>
                             </div>
 
-                            <Button type="submit">Terapkan</Button>
+                            <Button type="submit">
+                                <Search className="mr-2 h-4 w-4" />
+                                Terapkan
+                            </Button>
 
                             {canManage && (
-                                <div className="ml-auto flex gap-2">
+                                <div className="ml-auto flex flex-wrap gap-2">
                                     <Button variant="outline" asChild>
                                         <Link
                                             href={route(
                                                 'jobs.import.create',
                                             )}
                                         >
+                                            <Upload className="mr-2 h-4 w-4" />
                                             Import
                                         </Link>
                                     </Button>
                                     <Button variant="outline" asChild>
-                                        <Link href={route('assignments.import.create')}>
+                                        <Link
+                                            href={route(
+                                                'assignments.import.create',
+                                            )}
+                                        >
+                                            <UserPlus className="mr-2 h-4 w-4" />
                                             Import Penugasan
                                         </Link>
                                     </Button>
                                     <Button variant="outline" asChild>
                                         <a href={route('jobs.export')}>
+                                            <Download className="mr-2 h-4 w-4" />
                                             Export
                                         </a>
                                     </Button>
                                     <Button asChild>
                                         <Link href={route('jobs.create')}>
+                                            <Plus className="mr-2 h-4 w-4" />
                                             Tambah Job
                                         </Link>
                                     </Button>
@@ -177,22 +204,33 @@ export default function Index({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Nama Pekerjaan</TableHead>
-                                        <TableHead>Klien</TableHead>
-                                        <TableHead>Lokasi</TableHead>
-                                        <TableHead>Periode PR</TableHead>
-                                        <TableHead>Status</TableHead>
+                                        <TableHead className="py-2">
+                                            Nama Pekerjaan
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Klien
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Lokasi
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Periode PR
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Status
+                                        </TableHead>
+                                        <TableHead className="py-2" />
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {jobs.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={6}
-                                                className="text-center text-slate-500"
+                                                colSpan={7}
+                                                className="py-2 text-center text-slate-500"
                                             >
                                                 Tidak ada data job.
                                             </TableCell>
@@ -200,33 +238,67 @@ export default function Index({
                                     )}
                                     {jobs.data.map((job, index) => (
                                         <TableRow key={job.id}>
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {(jobs.from ?? 1) + index}
                                             </TableCell>
-                                            <TableCell>
-                                                <Link
-                                                    href={route(
-                                                        'jobs.show',
-                                                        job.id,
-                                                    )}
-                                                    className="text-pln-blue hover:text-pln-blue-dark"
-                                                >
-                                                    {job.nama_pekerjaan}
-                                                </Link>
+                                            <TableCell className="py-2">
+                                                {job.nama_pekerjaan}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {job.klien ?? '—'}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {job.lokasi ?? '—'}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {job.periods_count}
                                             </TableCell>
-                                            <TableCell>
-                                                {job.status === 'aktif'
-                                                    ? 'Aktif'
-                                                    : 'Selesai'}
+                                            <TableCell className="py-2">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={
+                                                        job.status ===
+                                                        'aktif'
+                                                            ? 'border-transparent bg-green-100 text-green-700 hover:bg-green-100'
+                                                            : 'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100'
+                                                    }
+                                                >
+                                                    {job.status === 'aktif'
+                                                        ? 'Aktif'
+                                                        : 'Selesai'}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="py-2 text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                        >
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">
+                                                                Aksi
+                                                            </span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem
+                                                            asChild
+                                                        >
+                                                            <Link
+                                                                href={route(
+                                                                    'jobs.show',
+                                                                    job.id,
+                                                                )}
+                                                            >
+                                                                <Eye className="mr-2 h-4 w-4" />
+                                                                Detail
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </TableCell>
                                         </TableRow>
                                     ))}

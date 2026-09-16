@@ -1,3 +1,14 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/Components/ui/alert-dialog';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
     Dialog,
@@ -22,7 +33,28 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { JobDetail, JobPeriodRow, PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
+import {
+    Eye,
+    MoreHorizontal,
+    Power,
+    PowerOff,
+    RefreshCw,
+} from 'lucide-react';
+import { useState } from 'react';
+
+const PERIOD_STATUS_LABELS: Record<string, string> = {
+    aktif: 'Aktif',
+    berakhir: 'Berakhir',
+    diperbarui: 'Diperbarui',
+};
+
+const PERIOD_STATUS_CLASSES: Record<string, string> = {
+    aktif: 'border-transparent bg-green-100 text-green-700 hover:bg-green-100',
+    berakhir:
+        'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100',
+    diperbarui:
+        'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-100',
+};
 
 export default function Show({
     job,
@@ -35,8 +67,21 @@ export default function Show({
     hasActivePeriod: boolean;
     canManage: boolean;
 }>) {
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [toggling, setToggling] = useState(false);
+
     const toggleStatus = () => {
-        router.patch(route('jobs.toggle-status', job.id));
+        if (toggling) {
+            return;
+        }
+
+        setToggling(true);
+        router.patch(route('jobs.toggle-status', job.id), {}, {
+            onFinish: () => {
+                setToggling(false);
+                setConfirmOpen(false);
+            },
+        });
     };
 
     const close = () => router.visit(route('jobs.index'));
@@ -83,9 +128,18 @@ export default function Show({
                         <div>
                             <dt className="text-slate-500">Status</dt>
                             <dd className="font-medium">
-                                {job.status === 'aktif'
-                                    ? 'Aktif'
-                                    : 'Selesai'}
+                                <Badge
+                                    variant="outline"
+                                    className={
+                                        job.status === 'aktif'
+                                            ? 'border-transparent bg-green-100 text-green-700 hover:bg-green-100'
+                                            : 'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100'
+                                    }
+                                >
+                                    {job.status === 'aktif'
+                                        ? 'Aktif'
+                                        : 'Selesai'}
+                                </Badge>
                             </dd>
                         </div>
                     </dl>
@@ -95,11 +149,20 @@ export default function Show({
                             {hasActivePeriod && (
                                 <Button asChild>
                                     <Link href={route('jobs.renew', job.id)}>
+                                        <RefreshCw className="mr-2 h-4 w-4" />
                                         Perbarui PR
                                     </Link>
                                 </Button>
                             )}
-                            <Button variant="outline" onClick={toggleStatus}>
+                            <Button
+                                variant="outline"
+                                onClick={() => setConfirmOpen(true)}
+                            >
+                                {job.status === 'aktif' ? (
+                                    <PowerOff className="mr-2 h-4 w-4" />
+                                ) : (
+                                    <Power className="mr-2 h-4 w-4" />
+                                )}
                                 {job.status === 'aktif'
                                     ? 'Tandai Selesai'
                                     : 'Tandai Aktif'}
@@ -116,44 +179,65 @@ export default function Show({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Jenis</TableHead>
-                                        <TableHead>No. Dokumen</TableHead>
-                                        <TableHead>Periode</TableHead>
-                                        <TableHead>Nilai PO</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Aksi</TableHead>
+                                        <TableHead className="py-2">
+                                            Jenis
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            No. Dokumen
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Periode
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Nilai PO
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Status
+                                        </TableHead>
+                                        <TableHead className="py-2" />
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {periods.map((period, index) => (
                                         <TableRow key={period.id}>
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {index + 1}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {period.jenis_dokumen}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {period.no_dokumen}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {period.tanggal_mulai}
                                                 {period.tanggal_selesai
                                                     ? ` s/d ${period.tanggal_selesai}`
                                                     : ''}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {period.nilai_po.toLocaleString(
                                                     'id-ID',
                                                 )}
                                             </TableCell>
-                                            <TableCell>
-                                                {period.status}
+                                            <TableCell className="py-2">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={
+                                                        PERIOD_STATUS_CLASSES[
+                                                            period.status
+                                                        ]
+                                                    }
+                                                >
+                                                    {PERIOD_STATUS_LABELS[
+                                                        period.status
+                                                    ] ?? period.status}
+                                                </Badge>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger
                                                         asChild
@@ -178,6 +262,7 @@ export default function Show({
                                                                     period.id,
                                                                 )}
                                                             >
+                                                                <Eye className="mr-2 h-4 w-4" />
                                                                 Detail
                                                             </Link>
                                                         </DropdownMenuItem>
@@ -192,6 +277,32 @@ export default function Show({
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            {job.status === 'aktif'
+                                ? 'Tandai job selesai?'
+                                : 'Tandai job aktif?'}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {job.status === 'aktif'
+                                ? `Status ${job.nama_pekerjaan} akan diubah menjadi Selesai.`
+                                : `Status ${job.nama_pekerjaan} akan diubah menjadi Aktif.`}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogAction
+                            disabled={toggling}
+                            onClick={toggleStatus}
+                        >
+                            Lanjutkan
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AuthenticatedLayout>
     );
 }

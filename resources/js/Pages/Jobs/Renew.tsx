@@ -7,6 +7,7 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { Briefcase, RefreshCw, UserPlus } from 'lucide-react';
 
 interface RenewJob {
     id: number;
@@ -52,30 +53,36 @@ export default function Renew({
                     <div className="space-y-4">
                         <Link
                             href={route('jobs.periods.create', job.id)}
-                            className="block rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
+                            className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
                         >
-                            <h3 className="text-sm font-semibold text-pln-navy">
-                                (a) Lanjutan Job yang Sama
-                            </h3>
-                            <p className="mt-1 text-sm text-slate-600">
-                                No. PR baru untuk pekerjaan yang sama —
-                                periode lama otomatis ditutup dan
-                                dihubungkan ke periode baru.
-                            </p>
+                            <RefreshCw className="mt-0.5 h-5 w-5 shrink-0 text-pln-blue" />
+                            <div>
+                                <h3 className="text-sm font-semibold text-pln-navy">
+                                    (a) Lanjutan Job yang Sama
+                                </h3>
+                                <p className="mt-1 text-sm text-slate-600">
+                                    No. PR baru untuk pekerjaan yang sama
+                                    — periode lama otomatis ditutup dan
+                                    dihubungkan ke periode baru.
+                                </p>
+                            </div>
                         </Link>
 
                         <Link
                             href={route('jobs.create')}
-                            className="block rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
+                            className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
                         >
-                            <h3 className="text-sm font-semibold text-pln-navy">
-                                (b) Job Baru Sama Sekali
-                            </h3>
-                            <p className="mt-1 text-sm text-slate-600">
-                                Pekerjaan yang benar-benar berbeda —
-                                dibuat sebagai Job baru, tanpa relasi ke
-                                Job ini.
-                            </p>
+                            <Briefcase className="mt-0.5 h-5 w-5 shrink-0 text-pln-blue" />
+                            <div>
+                                <h3 className="text-sm font-semibold text-pln-navy">
+                                    (b) Job Baru Sama Sekali
+                                </h3>
+                                <p className="mt-1 text-sm text-slate-600">
+                                    Pekerjaan yang benar-benar berbeda —
+                                    dibuat sebagai Job baru, tanpa relasi
+                                    ke Job ini.
+                                </p>
+                            </div>
                         </Link>
 
                         {activePeriodId && (
@@ -84,16 +91,19 @@ export default function Renew({
                                     'job-periods.show',
                                     activePeriodId,
                                 )}
-                                className="block rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
+                                className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-pln-blue"
                             >
-                                <h3 className="text-sm font-semibold text-pln-navy">
-                                    (c) Assignment Saja
-                                </h3>
-                                <p className="mt-1 text-sm text-slate-600">
-                                    Job & No. PR tidak berubah — kelola
-                                    penugasan pekerja untuk periode
-                                    aktif ini.
-                                </p>
+                                <UserPlus className="mt-0.5 h-5 w-5 shrink-0 text-pln-blue" />
+                                <div>
+                                    <h3 className="text-sm font-semibold text-pln-navy">
+                                        (c) Assignment Saja
+                                    </h3>
+                                    <p className="mt-1 text-sm text-slate-600">
+                                        Job & No. PR tidak berubah —
+                                        kelola penugasan pekerja untuk
+                                        periode aktif ini.
+                                    </p>
+                                </div>
                             </Link>
                         )}
                     </div>
