@@ -12,7 +12,7 @@ import { Toaster } from '@/Components/ui/sonner';
 import useFlashToast from '@/hooks/use-flash-toast';
 import { useTheme } from '@/hooks/use-theme';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Moon, Sun } from 'lucide-react';
+import { LogOut, Moon, Sun, User as UserIcon } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
 export default function Authenticated({
@@ -89,6 +89,7 @@ export default function Authenticated({
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuItem asChild>
                                         <Link href={route('profile.edit')}>
+                                            <UserIcon className="mr-2 h-4 w-4" />
                                             Profile
                                         </Link>
                                     </DropdownMenuItem>
@@ -115,6 +116,7 @@ export default function Authenticated({
                                             router.post(route('logout'))
                                         }
                                     >
+                                        <LogOut className="mr-2 h-4 w-4" />
                                         Log Out
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -217,6 +219,7 @@ export default function Authenticated({
 
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>
+                                <UserIcon className="mr-2 h-4 w-4" />
                                 Profile
                             </ResponsiveNavLink>
                             <button
@@ -241,6 +244,7 @@ export default function Authenticated({
                                 href={route('logout')}
                                 as="button"
                             >
+                                <LogOut className="mr-2 h-4 w-4" />
                                 Log Out
                             </ResponsiveNavLink>
                         </div>
