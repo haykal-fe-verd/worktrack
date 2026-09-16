@@ -6,6 +6,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
+import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import {
     Select,
@@ -195,22 +196,30 @@ export default function Index({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Nama</TableHead>
-                                        <TableHead>NIK</TableHead>
-                                        <TableHead>No. Rekening</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        {canManage && <TableHead />}
+                                        <TableHead className="py-2">
+                                            Nama
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            NIK
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            No. Rekening
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Status
+                                        </TableHead>
+                                        <TableHead className="py-2" />
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {employees.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={canManage ? 6 : 5}
-                                                className="text-center text-slate-500"
+                                                colSpan={6}
+                                                className="py-2 text-center text-slate-500"
                                             >
                                                 Tidak ada data karyawan.
                                             </TableCell>
@@ -218,49 +227,64 @@ export default function Index({
                                     )}
                                     {employees.data.map((employee, index) => (
                                         <TableRow key={employee.id}>
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {(employees.from ?? 1) +
                                                     index}
                                             </TableCell>
-                                            <TableCell>
-                                                <Link
-                                                    href={route(
-                                                        'employees.show',
-                                                        employee.id,
-                                                    )}
-                                                    className="text-pln-blue hover:underline"
-                                                >
-                                                    {employee.nama}
-                                                </Link>
+                                            <TableCell className="py-2">
+                                                {employee.nama}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {employee.nik}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {employee.no_rekening}
                                             </TableCell>
-                                            <TableCell>
-                                                {employee.status === 'aktif'
-                                                    ? 'Aktif'
-                                                    : 'Non-aktif'}
+                                            <TableCell className="py-2">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={
+                                                        employee.status ===
+                                                        'aktif'
+                                                            ? 'border-transparent bg-green-100 text-green-700 hover:bg-green-100'
+                                                            : 'border-transparent bg-red-100 text-red-700 hover:bg-red-100'
+                                                    }
+                                                >
+                                                    {employee.status ===
+                                                    'aktif'
+                                                        ? 'Aktif'
+                                                        : 'Non-aktif'}
+                                                </Badge>
                                             </TableCell>
-                                            {canManage && (
-                                                <TableCell className="text-right">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger
+                                            <TableCell className="py-2 text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                        >
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">
+                                                                Aksi
+                                                            </span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem
                                                             asChild
                                                         >
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
+                                                            <Link
+                                                                href={route(
+                                                                    'employees.show',
+                                                                    employee.id,
+                                                                )}
                                                             >
-                                                                <MoreHorizontal className="h-4 w-4" />
-                                                                <span className="sr-only">
-                                                                    Aksi
-                                                                </span>
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
+                                                                Detail
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                        {canManage && (
                                                             <DropdownMenuItem
                                                                 asChild
                                                             >
@@ -273,6 +297,8 @@ export default function Index({
                                                                     Edit
                                                                 </Link>
                                                             </DropdownMenuItem>
+                                                        )}
+                                                        {canManage && (
                                                             <DropdownMenuItem
                                                                 disabled={
                                                                     togglingId ===
@@ -289,10 +315,10 @@ export default function Index({
                                                                     ? 'Nonaktifkan'
                                                                     : 'Aktifkan'}
                                                             </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </TableCell>
-                                            )}
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
