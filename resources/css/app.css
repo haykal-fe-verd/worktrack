@@ -35,3 +35,14 @@
         @apply bg-background text-foreground;
     }
 }
+
+/*
+ * Native <input type="date"> renders its own internal layout (a flex row
+ * of segments + the picker icon) that Chrome/Safari expose via this
+ * pseudo-element. Without this, the icon sits right after the typed/
+ * placeholder text instead of at the input's far right edge.
+ */
+input[type='date']::-webkit-calendar-picker-indicator {
+    margin-left: auto;
+    cursor: pointer;
+}

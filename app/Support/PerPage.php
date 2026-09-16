@@ -11,7 +11,7 @@ class PerPage
      */
     public const OPTIONS = [10, 20, 50, 100];
 
-    public const DEFAULT = 20;
+    public const DEFAULT = 10;
 
     /**
      * Resolve a validated `per_page` value from the request, falling back
