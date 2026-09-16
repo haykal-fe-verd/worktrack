@@ -10,11 +10,14 @@ export default function ApplicationLogo({
         <div
             {...props}
             className={cn(
-                'flex aspect-square items-center justify-center rounded-xl bg-pln-blue p-[18%]',
+                'flex aspect-square items-center justify-center rounded-xl bg-pln-blue',
                 className,
             )}
         >
-            <Zap className="h-full w-full text-white" strokeWidth={2.25} />
+            <Zap
+                className="h-[64%] w-[64%] text-white"
+                strokeWidth={2.25}
+            />
         </div>
     );
 }
