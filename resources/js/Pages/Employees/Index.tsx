@@ -36,7 +36,13 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { EmployeeRow, PageProps, Paginated } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
+import {
+    Download,
+    MoreHorizontal,
+    Plus,
+    Search,
+    Upload,
+} from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 interface Filters {
@@ -181,7 +187,10 @@ export default function Index({
                                 </Select>
                             </div>
 
-                            <Button type="submit">Terapkan</Button>
+                            <Button type="submit">
+                                <Search className="mr-2 h-4 w-4" />
+                                Terapkan
+                            </Button>
 
                             {canManage && (
                                 <div className="ml-auto flex gap-2">
@@ -191,11 +200,13 @@ export default function Index({
                                                 'employees.import.create',
                                             )}
                                         >
+                                            <Upload className="mr-2 h-4 w-4" />
                                             Import
                                         </Link>
                                     </Button>
                                     <Button variant="outline" asChild>
                                         <a href={route('employees.export')}>
+                                            <Download className="mr-2 h-4 w-4" />
                                             Export
                                         </a>
                                     </Button>
@@ -203,6 +214,7 @@ export default function Index({
                                         <Link
                                             href={route('employees.create')}
                                         >
+                                            <Plus className="mr-2 h-4 w-4" />
                                             Tambah Karyawan
                                         </Link>
                                     </Button>
