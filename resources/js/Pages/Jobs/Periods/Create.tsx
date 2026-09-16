@@ -243,7 +243,7 @@ export default function Create({ job }: PageProps<{ job: RenewJob }>) {
                                 </Label>
                                 <textarea
                                     id="keterangan"
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                                    className="mt-1 block w-full rounded-md border-slate-300 bg-white text-pln-navy shadow-sm focus:border-pln-blue focus:ring-pln-blue"
                                     value={data.keterangan}
                                     onChange={(e) =>
                                         setData(

@@ -25,6 +25,28 @@
         --ring: 196 100% 47%;
         --radius: 0.5rem;
     }
+
+    .dark {
+        --background: 222.2 47.4% 6%;
+        --foreground: 210 40% 96%;
+        --card: 222.2 47.4% 9%;
+        --card-foreground: 210 40% 96%;
+        --popover: 222.2 47.4% 9%;
+        --popover-foreground: 210 40% 96%;
+        --primary: 196 100% 55%;
+        --primary-foreground: 222.2 47.4% 6%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 96%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 96%;
+        --destructive: 0 62.8% 50%;
+        --destructive-foreground: 210 40% 96%;
+        --border: 217.2 32.6% 20%;
+        --input: 217.2 32.6% 20%;
+        --ring: 196 100% 55%;
+    }
 }
 
 @layer base {
@@ -34,6 +56,112 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/*
+ * The pages in this app were built before dark mode existed, using
+ * hardcoded Tailwind utility classes (bg-white, text-pln-navy,
+ * border-slate-200, ...) instead of the shadcn semantic tokens above.
+ * Rather than touching every page, these overrides retrofit dark mode
+ * by re-pointing the small, finite set of color utilities actually used
+ * across the app whenever the `.dark` class is active — shadcn's own
+ * components are unaffected since they already use the semantic tokens.
+ *
+ * Plain color values (Tailwind's own slate palette) are used instead of
+ * `@apply <utility>` here, since several of these rules reciprocally
+ * reference each other's utility class (e.g. slate-300 <-> slate-600),
+ * which Tailwind's `@apply` rejects as a circular dependency.
+ */
+.dark .bg-white {
+    background-color: #0f172a; /* slate-900 */
+}
+
+.dark .bg-slate-50 {
+    background-color: #020617; /* slate-950 */
+}
+
+.dark .bg-slate-100 {
+    background-color: #1e293b; /* slate-800 */
+}
+
+.dark .bg-slate-300 {
+    background-color: #475569; /* slate-600 */
+}
+
+.dark .text-pln-navy {
+    color: #f1f5f9; /* slate-100 */
+}
+
+.dark .text-slate-300 {
+    color: #475569; /* slate-600 */
+}
+
+.dark .text-slate-400 {
+    color: #64748b; /* slate-500 */
+}
+
+.dark .text-slate-500 {
+    color: #94a3b8; /* slate-400 */
+}
+
+.dark .text-slate-600 {
+    color: #cbd5e1; /* slate-300 */
+}
+
+.dark .border-slate-100 {
+    border-color: #1e293b; /* slate-800 */
+}
+
+.dark .border-slate-200 {
+    border-color: #334155; /* slate-700 */
+}
+
+.dark .border-slate-300 {
+    border-color: #475569; /* slate-600 */
+}
+
+.dark .to-slate-50 {
+    --tw-gradient-to: #020617 var(--tw-gradient-to-position); /* slate-950 */
+}
+
+.dark .hover\:bg-slate-50:hover {
+    background-color: #1e293b; /* slate-800 */
+}
+
+.dark .focus\:bg-slate-50:focus {
+    background-color: #1e293b; /* slate-800 */
+}
+
+.dark .hover\:border-slate-300:hover {
+    border-color: #475569; /* slate-600 */
+}
+
+.dark .focus\:border-slate-300:focus {
+    border-color: #475569; /* slate-600 */
+}
+
+.dark .hover\:text-slate-700:hover {
+    color: #e2e8f0; /* slate-200 */
+}
+
+.dark .focus\:text-slate-700:focus {
+    color: #e2e8f0; /* slate-200 */
+}
+
+.dark .hover\:text-slate-800:hover {
+    color: #f1f5f9; /* slate-100 */
+}
+
+.dark .focus\:text-slate-800:focus {
+    color: #f1f5f9; /* slate-100 */
+}
+
+.dark .hover\:text-pln-navy:hover {
+    color: #f1f5f9; /* slate-100 */
+}
+
+.dark .focus\:text-pln-navy:focus {
+    color: #f1f5f9; /* slate-100 */
 }
 
 /*

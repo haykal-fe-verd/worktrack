@@ -95,7 +95,7 @@ export default function Create() {
                                 <Label htmlFor="alamat">Alamat</Label>
                                 <textarea
                                     id="alamat"
-                                    className="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-pln-blue focus:ring-pln-blue"
+                                    className="mt-1 block w-full rounded-md border-slate-300 bg-white text-pln-navy shadow-sm focus:border-pln-blue focus:ring-pln-blue"
                                     value={data.alamat}
                                     onChange={(e) =>
                                         setData('alamat', e.target.value)

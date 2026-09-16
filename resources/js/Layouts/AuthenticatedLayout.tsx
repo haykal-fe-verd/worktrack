@@ -10,7 +10,9 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Toaster } from '@/Components/ui/sonner';
 import useFlashToast from '@/hooks/use-flash-toast';
+import { useTheme } from '@/hooks/use-theme';
 import { Link, router, usePage } from '@inertiajs/react';
+import { Moon, Sun } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
 export default function Authenticated({
@@ -19,13 +21,14 @@ export default function Authenticated({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
     useFlashToast();
+    const { theme, toggleTheme } = useTheme();
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Toaster richColors position="top-right" theme="light" />
+            <Toaster richColors position="top-right" theme={theme} />
 
             <nav className="border-b border-slate-200 bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -88,6 +91,24 @@ export default function Authenticated({
                                         <Link href={route('profile.edit')}>
                                             Profile
                                         </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={(e) => {
+                                            e.preventDefault();
+                                            toggleTheme();
+                                        }}
+                                    >
+                                        {theme === 'dark' ? (
+                                            <>
+                                                <Sun className="mr-2 h-4 w-4" />
+                                                Tema Terang
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Moon className="mr-2 h-4 w-4" />
+                                                Tema Gelap
+                                            </>
+                                        )}
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onSelect={() =>
@@ -198,6 +219,23 @@ export default function Authenticated({
                             <ResponsiveNavLink href={route('profile.edit')}>
                                 Profile
                             </ResponsiveNavLink>
+                            <button
+                                type="button"
+                                onClick={toggleTheme}
+                                className="flex w-full items-center border-l-4 border-transparent py-2 pe-4 ps-3 text-start text-base font-medium text-slate-600 transition duration-150 ease-in-out hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 focus:border-slate-300 focus:bg-slate-50 focus:text-slate-800 focus:outline-none"
+                            >
+                                {theme === 'dark' ? (
+                                    <>
+                                        <Sun className="mr-2 h-4 w-4" />
+                                        Tema Terang
+                                    </>
+                                ) : (
+                                    <>
+                                        <Moon className="mr-2 h-4 w-4" />
+                                        Tema Gelap
+                                    </>
+                                )}
+                            </button>
                             <ResponsiveNavLink
                                 method="post"
                                 href={route('logout')}

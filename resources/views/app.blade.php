@@ -10,6 +10,18 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Apply the saved theme before first paint, to avoid a flash of
+             the wrong theme while React hydrates. -->
+        <script>
+            (function () {
+                var theme = localStorage.getItem('worktrack-theme');
+                var isDark = theme === 'dark'
+                    || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+                document.documentElement.classList.toggle('dark', isDark);
+            })();
+        </script>
+
         <!-- Scripts -->
         @routes
         @viteReactRefresh
