@@ -206,7 +206,7 @@ export default function Index({
                                 Terapkan
                             </Button>
 
-                            <div className="ml-auto flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 sm:ml-auto">
                                 <Button variant="outline" asChild>
                                     <a href={route('users.export')}>
                                         <Download className="mr-2 h-4 w-4" />

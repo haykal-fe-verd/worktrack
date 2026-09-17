@@ -197,7 +197,7 @@ export default function Index({
                             </Button>
 
                             {canManage && (
-                                <div className="ml-auto flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2 sm:ml-auto">
                                     <Button variant="outline" asChild>
                                         <Link
                                             href={route(
