@@ -39,8 +39,11 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-    <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+  <div
+    className="m-1 flex items-center gap-2 rounded-md border border-transparent px-3 focus-within:border-input"
+    cmdk-input-wrapper=""
+  >
+    <Search className="h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
@@ -60,7 +63,10 @@ const CommandList = React.forwardRef<
 >(({ className, onWheel, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
+    className={cn(
+      "max-h-[300px] overflow-y-auto overflow-x-hidden border-t",
+      className
+    )}
     onWheel={(event) => {
       // A Command rendered inside a Radix Dialog/Popover sits behind the
       // Dialog's scroll lock (react-remove-scroll), which calls
