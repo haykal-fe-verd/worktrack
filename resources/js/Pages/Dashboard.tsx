@@ -1,4 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
+import { ClipboardList, Plus } from "lucide-react";
 import BentoCard from "@/Components/BentoCard";
 import { Button } from "@/Components/ui/button";
 import { Card } from "@/Components/ui/card";
@@ -173,22 +174,26 @@ export default function Dashboard({
                         <div className="flex flex-wrap gap-2">
                             <Button asChild>
                                 <Link href={route("employees.create")}>
+                                    <Plus className="mr-2 h-4 w-4" />
                                     Tambah Karyawan
                                 </Link>
                             </Button>
                             <Button asChild variant="outline">
                                 <Link href={route("jobs.create")}>
+                                    <Plus className="mr-2 h-4 w-4" />
                                     Tambah Job
                                 </Link>
                             </Button>
                             <Button asChild variant="outline">
                                 <Link href={route("attendance.input")}>
+                                    <ClipboardList className="mr-2 h-4 w-4" />
                                     Input Absensi
                                 </Link>
                             </Button>
                             {isAdmin && (
                                 <Button asChild variant="outline">
                                     <Link href={route("users.create")}>
+                                        <Plus className="mr-2 h-4 w-4" />
                                         Tambah User
                                     </Link>
                                 </Button>
