@@ -243,6 +243,9 @@ export default function Index({
                                             No. Rekening
                                         </TableHead>
                                         <TableHead className="py-2">
+                                            Nama Bank
+                                        </TableHead>
+                                        <TableHead className="py-2">
                                             Status
                                         </TableHead>
                                         <TableHead className="py-2" />
@@ -252,7 +255,7 @@ export default function Index({
                                     {employees.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={6}
+                                                colSpan={7}
                                                 className="py-2 text-center text-slate-500"
                                             >
                                                 Tidak ada data karyawan.
@@ -273,6 +276,9 @@ export default function Index({
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 {employee.no_rekening}
+                                            </TableCell>
+                                            <TableCell className="py-2">
+                                                {employee.nama_bank ?? '—'}
                                             </TableCell>
                                             <TableCell className="py-2">
                                                 <Badge

@@ -1,3 +1,4 @@
+import BankCombobox from '@/Components/BankCombobox';
 import { Button } from '@/Components/ui/button';
 import {
     Dialog,
@@ -142,14 +143,15 @@ export default function Edit({
                                 <Label htmlFor="nama_bank">
                                     Nama Bank (opsional)
                                 </Label>
-                                <Input
-                                    id="nama_bank"
-                                    className="mt-1"
-                                    value={data.nama_bank}
-                                    onChange={(e) =>
-                                        setData('nama_bank', e.target.value)
-                                    }
-                                />
+                                <div className="mt-1">
+                                    <BankCombobox
+                                        id="nama_bank"
+                                        value={data.nama_bank}
+                                        onChange={(value) =>
+                                            setData('nama_bank', value)
+                                        }
+                                    />
+                                </div>
                                 {errors.nama_bank && (
                                     <p className="mt-2 text-sm text-destructive">
                                         {errors.nama_bank}

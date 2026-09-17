@@ -46,6 +46,7 @@ export interface EmployeeRow {
     nama: string;
     nik: string;
     no_rekening: string;
+    nama_bank: string | null;
     status: EmployeeStatus;
 }
 

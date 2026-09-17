@@ -63,6 +63,12 @@ export default function Show({
                             </dd>
                         </div>
                         <div>
+                            <dt className="text-slate-500">Nama Bank</dt>
+                            <dd className="font-medium">
+                                {employee.nama_bank ?? '—'}
+                            </dd>
+                        </div>
+                        <div>
                             <dt className="text-slate-500">Status</dt>
                             <dd className="font-medium">
                                 {employee.status === 'aktif'

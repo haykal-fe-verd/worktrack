@@ -107,6 +107,17 @@ class EmployeeCrudTest extends TestCase
         $response->assertJsonPath('props.canManage', true);
     }
 
+    public function test_employee_list_includes_nama_bank(): void
+    {
+        $admin = $this->admin();
+        Employee::factory()->create(['nama_bank' => 'Bank Central Asia (BCA)']);
+
+        $response = $this->actingAs($admin)->get('/employees', $this->inertiaHeaders());
+
+        $response->assertOk();
+        $response->assertJsonPath('props.employees.data.0.nama_bank', 'Bank Central Asia (BCA)');
+    }
+
     public function test_viewer_cannot_create_an_employee(): void
     {
         $viewer = $this->viewer();
