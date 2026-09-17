@@ -84,7 +84,7 @@ export default function Index({
             <Head title="Data Job & Periode PR" />
 
             <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="bg-white p-6 shadow-sm sm:rounded-lg">
                         <form
                             onSubmit={applyFilters}

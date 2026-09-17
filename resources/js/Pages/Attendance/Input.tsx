@@ -201,7 +201,7 @@ export default function Input({
             <Head title="Input Absensi" />
 
             <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="bg-white p-6 shadow-sm sm:rounded-lg">
                         <div className="mb-6 flex flex-wrap items-end gap-4">
                             <div className="w-64">

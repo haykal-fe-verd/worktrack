@@ -118,7 +118,7 @@ export default function Index({
             <Head title="Data Karyawan" />
 
             <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="bg-white p-6 shadow-sm sm:rounded-lg">
                         <form
                             onSubmit={applyFilters}
@@ -197,7 +197,7 @@ export default function Index({
                             </Button>
 
                             {canManage && (
-                                <div className="ml-auto flex gap-2">
+                                <div className="ml-auto flex flex-wrap gap-2">
                                     <Button variant="outline" asChild>
                                         <Link
                                             href={route(

@@ -109,7 +109,7 @@ export default function Rekap({
             <Head title="Rekap Absensi Mingguan" />
 
             <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="bg-white p-6 shadow-sm sm:rounded-lg">
                         <form
                             onSubmit={applyFilters}
@@ -201,7 +201,7 @@ export default function Rekap({
                                 Terapkan
                             </Button>
 
-                            <div className="ml-auto flex gap-2">
+                            <div className="ml-auto flex flex-wrap gap-2">
                                 <Button variant="outline" asChild>
                                     <a href={exportUrl}>
                                         <Download className="mr-2 h-4 w-4" />
