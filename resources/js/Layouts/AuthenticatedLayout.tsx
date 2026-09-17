@@ -35,8 +35,14 @@ export default function Authenticated({
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
-                                <Link href={route('dashboard')}>
+                                <Link
+                                    href={route('dashboard')}
+                                    className="flex items-center gap-2"
+                                >
                                     <ApplicationLogo className="h-9 w-9" />
+                                    <span className="text-lg font-bold text-pln-navy">
+                                        WorkTrack
+                                    </span>
                                 </Link>
                             </div>
 
