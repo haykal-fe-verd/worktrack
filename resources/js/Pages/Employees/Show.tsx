@@ -1,3 +1,4 @@
+import { Badge } from '@/Components/ui/badge';
 import {
     Dialog,
     DialogContent,
@@ -15,6 +16,20 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { EmployeeAssignmentRow, EmployeeDetail, PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
+
+const ASSIGNMENT_STATUS_LABELS: Record<string, string> = {
+    aktif: 'Aktif',
+    selesai: 'Selesai',
+    diperbarui: 'Diperbarui',
+};
+
+const ASSIGNMENT_STATUS_CLASSES: Record<string, string> = {
+    aktif: 'border-transparent bg-green-100 text-green-700 hover:bg-green-100',
+    selesai:
+        'border-transparent bg-slate-100 text-slate-600 hover:bg-slate-100',
+    diperbarui:
+        'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-100',
+};
 
 export default function Show({
     employee,
@@ -71,9 +86,18 @@ export default function Show({
                         <div>
                             <dt className="text-slate-500">Status</dt>
                             <dd className="font-medium">
-                                {employee.status === 'aktif'
-                                    ? 'Aktif'
-                                    : 'Non-aktif'}
+                                <Badge
+                                    variant="outline"
+                                    className={
+                                        employee.status === 'aktif'
+                                            ? 'border-transparent bg-green-100 text-green-700 hover:bg-green-100'
+                                            : 'border-transparent bg-red-100 text-red-700 hover:bg-red-100'
+                                    }
+                                >
+                                    {employee.status === 'aktif'
+                                        ? 'Aktif'
+                                        : 'Non-aktif'}
+                                </Badge>
                             </dd>
                         </div>
                     </dl>
@@ -87,37 +111,57 @@ export default function Show({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-12">
+                                        <TableHead className="w-12 py-2">
                                             #
                                         </TableHead>
-                                        <TableHead>Job</TableHead>
-                                        <TableHead>No. Dokumen</TableHead>
-                                        <TableHead>Periode</TableHead>
-                                        <TableHead>Status</TableHead>
+                                        <TableHead className="py-2">
+                                            Job
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            No. Dokumen
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Periode
+                                        </TableHead>
+                                        <TableHead className="py-2">
+                                            Status
+                                        </TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {assignments.map((assignment, index) => (
                                         <TableRow key={assignment.id}>
-                                            <TableCell className="text-slate-500">
+                                            <TableCell className="py-2 text-slate-500">
                                                 {index + 1}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {
                                                     assignment.job_nama_pekerjaan
                                                 }
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {assignment.no_dokumen}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="py-2">
                                                 {assignment.tanggal_mulai}
                                                 {assignment.tanggal_selesai
                                                     ? ` s/d ${assignment.tanggal_selesai}`
                                                     : ''}
                                             </TableCell>
-                                            <TableCell>
-                                                {assignment.status}
+                                            <TableCell className="py-2">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={
+                                                        ASSIGNMENT_STATUS_CLASSES[
+                                                            assignment
+                                                                .status
+                                                        ]
+                                                    }
+                                                >
+                                                    {ASSIGNMENT_STATUS_LABELS[
+                                                        assignment.status
+                                                    ] ?? assignment.status}
+                                                </Badge>
                                             </TableCell>
                                         </TableRow>
                                     ))}
