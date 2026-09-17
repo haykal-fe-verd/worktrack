@@ -57,10 +57,20 @@ CommandInput.displayName = CommandPrimitive.Input.displayName
 const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, ...props }, ref) => (
+>(({ className, onWheel, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
     className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
+    onWheel={(event) => {
+      // A Command rendered inside a Radix Dialog/Popover sits behind the
+      // Dialog's scroll lock (react-remove-scroll), which calls
+      // preventDefault() on wheel events outside its allowed shards —
+      // silently blocking the native scroll here. Driving scrollTop by
+      // hand works regardless of whether the browser's default action
+      // was prevented.
+      event.currentTarget.scrollTop += event.deltaY
+      onWheel?.(event)
+    }}
     {...props}
   />
 ))
